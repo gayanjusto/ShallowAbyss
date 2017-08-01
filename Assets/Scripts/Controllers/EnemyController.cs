@@ -15,6 +15,14 @@ namespace Assets.Scripts.Controllers
         {
             enemyRigidBody = GetComponent<Rigidbody2D>();
             minSpeed = RandomValueTool.GetRandomFloatValue(minSpeed, maxSpeed);
+
+            if(minSpeed == 0)
+            {
+                minSpeed = maxSpeed;
+            }
+
+            //Set random horizontal direction
+            horizontalDirection *= RandomValueTool.GetRandomValue(0, 1) * 2 - 1;
         }
 
         private void Update()
