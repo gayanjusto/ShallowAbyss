@@ -69,11 +69,10 @@ namespace Assets.Scripts.Managers
 
         void SetWallsPositionToScreen()
         {
-
             float leftEdge = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
             float rightEdge = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
 
-            leftWallsPool.transform.position = new Vector3(leftEdge, 0, 0);
+            leftWallsPool.transform.position = new Vector3(leftEdge -.5f, 0, 0);
             rightWallsPool.transform.position = new Vector3(rightEdge, 0, 0);
         }
 
@@ -90,13 +89,23 @@ namespace Assets.Scripts.Managers
                     wall.gameObject.SetActive(true);
 
                     
-                    wall.transform.localPosition = new Vector3(wall.transform.localPosition.x, verticalPosition);
+                    wall.transform.localPosition = new Vector3(wall.transform.localPosition.x, verticalPosition, -10);
                     _wall = wall;
                     break;
                 }
             }
 
             return _wall;
+        }
+
+        public Vector3 GetLeftWallScale()
+        {
+            return currentLeftWall.transform.localScale;
+        }
+
+        public Vector3 GetRighttWallScale()
+        {
+            return currentLeftWall.transform.localScale;
         }
     }
 }

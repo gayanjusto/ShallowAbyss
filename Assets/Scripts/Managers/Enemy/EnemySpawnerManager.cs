@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Dictionaries;
 using Assets.Scripts.Enums;
+using Assets.Scripts.Interfaces.Managers.Enemy;
 using Assets.Scripts.Services;
 using Assets.Scripts.Tools;
 using System;
@@ -14,17 +15,15 @@ namespace Assets.Scripts.Managers
         public int amountSpawnedEnemies;
         public int amountEnemiesBaseLevel;
         public int currentMaxAmountEnemies;
-        public int intervalToSpawnHeavyEnemy;
         public int gameMaxAmountEnemies;
-        Vector3 screenBottomEdge;
 
-        public float leftSpawnEdge;
-        public float rightSpawnEdge;
         public int currentLevelDifficult;
         public float timeToChangeDifficult;
         public float currentDifficultTime;
         public float heavyEnemySpawnTime;
-        public bool hasSpawnedHeavyEnemy;
+        public int maxAmountHeavyEnemyInScene;
+        public int currentAmountHeavyEnemyInScene;
+
 
         Vector3[] spawnedPositions;
         ScoreCounterManager scoreManager;
@@ -33,13 +32,9 @@ namespace Assets.Scripts.Managers
         {
             scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreCounterManager>();
 
-            screenBottomEdge = ScreenPositionService.GetBottomEdge(Camera.main);
-            leftSpawnEdge = screenBottomEdge.x + 3;
-            rightSpawnEdge = ScreenPositionService.GetRightEdge(Camera.main).x;
             currentDifficultTime = timeToChangeDifficult;
             currentMaxAmountEnemies = amountEnemiesBaseLevel;
-            spawnedPositions = new Vector3[currentMaxAmountEnemies];
-            heavyEnemySpawnTime = intervalToSpawnHeavyEnemy;
+            spawnedPositions = new Vector3[gameMaxAmountEnemies];
         }
 
         private void Update()
@@ -92,9 +87,18 @@ namespace Assets.Scripts.Managers
             EnemyTypeEnum enemyTypeToSpawn = GetEnemyTypeToSpawn(currentLevelDifficult);
 
             //if enemy == heavy, check if there's already one in scene
-            if (hasSpawnedHeavyEnemy)
+            if (enemyTypeToSpawn == EnemyTypeEnum.Heavy)
             {
-                return;
+                //Spawn only one heavy at time
+                amountEnemiesToSpawn = 1;
+
+                //if it exceeds the max amount of heavy enemies in the scene we ignore the spawn of this enemy
+                if (currentAmountHeavyEnemyInScene + 1 > maxAmountHeavyEnemyInScene)
+                {
+                    return;
+                }
+
+                currentAmountHeavyEnemyInScene++;
             }
 
             InstantiateEnemiesFromPool(enemyTypeToSpawn.ToString(), amountEnemiesToSpawn);
@@ -122,45 +126,24 @@ namespace Assets.Scripts.Managers
             return amountValue;
         }
 
-        Vector3 GenerateUniquePositionToSpawn(int index)
-        {
-            Vector3 newPos = new Vector3(
-                RandomValueTool.GetRandomValue
-                (
-                    (int)ScreenPositionService.GetLeftEdge(Camera.main).x, (int)ScreenPositionService.GetRightEdge(Camera.main).x
-                ),
-                screenBottomEdge.y - RandomValueTool.GetRandomValue(5, 15));
-
-
-
-            for (int i = 0; i < spawnedPositions.Length; i++)
-            {
-                if (newPos == spawnedPositions[i])
-                {
-                    return GenerateUniquePositionToSpawn(index);
-                }
-            }
-
-            spawnedPositions[index] = newPos;
-            return newPos;
-        }
-
         void InstantiateEnemiesFromPool(string enemyType, int amountToSpawn)
         {
-
             int amountSpawned = 0;
 
             foreach (Transform enemy in enemyPool.transform)
             {
-                Vector3 newPos = GenerateUniquePositionToSpawn(amountToSpawn);
-
                 if (!enemy.gameObject.active && enemy.name.Contains(enemyType))
                 {
                     enemy.parent = null;
-                    enemy.position = newPos;
                     enemy.gameObject.SetActive(true);
-                    enemy.transform.FindChild("CollisionCheck").gameObject.SetActive(true);
 
+                    //set all child to active
+                    foreach (Transform item in enemy)
+                    {
+                        item.gameObject.SetActive(true);
+                    }
+
+                    enemy.GetComponent<IEnemySpawnInitialConfiguration>().SetInitialSpawnConfiguration();
                     amountSpawnedEnemies++;
                     amountSpawned++;
                 }

@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Constants;
 using Assets.Scripts.Controllers;
 using Assets.Scripts.Enums;
+using Assets.Scripts.Managers.Enemy;
 using UnityEngine;
 
 namespace Assets.Scripts.Managers
@@ -9,10 +10,12 @@ namespace Assets.Scripts.Managers
     {
         EnemyController enemyController;
         EnemySpawnerManager enemySpawnerManager;
+        EnemyPoolManager enemyPoolManager;
         Transform topCollider;
 
         private void Start()
         {
+            enemyPoolManager = GameObject.Find("EnemyPool").GetComponent<EnemyPoolManager>();
             enemyController = this.transform.parent.GetComponent<EnemyController>();
             enemySpawnerManager = GameObject.Find("EnemySpawner").GetComponent<EnemySpawnerManager>();
             topCollider = GameObject.Find("TopCollider").transform;
@@ -23,14 +26,7 @@ namespace Assets.Scripts.Managers
             //Has hit top collider, disable and send enemy to pool
             if (this.transform.position.y >= topCollider.position.y)
             {
-
-                if (this.gameObject.name.Contains(EnemyTypeEnum.Heavy.ToString()))
-                {
-                    enemySpawnerManager.hasSpawnedHeavyEnemy = false;
-                }
-
-				enemySpawnerManager.amountSpawnedEnemies--;
-                this.transform.parent.GetComponent<EnemyPositionManager>().SendObjectToPool();
+                enemyPoolManager.SendObjectToPool(this.transform.parent.gameObject);
             }
         }
 

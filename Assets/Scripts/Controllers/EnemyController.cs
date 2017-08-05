@@ -8,15 +8,16 @@ namespace Assets.Scripts.Controllers
         Rigidbody2D enemyRigidBody;
 
         public float horizontalDirection;
+        public float verticalDirection;
         public float minSpeed;
         public float maxSpeed;
 
         private void Start()
         {
             enemyRigidBody = GetComponent<Rigidbody2D>();
-            minSpeed = RandomValueTool.GetRandomFloatValue(minSpeed, maxSpeed);
+            SetRandomSpeed();
 
-            if(minSpeed == 0)
+            if (minSpeed == 0)
             {
                 minSpeed = maxSpeed;
             }
@@ -27,8 +28,13 @@ namespace Assets.Scripts.Controllers
 
         private void Update()
         {
-            MovementService.TranslateObjectVertically(this.gameObject, 1, minSpeed);
+            MovementService.TranslateObjectVertically(this.gameObject, verticalDirection, minSpeed);
             MovementService.TranslateObjectHorizontally(this.gameObject, horizontalDirection, minSpeed);
+        }
+
+        public void SetRandomSpeed()
+        {
+            minSpeed = RandomValueTool.GetRandomFloatValue(minSpeed, maxSpeed);
         }
     }
 }
