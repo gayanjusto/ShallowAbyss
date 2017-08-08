@@ -1,6 +1,6 @@
 ﻿namespace Assets.Scripts.Interfaces.Managers.Enemy
 {
-    public interface IEnemySpawnInitialConfiguration
+    public interface IEnemySpawnPositionInitialConfiguration
     {
         void SetInitialSpawnConfiguration();
     }

@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Dictionaries;
 using Assets.Scripts.Enums;
 using Assets.Scripts.Interfaces.Managers.Enemy;
+using Assets.Scripts.Managers.Enemy;
 using Assets.Scripts.Services;
 using Assets.Scripts.Tools;
 using System;
@@ -143,7 +144,8 @@ namespace Assets.Scripts.Managers
                         item.gameObject.SetActive(true);
                     }
 
-                    enemy.GetComponent<IEnemySpawnInitialConfiguration>().SetInitialSpawnConfiguration();
+                    enemy.GetComponent<IEnemySpawnPositionInitialConfiguration>().SetInitialSpawnConfiguration();
+                    enemy.GetComponent<EnemySpriteManager>().SetSpriteForBackgroundContext();
                     amountSpawnedEnemies++;
                     amountSpawned++;
                 }

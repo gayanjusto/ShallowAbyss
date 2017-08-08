@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Managers
 {
-    public class EnemyPositionManager : BaseEnemyPositionManager, IEnemySpawnInitialConfiguration
+    public class EnemyPositionManager : BaseEnemyPositionManager, IEnemySpawnPositionInitialConfiguration
     {
         public float leftOffset;
         public float rightOffset;

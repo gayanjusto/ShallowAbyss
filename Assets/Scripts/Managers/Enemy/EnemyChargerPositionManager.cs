@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Managers
 {
-    public class EnemyChargerPositionManager : BaseEnemyPositionManager, IEnemySpawnInitialConfiguration
+    public class EnemyChargerPositionManager : BaseEnemyPositionManager, IEnemySpawnPositionInitialConfiguration
     {
         public GameObject playerObj;
 

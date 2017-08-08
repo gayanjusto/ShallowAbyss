@@ -5,7 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class ScenesManager : MonoBehaviour
 {
-
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("MainMenu");

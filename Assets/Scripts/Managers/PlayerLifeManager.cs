@@ -16,8 +16,9 @@ namespace Assets.Scripts.Managers
         public Image gameOverPanel;
         public float lifeImageOffset_x;
         public ScoreCounterManager scoreCounterManager;
-        public ScoreManager scoreManager;
+        public PlayerStatusManager scoreManager;
 
+        const string gameOverImage = "gameOver.png";
 
         private void Start()
         {
@@ -42,62 +43,27 @@ namespace Assets.Scripts.Managers
         {
             if (canBeHit)
             {
-                lifes--;
+                //lifes--;
 
                 //Game Over
                 if (lifes == 0)
                 {
-                    string imageName = "gameOver.png";
-                    string screenShotPath = Application.persistentDataPath + "/" + imageName;
+                    string screenShotPath = Application.persistentDataPath + "/" + gameOverImage;
 
                     //Capture screenshot
-                    Application.CaptureScreenshot(screenShotPath);
+                    Application.CaptureScreenshot(gameOverImage);
 
                     //execute the below lines if being run on a Android device
 #if UNITY_ANDROID
-                    //instantiate the class Intent
-                    AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
-
-                    //instantiate the object Intent
-                    AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
-
-                    //call setAction setting ACTION_SEND as parameter
-                    intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
-
-                    //instantiate the class Uri
-                    AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
-
-                    ////instantiate the object Uri with the parse of the url's file
-                    //AndroidJavaObject fileObject = new AndroidJavaObject("java.io.File", "file://" + screenShotPath);
-                    //AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("fromFile", fileObject);
-                    AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + screenShotPath);
-                    //bool fileExist = fileObject.Call<bool>("exists");
-                    //Debug.Log("File exist : " + fileExist);
-                    // Attach image to intent
-                    // if (fileExist)
-                    //{
-                    //call putExtra with the uri object of the file
-                    intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
-                    //}
-
-                    //set the type of file
-                    intentObject.Call<AndroidJavaObject>("setType", "image/*");
-
-                    //instantiate the class UnityPlayer
-                    AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-
-                    //instantiate the object currentActivity
-                    AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
-
-                    //call the activity with our Intent
-                    currentActivity.Call("startActivity", intentObject);
+                    AndroidShareImage(screenShotPath);
 #endif
 
                     //Stop the score count
                     scoreCounterManager.enabled = false;
 
-                    //Save score
-                    scoreManager.SaveScore(scoreCounterManager.score);
+                    //Save player stats
+                    //Turn life and shield buffs equals zero after death
+                    scoreManager.SavePlayerStatus(scoreCounterManager.score,0,0);
 
                     gameOverPanel.gameObject.SetActive(true);
 
@@ -126,6 +92,46 @@ namespace Assets.Scripts.Managers
             canBeHit = false;
             yield return new WaitForSeconds(3);
             canBeHit = true;
+        }
+
+        void AndroidShareImage(string screenShotPath)
+        {
+            //instantiate the class Intent
+            AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
+
+            //instantiate the object Intent
+            AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
+
+            //call setAction setting ACTION_SEND as parameter
+            intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
+
+            //instantiate the class Uri
+            AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
+
+            ////instantiate the object Uri with the parse of the url's file
+            //AndroidJavaObject fileObject = new AndroidJavaObject("java.io.File", "file://" + screenShotPath);
+            //AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("fromFile", fileObject);
+            AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + screenShotPath);
+            //bool fileExist = fileObject.Call<bool>("exists");
+            //Debug.Log("File exist : " + fileExist);
+            // Attach image to intent
+            // if (fileExist)
+            //{
+            //call putExtra with the uri object of the file
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
+            //}
+
+            //set the type of file
+            intentObject.Call<AndroidJavaObject>("setType", "image/*");
+
+            //instantiate the class UnityPlayer
+            AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+
+            //instantiate the object currentActivity
+            AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
+
+            //call the activity with our Intent
+            currentActivity.Call("startActivity", intentObject);
         }
     }
 }
