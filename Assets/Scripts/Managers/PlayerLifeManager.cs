@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Entities.Player;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -10,18 +11,27 @@ namespace Assets.Scripts.Managers
     {
         public int lifes;
         public int maxLifes;
-        public bool canBeHit;
         public List<Image> lifeImages;
         public Image initialLifeImage;
         public Image gameOverPanel;
         public float lifeImageOffset_x;
         public ScoreCounterManager scoreCounterManager;
-        public PlayerStatusManager scoreManager;
+        public PlayerStatusManager playerStatusManager;
+        bool canBeHit;
 
         const string gameOverImage = "gameOver.png";
 
         private void Start()
         {
+            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+
+            //Player has bought life buffs?
+            if (playerData.lifeBuff > 0)
+            {
+                maxLifes += playerData.lifeBuff;
+                lifes += playerData.lifeBuff;
+            }
+
             lifeImages = new List<Image>();
             lifeImages.Add(initialLifeImage);
 
@@ -43,7 +53,7 @@ namespace Assets.Scripts.Managers
         {
             if (canBeHit)
             {
-                //lifes--;
+                lifes--;
 
                 //Game Over
                 if (lifes == 0)
@@ -54,16 +64,18 @@ namespace Assets.Scripts.Managers
                     Application.CaptureScreenshot(gameOverImage);
 
                     //execute the below lines if being run on a Android device
-#if UNITY_ANDROID
                     AndroidShareImage(screenShotPath);
-#endif
 
                     //Stop the score count
                     scoreCounterManager.enabled = false;
 
                     //Save player stats
                     //Turn life and shield buffs equals zero after death
-                    scoreManager.SavePlayerStatus(scoreCounterManager.score,0,0);
+                    PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+                    playerData.lifeBuff = 0;
+                    playerData.shieldBuff = 0;
+                    playerData.score += Mathf.FloorToInt(scoreCounterManager.score);
+                    playerStatusManager.SavePlayerStatus(playerData);
 
                     gameOverPanel.gameObject.SetActive(true);
 
@@ -87,6 +99,11 @@ namespace Assets.Scripts.Managers
 
         }
 
+        public bool CanBeHit()
+        {
+            return canBeHit;
+        }
+
         IEnumerator MakePlayerInvulnerable()
         {
             canBeHit = false;
@@ -96,6 +113,8 @@ namespace Assets.Scripts.Managers
 
         void AndroidShareImage(string screenShotPath)
         {
+#if UNITY_ANDROID
+
             //instantiate the class Intent
             AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
 
@@ -132,6 +151,8 @@ namespace Assets.Scripts.Managers
 
             //call the activity with our Intent
             currentActivity.Call("startActivity", intentObject);
+#endif
+
         }
     }
 }

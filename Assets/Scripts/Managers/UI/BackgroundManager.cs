@@ -21,14 +21,8 @@ namespace Assets.Scripts.Managers
         /// </summary>
         public GameObject background;
 
-        Vector3 screenTopEdge;
-
-        float backgroundSize_Y;
-
         private void Start()
         {
-            screenTopEdge = ScreenPositionService.GetTopEdge(Camera.main);
-
             StartCoroutine(SlideBackgroundDown());
         }
 

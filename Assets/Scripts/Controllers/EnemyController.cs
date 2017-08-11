@@ -5,7 +5,6 @@ namespace Assets.Scripts.Controllers
 {
     public class EnemyController : MonoBehaviour
     {
-        Rigidbody2D enemyRigidBody;
 
         public float horizontalDirection;
         public float verticalDirection;
@@ -14,7 +13,6 @@ namespace Assets.Scripts.Controllers
 
         private void Start()
         {
-            enemyRigidBody = GetComponent<Rigidbody2D>();
             SetRandomSpeed();
 
             if (minSpeed == 0)

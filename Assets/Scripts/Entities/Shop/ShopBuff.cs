@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Enums;
+﻿using Assets.Scripts.Entities.Player;
+using Assets.Scripts.Enums;
 using Assets.Scripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;

@@ -14,6 +14,11 @@ public class ScenesManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public void LoadShipSelection()
+    {
+        SceneManager.LoadScene("ShipSelector");
+    }
+
     public void LoadNewGame()
     {
         SceneManager.LoadScene("LabScene");

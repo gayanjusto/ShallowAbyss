@@ -8,16 +8,12 @@ namespace Assets.Scripts.Managers
 {
     public class EnemyCollisionCheckManager : MonoBehaviour
     {
-        EnemyController enemyController;
-        EnemySpawnerManager enemySpawnerManager;
         EnemyPoolManager enemyPoolManager;
         Transform topCollider;
 
         private void Start()
         {
             enemyPoolManager = GameObject.Find("EnemyPool").GetComponent<EnemyPoolManager>();
-            enemyController = this.transform.parent.GetComponent<EnemyController>();
-            enemySpawnerManager = GameObject.Find("EnemySpawner").GetComponent<EnemySpawnerManager>();
             topCollider = GameObject.Find("TopCollider").transform;
         }
 
@@ -34,7 +30,23 @@ namespace Assets.Scripts.Managers
         {
             if (collision.gameObject.tag == Tags.Player)
             {
-                collision.gameObject.GetComponent<PlayerLifeManager>().DecreaseLife();
+                PlayerCollisionManager playerCollisionManager = collision.gameObject.GetComponent<PlayerCollisionManager>();
+                PlayerShieldManager shieldManager = collision.gameObject.GetComponent<PlayerShieldManager>();
+
+                if (!playerCollisionManager.CanBeHit())
+                {
+                    return;
+                }
+
+                //If player has shield, decrease it instead of life
+                if (shieldManager.HasShield())
+                {
+                    shieldManager.DecreaseShield();
+                }
+                else
+                {
+                    collision.gameObject.GetComponent<PlayerLifeManager>().DecreaseLife();
+                }
             }
         }
     }

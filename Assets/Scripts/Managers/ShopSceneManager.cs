@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Entities;
+using Assets.Scripts.Entities.Player;
 using Assets.Scripts.Enums;
+using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Managers.Shop;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +9,10 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Managers
 {
-    public class ShopSceneManager : MonoBehaviour
+    public class ShopSceneManager : MonoBehaviour, IObjectSelector
     {
         public PlayerStatusManager playerStatusManager;
         public Text scoreAmount;
-        public Text selectedObjectText;
         public AlertMessageManager alertMessageManager;
 
         public int playerScore;
@@ -19,24 +20,29 @@ namespace Assets.Scripts.Managers
 
         public ShipCarousel selectedShip;
 
-        GameObject selectedObject;
-        ShopSelectedObjectEnum shopSelectedObjectEnum;
+        public Text SelectedObjectText { get; set; }
+        public GameObject SelectedObject { get; set; }
+        public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
 
         public string notEnoughMoneyMsg;
         public string shipAlreadyBoughtMsg;
 
         private void Start()
         {
+            SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
+
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
             playerScore = playerData.score;
             scoreAmount.text = playerScore.ToString();
+
+            shipsCarouselManager.LoadAllShipsInCarousel();
         }
 
         public void SetSelectedObject(ShopSelectedObjectEnum selectedObj, GameObject selectedGameObj, string objectName)
         {
-            this.shopSelectedObjectEnum = selectedObj;
-            this.selectedObject = selectedGameObj;
-            this.selectedObjectText.text = objectName;
+            this.ShopSelectedObjectEnum = selectedObj;
+            this.SelectedObject = selectedGameObj;
+            this.SelectedObjectText.text = objectName;
         }
 
         void BuyShip()
@@ -63,7 +69,7 @@ namespace Assets.Scripts.Managers
                 shipsCarouselManager.DisableShipButtonClick(selectedShip.gameObject);
 
                 //Clean data
-                shopSelectedObjectEnum = ShopSelectedObjectEnum.None;
+                ShopSelectedObjectEnum = ShopSelectedObjectEnum.None;
                 selectedShip = null;
             }
             else
@@ -75,17 +81,17 @@ namespace Assets.Scripts.Managers
 
         public void BuySelectedObject()
         {
-            if (shopSelectedObjectEnum == ShopSelectedObjectEnum.Ship)
+            if (ShopSelectedObjectEnum == ShopSelectedObjectEnum.Ship)
             {
-                selectedShip = selectedObject.GetComponent<ShipCarousel>();
+                selectedShip = SelectedObject.GetComponent<ShipCarousel>();
                 BuyShip();
                 return;
             }
 
-            if (shopSelectedObjectEnum != ShopSelectedObjectEnum.None)
+            if (ShopSelectedObjectEnum != ShopSelectedObjectEnum.None)
             {
-                ShopBuff buff = selectedObject.GetComponent<ShopBuff>();
-                BuyBuff(shopSelectedObjectEnum, buff);
+                ShopBuff buff = SelectedObject.GetComponent<ShopBuff>();
+                BuyBuff(ShopSelectedObjectEnum, buff);
             }
         }
 

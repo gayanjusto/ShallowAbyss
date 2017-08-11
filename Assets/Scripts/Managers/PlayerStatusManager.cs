@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Entities.Player;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,6 +10,20 @@ namespace Assets.Scripts.Managers
     public class PlayerStatusManager : MonoBehaviour
     {
         const string scoreFilePath = "/playerscore.dat";
+        public static PlayerStatusManager instance;
+
+        private void Awake()
+        {
+            if (instance)
+            {
+                DestroyImmediate(gameObject);
+            }
+            else
+            {
+                DontDestroyOnLoad(this);
+                instance = this;
+            }
+        }
 
         public void SavePlayerStatus(float score, int lifeBuff, int shieldBuff)
         {
@@ -43,33 +58,28 @@ namespace Assets.Scripts.Managers
 
         public PlayerStatusData LoadPlayerStatus()
         {
+            PlayerStatusData playerData = new PlayerStatusData(0, 0, 0);
             if (File.Exists(Application.persistentDataPath + scoreFilePath))
             {
                 BinaryFormatter bf = new BinaryFormatter();
                 FileStream fileStream = File.Open(Application.persistentDataPath + scoreFilePath, FileMode.Open);
-                PlayerStatusData playerData = (PlayerStatusData)bf.Deserialize(fileStream);
+                playerData = (PlayerStatusData)bf.Deserialize(fileStream);
                 fileStream.Close();
                 return playerData;
             }
+            else
+            {
+                playerData.shipsOwnedIds = new List<int>();
 
-            return new PlayerStatusData(0,0,0);
+                //player always owns the first ship by default
+                playerData.shipsOwnedIds.Add(1);
+
+                SavePlayerStatus(playerData);
+            }
+
+            return playerData;
         }
     }
 
-    [Serializable]
-    public class PlayerStatusData
-    {
-        public PlayerStatusData(int score, int lifeBuff, int shieldBuff)
-        {
-            this.score = score;
-            this.lifeBuff = lifeBuff;
-            this.shieldBuff = shieldBuff;
-            this.shipsOwnedIds = new List<int>();
-        }
-     
-        public int score;
-        public int lifeBuff;
-        public int shieldBuff;
-        public List<int> shipsOwnedIds;
-    }
+
 }

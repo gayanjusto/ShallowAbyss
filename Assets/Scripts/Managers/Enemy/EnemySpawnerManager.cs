@@ -26,16 +26,11 @@ namespace Assets.Scripts.Managers
         public int currentAmountHeavyEnemyInScene;
 
 
-        Vector3[] spawnedPositions;
-        ScoreCounterManager scoreManager;
 
         private void Start()
         {
-            scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreCounterManager>();
-
             currentDifficultTime = timeToChangeDifficult;
             currentMaxAmountEnemies = amountEnemiesBaseLevel;
-            spawnedPositions = new Vector3[gameMaxAmountEnemies];
         }
 
         private void Update()

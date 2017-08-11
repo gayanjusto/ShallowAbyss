@@ -17,7 +17,6 @@ namespace Assets.Scripts.Managers
         void SetCollidersSize()
         {
             var horizontalCollidersWidth = 4 * Camera.main.orthographicSize;
-            var verticalCollidersWidth = horizontalCollidersWidth * Camera.main.aspect;
 
             //Set horizontal colliders scale
             topCollider.GetComponent<BoxCollider2D>().size = new Vector2(horizontalCollidersWidth, 1);
