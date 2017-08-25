@@ -11,10 +11,24 @@ namespace Assets.Scripts.Managers
         private void Update()
         {
             score += Time.deltaTime;
+            UpdateScore();
+        }
 
+        public void DecreaseScore()
+        {
+            score--;
             uiText.text = string.Format("Score: {0}", Mathf.Floor(score));
         }
 
-    
+        public void ZeroScore()
+        {
+            this.score = 0;
+            UpdateScore();
+        }
+
+        void UpdateScore()
+        {
+            uiText.text = string.Format("Score: {0}", Mathf.Floor(score));
+        }
     }
 }

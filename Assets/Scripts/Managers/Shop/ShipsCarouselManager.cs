@@ -32,7 +32,7 @@ namespace Assets.Scripts.Managers.Shop
             return ships;
         }
 
-        void PlotShipsIntoCarousel(GameObject[] ships)
+        void PlotShipsIntoCarousel(GameObject[] ships, bool displayPriceTag)
         {
             RectTransform containerRT = containerCarousel.GetComponent<RectTransform>();
             float containerHeight = containerRT.sizeDelta.y;
@@ -44,6 +44,12 @@ namespace Assets.Scripts.Managers.Shop
             {
                 currentOffset_X += shipsOffset_X;
                 GameObject shipInstance = Instantiate(ships[i]);
+
+                if (!displayPriceTag)
+                {
+                    shipInstance.transform.FindChild("PriceTag").gameObject.SetActive(false);
+                }
+
                 shipInstance.transform.SetParent(containerCarousel.transform);
                 RectTransform shipRT = shipInstance.GetComponent<RectTransform>();
                 shipRT.anchoredPosition = new Vector2(currentOffset_X, shipPosition_Y);
@@ -73,20 +79,20 @@ namespace Assets.Scripts.Managers.Shop
             }
         }
 
-        public void LoadAllShipsInCarousel()
+        public void LoadAllShipsInCarousel(bool displayPriceTag)
         {
             GameObject[] ships = GetAllShipsFromPrefabList();
-            PlotShipsIntoCarousel(ships);
+            PlotShipsIntoCarousel(ships, displayPriceTag);
             DisableOwnedShips();
         }
 
-        public void LoadOwnedShips()
+        public void LoadOwnedShips(bool displayPriceTag)
         {
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
             GameObject[] ships = GetAllShipsFromPrefabList();
             GameObject[] filteredList = ships.Where(x =>
             playerData.shipsOwnedIds.Contains(x.GetComponent<ShipCarousel>().shipId)).ToArray();
-            PlotShipsIntoCarousel(filteredList);
+            PlotShipsIntoCarousel(filteredList, displayPriceTag);
         }
 
         public void HideNotOwnedShips()

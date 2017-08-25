@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Entities.Player;
+﻿using Assets.Scripts.DAO;
+using Assets.Scripts.Entities.Player;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ namespace Assets.Scripts.Managers
 {
     public class PlayerStatusManager : MonoBehaviour
     {
-        const string scoreFilePath = "/playerscore.dat";
+        const string playerDataFilePath = "/playerscore.dat";
         public static PlayerStatusManager instance;
 
         private void Awake()
@@ -32,7 +33,7 @@ namespace Assets.Scripts.Managers
             //Load currentScore with previously saved score
             PlayerStatusData playerData = LoadPlayerStatus();
 
-            FileStream fileStream = File.Open(Application.persistentDataPath + scoreFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            FileStream fileStream = File.Open(Application.persistentDataPath + playerDataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
             PlayerStatusData scoreData = new PlayerStatusData(Mathf.FloorToInt(score), lifeBuff, shieldBuff);
 
@@ -49,7 +50,7 @@ namespace Assets.Scripts.Managers
 
             //Load currentScore with previously saved score
 
-            FileStream fileStream = File.Open(Application.persistentDataPath + scoreFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            FileStream fileStream = File.Open(Application.persistentDataPath + playerDataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
             bf.Serialize(fileStream, playerStatusData);
 
@@ -58,26 +59,28 @@ namespace Assets.Scripts.Managers
 
         public PlayerStatusData LoadPlayerStatus()
         {
-            PlayerStatusData playerData = new PlayerStatusData(0, 0, 0);
-            if (File.Exists(Application.persistentDataPath + scoreFilePath))
+
+            var appDataReader = new ApplicationDataReader<PlayerStatusData>();
+            var loadedPlayerData = appDataReader.LoadPlayerStatus(playerDataFilePath);
+
+            if (loadedPlayerData != null)
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream fileStream = File.Open(Application.persistentDataPath + scoreFilePath, FileMode.Open);
-                playerData = (PlayerStatusData)bf.Deserialize(fileStream);
-                fileStream.Close();
-                return playerData;
+                return loadedPlayerData;
             }
             else
             {
+                PlayerStatusData playerData = new PlayerStatusData(0, 0, 0);
+
                 playerData.shipsOwnedIds = new List<int>();
 
                 //player always owns the first ship by default
                 playerData.shipsOwnedIds.Add(1);
 
+                appDataReader.SaveData(playerData, playerDataFilePath);
                 SavePlayerStatus(playerData);
-            }
 
-            return playerData;
+                return playerData;
+            }
         }
     }
 

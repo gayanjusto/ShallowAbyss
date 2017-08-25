@@ -1,14 +1,10 @@
-﻿using System;
-using Assets.Scripts.Enums;
+﻿using Assets.Scripts.Enums;
 using Assets.Scripts.Interfaces.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts.Managers.Shop;
 using Assets.Scripts.Entities;
 using Assets.Scripts.Entities.Player;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using UnityEditor;
 
 namespace Assets.Scripts.Managers
 {
@@ -18,13 +14,13 @@ namespace Assets.Scripts.Managers
         public Text SelectedObjectText { get; set; }
         public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
         public ShipsCarouselManager shipsCarouselManager;
-        public ShipCarousel selectedShip;
+        ShipCarousel selectedShip;
 
         private void Start()
         {
 
             SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
-            shipsCarouselManager.LoadOwnedShips();
+            shipsCarouselManager.LoadOwnedShips(false);
 
             selectedShip = shipsCarouselManager.GetDefaultShip();
         }
@@ -34,9 +30,11 @@ namespace Assets.Scripts.Managers
             this.ShopSelectedObjectEnum = selectedObj;
             this.SelectedObject = selectedGameObj;
             this.SelectedObjectText.text = objectName;
+
+            selectedShip = this.SelectedObject.GetComponent<ShipCarousel>();
         }
 
-        public void StartNewGame()
+        public void DefineShip()
         {
             PlayerStatusManager playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
             PlayerStatusData playerdata = playerStatusManager.LoadPlayerStatus();

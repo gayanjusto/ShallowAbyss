@@ -21,24 +21,38 @@ namespace Assets.Scripts.Managers.Enemy
         string resourcesPath;
         private void Awake()
         {
-            backgroundManager =  GameObject.Find("BackgroundManager").GetComponent<BackgroundManager>();
+            backgroundManager = GameObject.Find("BackgroundManager").GetComponent<BackgroundManager>();
             objectSpriteRenderer = GetComponent<SpriteRenderer>();
             resourcesPath = string.Format("Sprites/{0}/", enemyResourcesFolder);
         }
 
         public void SetSpriteForBackgroundContext()
         {
-            if(backgroundManager.currentBackgroundLevel < maxAmountSprites)
+            if (backgroundManager.currentBackgroundLevel < maxAmountSprites)
             {
-                currentMaxSpriteModel = backgroundManager.currentBackgroundLevel;
-            }else
+                currentMaxSpriteModel = backgroundManager.currentBackgroundLevel + 1;
+            }
+            else
             {
                 currentMaxSpriteModel = maxAmountSprites;
             }
 
-            int spriteValue = UnityEngine.Random.Range(0, currentMaxSpriteModel);
-            //int spriteValue = RandomValueTool.GetRandomValue(0, currentMaxSpriteModel * 10);
-            objectSpriteRenderer.sprite = Resources.Load<Sprite>(string.Format("{0}{1}", resourcesPath, spriteValue));
+            int fraction = 100 / currentMaxSpriteModel;
+            int minVal = 0;
+            int maxVal = fraction;
+
+            int spriteValueRange = UnityEngine.Random.Range(0, 100);
+
+            for (int spriteValue = 0; spriteValue < currentMaxSpriteModel; spriteValue++)
+            {
+                if (spriteValueRange >= minVal && spriteValueRange < maxVal)
+                {
+                    objectSpriteRenderer.sprite = Resources.Load<Sprite>(string.Format("{0}{1}", resourcesPath, spriteValue));
+                }
+
+                minVal += fraction;
+                maxVal += fraction;
+            }
         }
     }
 }

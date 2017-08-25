@@ -35,7 +35,7 @@ namespace Assets.Scripts.Managers
             playerScore = playerData.score;
             scoreAmount.text = playerScore.ToString();
 
-            shipsCarouselManager.LoadAllShipsInCarousel();
+            shipsCarouselManager.LoadAllShipsInCarousel(true);
         }
 
         public void SetSelectedObject(ShopSelectedObjectEnum selectedObj, GameObject selectedGameObj, string objectName)
@@ -48,9 +48,10 @@ namespace Assets.Scripts.Managers
         void BuyShip()
         {
             //Player has enough money?
-            if (PlayerHasEnoughFundsToBuy(selectedShip.shipPrice))
+            if (!PlayerHasEnoughFundsToBuy(selectedShip.shipPrice))
             {
-                //return message and prevent buying
+                alertMessageManager.SetAlertMessage(notEnoughMoneyMsg);
+                return;
             }
 
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();

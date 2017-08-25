@@ -7,6 +7,7 @@ namespace Assets.Scripts.Managers
     public class PlayerShipManager : MonoBehaviour
     {
         public SpriteRenderer shipRenderer;
+        const string defaultShipSprite = "Sprites/Standard Enemy Sprites/0";
 
         private void Start()
         {
@@ -16,6 +17,10 @@ namespace Assets.Scripts.Managers
 
             Sprite loadedShipSprite = Resources.Load<Sprite>(playerData.shipSpritePath);
 
+            if(loadedShipSprite == null)
+            {
+                loadedShipSprite = Resources.Load<Sprite>(defaultShipSprite);
+            }
             shipRenderer.sprite = loadedShipSprite;
         }
 

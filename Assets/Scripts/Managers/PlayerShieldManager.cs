@@ -25,7 +25,7 @@ namespace Assets.Scripts.Managers
             initialLifeImage = GetComponent<PlayerLifeManager>().initialLifeImage;
             float shieldImageOffset_x = playerLifeManager.lifeImageOffset_x;
             PlayerStatusData playerData = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>().LoadPlayerStatus();
-            amountShields = 3;// playerData.shieldBuff;
+            amountShields =  playerData.shieldBuff;
 
             shieldsImages = new List<Image>();
 

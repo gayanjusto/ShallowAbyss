@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.Enums;
 using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

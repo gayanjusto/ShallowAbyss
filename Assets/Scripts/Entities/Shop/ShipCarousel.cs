@@ -13,18 +13,28 @@ namespace Assets.Scripts.Entities
         public int shipPrice;
         public int shipId;
         public string shipSpritePath;
+        public Text priceTag;
 
         Text ui_shipDescription;
         ObjectSelectorManager objectSelectorManager;
 
         private void Start()
         {
+            priceTag.text = string.Format("$ {0}", shipPrice);
             objectSelectorManager = GameObject.Find("ObjectSelectorManager").GetComponent<ObjectSelectorManager>();
             ui_shipDescription = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
 
-            var child = this.transform.FindChild("ShipButton");
-            var cmp = child.gameObject.GetComponent<Image>();
-            cmp.sprite = shipImage;
+            try
+            {
+                var child = this.transform.FindChild("ShipButton");
+                var cmp = child.gameObject.GetComponentInChildren<Image>();
+                cmp.sprite = shipImage;
+            }
+            catch 
+            {
+                Debug.Log("Image component error");
+            }
+        
         }
 
         public void SelectShip()
