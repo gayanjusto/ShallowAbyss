@@ -16,6 +16,8 @@ namespace Assets.Scripts.Managers
         public Text gameOverScoreText;
         public Button adsButton;
 
+        public Button pauseButton;
+
         public bool gameHasFinished;
         public int gameOverScore;
         const string gameOverImage = "gameOver.png";
@@ -57,6 +59,7 @@ namespace Assets.Scripts.Managers
 
         public void SetGameOver(int finalScore)
         {
+            pauseButton.gameObject.SetActive(false);
             adsButton.gameObject.SetActive(adsManager.WillShowAdsButton());
             gameOverPanel.gameObject.SetActive(true);
             StartScoreCountDown(finalScore);

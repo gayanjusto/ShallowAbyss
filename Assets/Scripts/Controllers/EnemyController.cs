@@ -11,8 +11,11 @@ namespace Assets.Scripts.Controllers
         public float minSpeed;
         public float maxSpeed;
 
+        SpriteRenderer spriteRenderer;
+
         private void Start()
         {
+            spriteRenderer = GetComponent<SpriteRenderer>();
             SetRandomSpeed();
 
             if (minSpeed == 0)
@@ -28,11 +31,25 @@ namespace Assets.Scripts.Controllers
         {
             MovementService.TranslateObjectVertically(this.gameObject, verticalDirection, minSpeed);
             MovementService.TranslateObjectHorizontally(this.gameObject, horizontalDirection, minSpeed);
+
+            SetSpriteDirection();
         }
 
         public void SetRandomSpeed()
         {
             minSpeed = RandomValueTool.GetRandomFloatValue(minSpeed, maxSpeed);
+        }
+
+        void SetSpriteDirection()
+        {
+            //moving to the left
+            if(horizontalDirection == -1)
+            {
+                spriteRenderer.flipX = true;
+            }else
+            {
+                spriteRenderer.flipX = false;
+            }
         }
     }
 }

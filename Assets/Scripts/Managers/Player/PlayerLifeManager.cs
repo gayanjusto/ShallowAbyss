@@ -72,21 +72,15 @@ namespace Assets.Scripts.Managers
                     playerStatusManager.SavePlayerStatus(playerData);
 
                     gameOverManager.SetGameOver(finalScore);
+                    DeduceLifeIcon();
                     DisablePlayer();
                 }
 
-                for (int i = lifeImages.Count - 1; i > 0; i--)
-                {
-                    if (lifeImages[i].IsActive())
-                    {
-                        lifeImages[i].gameObject.SetActive(false);
-                        break;
-                    }
-                }
 
+                DeduceLifeIcon();
 
                 //Make player invulnerable for few seconds
-                StartCoroutine(MakePlayerInvulnerable());
+                SetPlayerInvulnerable();
 
                 //FlashPlayerWhileInvulnerable
                 if (lifes > 0)
@@ -97,11 +91,26 @@ namespace Assets.Scripts.Managers
 
         }
 
+        void DeduceLifeIcon()
+        {
+            for (int i = lifeImages.Count - 1; i >= 0; i--)
+            {
+                if (lifeImages[i].IsActive())
+                {
+                    lifeImages[i].gameObject.SetActive(false);
+                    break;
+                }
+            }
+        }
         public bool CanBeHit()
         {
             return canBeHit;
         }
 
+        public void SetPlayerInvulnerable()
+        {
+            StartCoroutine(MakePlayerInvulnerable());
+        }
         IEnumerator MakePlayerInvulnerable()
         {
             canBeHit = false;

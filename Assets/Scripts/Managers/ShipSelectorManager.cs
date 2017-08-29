@@ -5,10 +5,13 @@ using UnityEngine.UI;
 using Assets.Scripts.Managers.Shop;
 using Assets.Scripts.Entities;
 using Assets.Scripts.Entities.Player;
+using System;
+using Assets.Scripts.Entities.Internationalization;
+using Assets.Scripts.Services;
 
 namespace Assets.Scripts.Managers
 {
-    public class ShipSelectorManager : MonoBehaviour, IObjectSelector
+    public class ShipSelectorManager : MonoBehaviour, IObjectSelector, ILanguageUI
     {
         public GameObject SelectedObject { get; set; }
         public Text SelectedObjectText { get; set; }
@@ -16,9 +19,13 @@ namespace Assets.Scripts.Managers
         public ShipsCarouselManager shipsCarouselManager;
         ShipCarousel selectedShip;
 
+        public Text subSelectorTitle;
+        public Text returnBtnText;
+        public Text goText;
+
         private void Start()
         {
-
+            LoadTextsLanguage();
             SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
             shipsCarouselManager.LoadOwnedShips(false);
 
@@ -45,6 +52,17 @@ namespace Assets.Scripts.Managers
             playerStatusManager.SavePlayerStatus(playerdata);
 
             GameObject.Find("SceneManager").GetComponent<ScenesManager>().LoadNewGame();
+        }
+
+        public void LoadTextsLanguage()
+        {
+            LanguageDictionary ld = LanguageService.GetLanguageDictionary();
+            if (ld.isLoaded)
+            {
+                subSelectorTitle.text = ld.chooseSubTitle;
+                returnBtnText.text = ld.returnMsg;
+                goText.text = ld.go;
+            }
         }
     }
 }

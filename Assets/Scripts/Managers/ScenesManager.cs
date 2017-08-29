@@ -34,6 +34,10 @@ public class ScenesManager : MonoBehaviour
         SceneManager.LoadScene("Shop");
     }
 
+    public void LoadLanguageMenu()
+    {
+        SceneManager.LoadScene("LanguageSelection");
+    }
 
     public void Quit()
     {

@@ -1,0 +1,18 @@
+﻿{
+  "newGameMainMenu": "Novo Jogo",
+  "selectSubMainMenu": "Escolher Submarino",
+  "shopMainMenu": "Loja",
+  "selectLanguageMainMenu": "Escolher Idioma",
+  "quitMainMenu": "Sair",
+  "returnMsg": "Voltar",
+  "buy": "Comprar",
+  "notEnoughFundsShop": "Sem créditos suficientes!",
+  "subAlreadyBoughtShop": "Submarino já comprado!",
+  "continueMsg": "Continuar",
+  "mainMenu": "Menu Principal",
+  "pausedTitle":  "Jogo Pausado",
+  "share": "Compartilhar",
+  "watchAds": "Assistir Vídeo",
+  "chooseSubTitle": "Escolha Seu Submarino",
+  "go":  "Vai!"
+}

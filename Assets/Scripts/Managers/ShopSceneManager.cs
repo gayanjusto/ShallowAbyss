@@ -6,10 +6,13 @@ using Assets.Scripts.Managers.Shop;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using Assets.Scripts.Services;
+using Assets.Scripts.Entities.Internationalization;
 
 namespace Assets.Scripts.Managers
 {
-    public class ShopSceneManager : MonoBehaviour, IObjectSelector
+    public class ShopSceneManager : MonoBehaviour, IObjectSelector, ILanguageUI
     {
         public PlayerStatusManager playerStatusManager;
         public Text scoreAmount;
@@ -25,10 +28,14 @@ namespace Assets.Scripts.Managers
         public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
 
         public string notEnoughMoneyMsg;
-        public string shipAlreadyBoughtMsg;
+        public string subAlreadyBoughtMsg;
+
+        public Text returnBtnText;
+        public Text buyBtnText;
 
         private void Start()
         {
+            LoadTextsLanguage();
             SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
 
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
@@ -75,7 +82,7 @@ namespace Assets.Scripts.Managers
             }
             else
             {
-                alertMessageManager.SetAlertMessage(shipAlreadyBoughtMsg);
+                alertMessageManager.SetAlertMessage(subAlreadyBoughtMsg);
             }
 
         }
@@ -132,6 +139,18 @@ namespace Assets.Scripts.Managers
         bool PlayerHasEnoughFundsToBuy(int price)
         {
             return playerScore - price > 0;
+        }
+
+        public void LoadTextsLanguage()
+        {
+            LanguageDictionary ld = LanguageService.GetLanguageDictionary();
+            if (ld.isLoaded)
+            {
+                returnBtnText.text = ld.returnMsg;
+                buyBtnText.text = ld.buy;
+                notEnoughMoneyMsg = ld.notEnoughFundsShop;
+                subAlreadyBoughtMsg = ld.subAlreadyBoughtShop;
+            }
         }
     }
 }

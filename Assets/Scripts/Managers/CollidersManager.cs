@@ -29,8 +29,8 @@ namespace Assets.Scripts.Managers
             Vector3 topMiddle = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height, 0));
             Vector3 bottomMiddle = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, 0));
 
-            //Set top collider off screen. Once player colliders with it, it's game over man!
             //If an enemy colliders with it, it goes to the enemy pool
+            //Set bottom collider off screen. Once player colliders with it, it's game over man!
             topCollider.transform.position = new Vector3(topMiddle.x, topMiddle.y + 3);
 
             bottomCollider.transform.position = bottomMiddle;

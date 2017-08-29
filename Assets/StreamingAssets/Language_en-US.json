@@ -1,0 +1,18 @@
+﻿{
+  "newGameMainMenu": "New Game",
+  "selectSubMainMenu": "Select Sub",
+  "shopMainMenu": "Shop",
+  "selectLanguageMainMenu": "Select Language",
+  "quitMainMenu": "Quit",
+  "returnMsg": "Return",
+  "buy": "Buy",
+  "notEnoughFundsShop": "Not enough funds!",
+  "subAlreadyBoughtShop": "Submarine already bought",
+  "continueMsg": "Continue",
+  "mainMenu": "Main Menu",
+  "pausedTitle":  "Game Paused",
+  "share": "Share",
+  "watchAds": "Watch Ads",
+  "chooseSubTitle": "Choose Your Sub",
+  "go":  "Go!"
+}
