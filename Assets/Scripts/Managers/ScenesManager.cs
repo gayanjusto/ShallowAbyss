@@ -39,6 +39,11 @@ public class ScenesManager : MonoBehaviour
         SceneManager.LoadScene("LanguageSelection");
     }
 
+    public void LoadJackpot()
+    {
+        SceneManager.LoadScene("Jackpot");
+    }
+
     public void Quit()
     {
         Application.Quit();

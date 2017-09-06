@@ -21,6 +21,7 @@ namespace Assets.Scripts.Managers.Shop
                     alertText.text = string.Empty;
                     currentTickTime = 0;
                     hasMessage = false;
+                    transform.parent.gameObject.SetActive(false);
                 }
             }
           
@@ -28,6 +29,7 @@ namespace Assets.Scripts.Managers.Shop
 
         public void SetAlertMessage(string msg)
         {
+            transform.parent.gameObject.SetActive(true);
             alertText.text = msg;
             hasMessage = true;
         }

@@ -9,16 +9,12 @@ namespace Assets.Scripts.Managers.Ads
     public class AdsManager : MonoBehaviour
     {
         public GameOverManager gameOverManager;
+        public GameObject watchAdsBtn;
         [SerializeField]
         string gameId = "1487925";
 
         public void InitializeAd()
         {
-            if(Application.internetReachability == NetworkReachability.NotReachable)
-            {
-                Debug.Log("No internet connection");
-                return;
-            }
 
             Advertisement.Initialize(gameId, true);
 
@@ -36,7 +32,10 @@ namespace Assets.Scripts.Managers.Ads
 
         public bool WillShowAdsButton()
         {
-            return true;
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                return false;
+            }
             int value = RandomValueTool.GetRandomValue(0, 100);
 
             return value >= 75;
@@ -47,6 +46,7 @@ namespace Assets.Scripts.Managers.Ads
             if(result == ShowResult.Finished)
             {
                 gameOverManager.GiveAdsPrize();
+                watchAdsBtn.SetActive(false);
                 return;
             }
 

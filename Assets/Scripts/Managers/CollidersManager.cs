@@ -5,8 +5,8 @@ namespace Assets.Scripts.Managers
     public class CollidersManager : MonoBehaviour
     {
         //Horizontal Colliders
+        public GameObject screenBottomCollider;
         public GameObject topCollider;
-        public GameObject bottomCollider;
 
         private void Awake()
         {
@@ -19,8 +19,10 @@ namespace Assets.Scripts.Managers
             var horizontalCollidersWidth = 4 * Camera.main.orthographicSize;
 
             //Set horizontal colliders scale
-            topCollider.GetComponent<BoxCollider2D>().size = new Vector2(horizontalCollidersWidth, 1);
-            bottomCollider.GetComponent<BoxCollider2D>().size = new Vector2(horizontalCollidersWidth, 1);
+            Vector2 scaleSize = new Vector2(horizontalCollidersWidth, 1);
+
+            topCollider.GetComponent<BoxCollider2D>().size = scaleSize;
+            screenBottomCollider.GetComponent<BoxCollider2D>().size = scaleSize;
         }
 
         void SetCollidersPosition()
@@ -33,7 +35,7 @@ namespace Assets.Scripts.Managers
             //Set bottom collider off screen. Once player colliders with it, it's game over man!
             topCollider.transform.position = new Vector3(topMiddle.x, topMiddle.y + 3);
 
-            bottomCollider.transform.position = bottomMiddle;
+            screenBottomCollider.transform.position = bottomMiddle;
         }
     }
 }

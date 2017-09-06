@@ -72,7 +72,7 @@ namespace Assets.Scripts.Managers.Shop
             foreach (var shipInstance in shipsInstance)
             {
                 //if player has already bought this ship, disable its button
-                if (playerData.shipsOwnedIds.Contains(shipInstance.GetComponent<ShipCarousel>().shipId))
+                if (playerData.GetOwnedShipsIDs().Contains(shipInstance.GetComponent<ShipCarousel>().shipId))
                 {
                     DisableShipButtonClick(shipInstance);
                 }
@@ -91,14 +91,14 @@ namespace Assets.Scripts.Managers.Shop
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
             GameObject[] ships = GetAllShipsFromPrefabList();
             GameObject[] filteredList = ships.Where(x =>
-            playerData.shipsOwnedIds.Contains(x.GetComponent<ShipCarousel>().shipId)).ToArray();
+            playerData.GetOwnedShipsIDs().Contains(x.GetComponent<ShipCarousel>().shipId)).ToArray();
             PlotShipsIntoCarousel(filteredList, displayPriceTag);
         }
 
         public void HideNotOwnedShips()
         {
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
-            List<int> ownedShipsIDs = playerData.shipsOwnedIds;
+            List<int> ownedShipsIDs = playerData.GetOwnedShipsIDs();
 
             foreach (var shipInstance in shipsInstance)
             {

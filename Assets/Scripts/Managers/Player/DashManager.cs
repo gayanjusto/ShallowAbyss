@@ -9,6 +9,7 @@ namespace Assets.Scripts.Managers
         public SpriteRenderer spriteRenderer;
         public PlayerMovementInputController playerMovementInputController;
 
+        public GameObject dashParticleGameObject;
         public ParticleSystem dashParticle;
         public Slider dashSlider;
         public GameObject dashBtn;
@@ -16,13 +17,22 @@ namespace Assets.Scripts.Managers
         public float dashCoolDownTime;
         float dashCoolDownTickTime;
 
+        public float dashBoost;
         public float dashDuration;
         float dashDurationTickTime;
 
         bool isDashing;
-        bool hasUsedDash;
         bool isCoolingDownDash;
 
+        void Start()
+        {
+            int dashUpgrades = PlayerStatusManager.PlayerDataInstance.GetDashUpgrade();
+
+            if (dashUpgrades > 0)
+            {
+                dashDuration *= dashUpgrades;
+            }
+        }
         void Update()
         {
             //Check if dash is cooling down or cooldown time is up
@@ -53,7 +63,6 @@ namespace Assets.Scripts.Managers
                 dashBtn.gameObject.SetActive(true);
 
                 isCoolingDownDash = false;
-                hasUsedDash = false;
                 dashCoolDownTickTime = 0;
             }
         }
@@ -71,10 +80,13 @@ namespace Assets.Scripts.Managers
             if (dashDurationTickTime >= dashDuration)
             {
                 isCoolingDownDash = true;
-                playerMovementInputController.mov_buff_value = 1;
+                playerMovementInputController.mov_boost_value = 1;
 
                 dashDurationTickTime = 0;
                 isDashing = false;
+                dashParticleGameObject.SetActive(false);
+
+
                 GetComponent<Collider2D>().enabled = true;
                 Color originalColor = spriteRenderer.color;
                 spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
@@ -83,13 +95,13 @@ namespace Assets.Scripts.Managers
 
         public void Dash()
         {
-            playerMovementInputController.mov_buff_value = 3;
+            playerMovementInputController.mov_boost_value = dashBoost;
             isDashing = true;
             playerLifeManager.SetPlayerInvulnerable();
             GetComponent<Collider2D>().enabled = false;
-            hasUsedDash = true;
 
             dashBtn.gameObject.SetActive(false);
+            dashParticleGameObject.SetActive(true);
 
             //set player transparent
             Color originalColor = spriteRenderer.color;
@@ -98,4 +110,3 @@ namespace Assets.Scripts.Managers
         }
     }
 }
- 

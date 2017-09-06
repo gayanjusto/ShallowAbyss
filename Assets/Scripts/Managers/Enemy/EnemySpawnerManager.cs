@@ -26,9 +26,12 @@ namespace Assets.Scripts.Managers
         public int currentAmountHeavyEnemyInScene;
 
 
+        int maxEnemiesTypes;
 
         private void Start()
         {
+            maxEnemiesTypes = (Enum.GetValues(typeof(EnemyTypeEnum)) as EnemyTypeEnum[]).Length - 1;
+
             currentDifficultTime = timeToChangeDifficult;
             currentMaxAmountEnemies = amountEnemiesBaseLevel;
         }
@@ -103,7 +106,6 @@ namespace Assets.Scripts.Managers
         EnemyTypeEnum GetEnemyTypeToSpawn(int currentDifficult)
         {
             //get enemy type
-            int maxEnemiesTypes = (Enum.GetValues(typeof(EnemyTypeEnum)) as EnemyTypeEnum[]).Length;
             EnemyTypeEnum enemyTypeToSpawn = (EnemyTypeEnum)RandomValueTool.GetRandomValue(0, maxEnemiesTypes);
 
             //if enemy type not for current level

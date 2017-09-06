@@ -47,7 +47,7 @@ namespace Assets.Scripts.Managers
             PlayerStatusData playerdata = playerStatusManager.LoadPlayerStatus();
             string spritePath = selectedShip.shipSpritePath;
 
-            playerdata.shipSpritePath = spritePath;
+            playerdata.SetShipSpritePath(spritePath);
 
             playerStatusManager.SavePlayerStatus(playerdata);
 

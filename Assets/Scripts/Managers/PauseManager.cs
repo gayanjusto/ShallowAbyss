@@ -8,12 +8,12 @@ namespace Assets.Scripts.Managers
     {
         public GameObject pausePanel;
         public Button pauseButton;
+        public bool isPaused;
 
         ScenesManager scenesManager;
         const int unpausedValue = 1;
         const int pausedValue = 0;
 
-        bool isPaused;
         private void Start()
         {
             scenesManager = GameObject.Find("SceneManager").GetComponent<ScenesManager>();

@@ -21,7 +21,7 @@ namespace Assets.Scripts.Tools
 
         public static int GetRandomValue(int min, int max)
         {
-            return Random.Next(min, max);
+            return Random.Next(min, max + 1);
         }
 
         public static float GetRandomFloatValue(float min, float max)

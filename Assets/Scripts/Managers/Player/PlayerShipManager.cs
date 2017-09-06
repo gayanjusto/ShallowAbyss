@@ -15,7 +15,7 @@ namespace Assets.Scripts.Managers
             PlayerStatusManager playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
 
-            Sprite loadedShipSprite = Resources.Load<Sprite>(playerData.shipSpritePath);
+            Sprite loadedShipSprite = Resources.Load<Sprite>(playerData.GetShipSpritePath());
 
             if(loadedShipSprite == null)
             {

@@ -42,6 +42,18 @@ namespace Assets.Scripts.Managers
         private void Update()
         {
 
+            if (hasHitTopCollider)
+            {
+                freezeTime += Time.deltaTime;
+
+                if (freezeTime >= timeToWaitAfterTopColliderHit)
+                {
+                    freezeTime = 0;
+                    hasHitTopCollider = false;
+                    EnablePlayerInput();
+                }
+            }
+
             CheckPlayerWithinBoundaries();
         }
 
@@ -62,12 +74,6 @@ namespace Assets.Scripts.Managers
 
         void CheckPlayerWithinBoundaries()
         {
-            //If player is dashing: cannot go off boundaries, otherwise it can go off screen
-            if (this.transform.position.y >= topEdge.y)
-            {
-                this.transform.position = new Vector3(this.transform.position.x, topEdge.y - .05f);
-            }
-
             if (this.transform.position.y <= bottomEdge.y)
             {
                 this.transform.position = new Vector3(this.transform.position.x, bottomEdge.y + .1f);
@@ -81,6 +87,17 @@ namespace Assets.Scripts.Managers
             if (this.transform.position.x >= rightEdge.x)
             {
                 this.transform.position = new Vector3(rightEdge.x - .1f, this.transform.position.y);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.tag == Tags.TopCollider)
+            {
+                playerLifeManager.DecreaseLife();
+                ResetPlayerPosition();
+                hasHitTopCollider = true;
+                DisablePlayerInput();
             }
         }
     }

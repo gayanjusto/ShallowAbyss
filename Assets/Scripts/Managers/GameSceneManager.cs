@@ -1,5 +1,4 @@
-﻿using System;
-using Assets.Scripts.Interfaces.UI;
+﻿using Assets.Scripts.Interfaces.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts.Services;

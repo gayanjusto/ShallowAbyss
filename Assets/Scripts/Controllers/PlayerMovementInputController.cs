@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Managers;
+using Assets.Scripts.Managers.Settings;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerMovementInputController : MonoBehaviour
 {
@@ -19,16 +21,15 @@ public class PlayerMovementInputController : MonoBehaviour
     public GameObject bubblesParticleGameObject;
     public GameObject dashParticleGameObject;
 
-
     public ParticleSystem bubblesParticle;
 
     public SpriteRenderer spriteRenderer;
     public PlayerLifeManager playerLifeManager;
-
+    public UserInputManager userInputManager;
     float h_value;
     float v_value;
 
-    public float mov_buff_value;
+    public float mov_boost_value;
 
     ParticleSystem.VelocityOverLifetimeModule bubblesVelocity;
 
@@ -39,20 +40,133 @@ public class PlayerMovementInputController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovementService.BoostObject(h_value, v_value, rigidBody, maxSpeed);
-        h_value = 0;
-        v_value = 0;
+      
+            MovementService.BoostObject(h_value, v_value, rigidBody, maxSpeed);
+
+            h_value = 0;
+            v_value = 0;
+    }
+
+    void FlipSprite(float x_value)
+    {
+        //is moving left?
+        if (x_value < 0 && !spriteRenderer.flipX)
+        {
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+            dashParticleGameObject.transform.localScale = new Vector3(1, -1, 1);
+        }
+        //is moving right?
+        else if (x_value > 0 && spriteRenderer.flipX)
+        {
+            spriteRenderer.flipX = false;
+            dashParticleGameObject.transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
+
+    void ChangeDashParticlePositionRotation(Vector2 currentMovement)
+    {
+        if (dashParticleGameObject.active)
+        {
+            Vector3 posRight = new Vector3(-1, 0, 1);
+            Vector3 posLeft = new Vector3(1, 0, 1);
+            Quaternion angle_90 = Quaternion.Euler(0, 0, 90);
+            Quaternion angle_180 = Quaternion.Euler(0, 0, 180);
+            Quaternion angle_0 = Quaternion.Euler(0, 0, 0);
+
+
+
+            Vector3 leftScale = new Vector3(1, -1, 1);
+            Vector3 rightScale = new Vector3(1, 1, 1);
+
+            float dirOffset = .5f;
+           
+            //is moving only right
+            if (currentMovement.x > dirOffset && (currentMovement.y > -dirOffset && currentMovement.y < dirOffset))
+            {
+                dashParticleGameObject.transform.localPosition = posRight;
+                dashParticleGameObject.transform.localRotation = angle_90;
+                return;
+            }
+
+            //is moving only left
+            if (currentMovement.x < -dirOffset && (currentMovement.y > -dirOffset && currentMovement.y < dirOffset))
+            {
+                dashParticleGameObject.transform.localPosition = posLeft;
+                dashParticleGameObject.transform.localRotation = angle_90;
+                return;
+            }
+
+            //is moving only up
+            if ((currentMovement.x > -dirOffset && currentMovement.x < dirOffset) && currentMovement.y > dirOffset)
+            {
+                dashParticleGameObject.transform.localRotation = angle_180;
+                return;
+            }
+
+            //is moving only right
+            if ((currentMovement.x > -dirOffset && currentMovement.x < dirOffset) && currentMovement.y < dirOffset)
+            {
+                dashParticleGameObject.transform.localRotation = angle_0;
+                return;
+            }
+        }
+    }
+
+    void ChangeBubblesParticlesPosition(Vector2 currentMovement)
+    {
+        //if isn't moving, disable particles
+        if (currentMovement.x == 0 && currentMovement.y == 0)
+        {
+            bubblesParticleGameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            bubblesParticleGameObject.SetActive(true);
+        }
+
+        Vector3 bubblesPos = bubblesParticleGameObject.transform.localPosition;
+        float dashParticleRotation = 0;
+        //is moving to right?
+        if (currentMovement.x > .5f)
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(-1, bubblesParticleGameObject.transform.localPosition.y, bubblesParticleGameObject.transform.localPosition.z);
+        }
+        else if (currentMovement.x < -.5f)
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(1, bubblesParticleGameObject.transform.localPosition.y, bubblesParticleGameObject.transform.localPosition.z);
+        }
+        else
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(0, bubblesParticleGameObject.transform.localPosition.y, bubblesParticleGameObject.transform.localPosition.z);
+        }
+
+        //is moving up?
+        if (currentMovement.y > .5f)
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(bubblesParticleGameObject.transform.localPosition.x, -1, bubblesParticleGameObject.transform.localPosition.z);
+        }
+        else if (currentMovement.y < -.5f)
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(bubblesParticleGameObject.transform.localPosition.x, 1, bubblesParticleGameObject.transform.localPosition.z);
+
+        }
+        else
+        {
+            bubblesParticleGameObject.transform.localPosition = new Vector3(bubblesParticleGameObject.transform.localPosition.x, 0, bubblesParticleGameObject.transform.localPosition.z);
+        }
     }
 
     public void MoveUp()
     {
         RemoveVelocity();
 
-        v_value = 1 * mov_buff_value;
+        v_value = 1 * mov_boost_value;
 
-        bubblesParticleGameObject.transform.localPosition = new Vector3(0, -1, 1);
-        bubblesVelocity.y = -3f;
-        bubblesVelocity.x = 0;
+        SetBubblesPosition(new Vector3(0, -1, 1), -3, 0);
+
+        ChangeDashParticlePositionRotation(new Vector2(h_value, v_value));
+
         bubblesParticle.Play();
     }
 
@@ -60,11 +174,12 @@ public class PlayerMovementInputController : MonoBehaviour
     {
         RemoveVelocity();
 
-        v_value = -1 * mov_buff_value;
-      
-        bubblesParticleGameObject.transform.localPosition = new Vector3(0, 1, 1);
-        bubblesVelocity.y = 3f;
-        bubblesVelocity.x = 0;
+        v_value = -1 * mov_boost_value;
+
+        SetBubblesPosition(new Vector3(0, 1, 1), 3, 0);
+
+        ChangeDashParticlePositionRotation(new Vector2(h_value, v_value));
+
         bubblesParticle.Play();
     }
 
@@ -75,12 +190,12 @@ public class PlayerMovementInputController : MonoBehaviour
 
         RemoveVelocity();
 
-        h_value = directionValue * mov_buff_value;
-  
+        h_value = directionValue * mov_boost_value;
 
-        bubblesParticleGameObject.transform.localPosition = new Vector3(1, 0, 1);
-        bubblesVelocity.y = 0;
-        bubblesVelocity.x = 3f;
+        SetBubblesPosition(new Vector3(1, 0, 1), 0, 3);
+
+        ChangeDashParticlePositionRotation(new Vector2(h_value, v_value));
+
         bubblesParticle.Play();
 
         if (!spriteRenderer.flipX)
@@ -95,18 +210,25 @@ public class PlayerMovementInputController : MonoBehaviour
         SetDashParticleDirection(directionValue * -1, directionValue);
 
         RemoveVelocity();
-        h_value = directionValue * mov_buff_value;
-   
+        h_value = directionValue * mov_boost_value;
 
-        bubblesParticleGameObject.transform.localPosition = new Vector3(-1, 0, 1);
-        bubblesVelocity.y = 0;
-        bubblesVelocity.x = -3f;
+        SetBubblesPosition(new Vector3(-1, 0, 1), 0, -3);
+
+        ChangeDashParticlePositionRotation(new Vector2(h_value, v_value));
+
         bubblesParticle.Play();
 
         if (spriteRenderer.flipX)
         {
             spriteRenderer.flipX = !spriteRenderer.flipX;
         }
+    }
+
+    void SetBubblesPosition(Vector3 position, float vel_y, float vel_x)
+    {
+        bubblesParticleGameObject.transform.localPosition = position;
+        bubblesVelocity.y = vel_y;
+        bubblesVelocity.x = vel_x;
     }
 
     void RemoveVelocity()
@@ -120,5 +242,5 @@ public class PlayerMovementInputController : MonoBehaviour
         dashParticleGameObject.transform.localPosition = new Vector3(direction_X, dashParticleGameObject.transform.localPosition.y);
         dashParticleGameObject.transform.localScale = new Vector3(dashParticleGameObject.transform.localScale.x, scale_Y, 1);
     }
- 
+
 }

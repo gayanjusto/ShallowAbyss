@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Entities.Internationalization;
+using Assets.Scripts.Managers;
 using System;
 using System.Globalization;
 using System.IO;
@@ -9,24 +10,40 @@ namespace Assets.Scripts.Services
 {
     public static class LanguageService
     {
+        static LanguageDictionary _ld;
+
         public static LanguageDictionary GetLanguageDictionary()
         {
-            var currentCulture = CultureInfo.CurrentUICulture;
+            if(!_ld.isLoaded)
+            {
+                _ld = LoadDictionary();
+            }
+
+            return _ld;
+        }
+
+        public static void ReloadDictionary()
+        {
+            _ld = LoadDictionary();
+        }
+        static LanguageDictionary LoadDictionary()
+        {
+            var currentCulture = PlayerStatusManager.PlayerDataInstance.GetCurrentLanguage();
             LanguageDictionary ld = new LanguageDictionary();
             ld.isLoaded = false;
             if (Application.platform == RuntimePlatform.Android)
             {
                 string filePath = string.Format("{0}/Language_{1}.json", Application.streamingAssetsPath, currentCulture);
 
-                WWW reader = new WWW(filePath);
-                while (!reader.isDone) { }
+            WWW reader = new WWW(filePath);
+            while (!reader.isDone) { }
 
-                //we have to remove 3 bytes from the reader head and parse it into string
-                string jsonString;
-                jsonString = System.Text.Encoding.UTF8.GetString(reader.bytes, 3, reader.bytes.Length - 3);
+            //we have to remove 3 bytes from the reader head and parse it into string
+            string jsonString;
+            jsonString = System.Text.Encoding.UTF8.GetString(reader.bytes, 3, reader.bytes.Length - 3);
 
-                ld = JsonUtility.FromJson<LanguageDictionary>(jsonString);
-                ld.isLoaded = true;
+            ld = JsonUtility.FromJson<LanguageDictionary>(jsonString);
+            ld.isLoaded = true;
             }
             return ld;
         }
@@ -52,7 +69,7 @@ namespace Assets.Scripts.Services
 
                 return ex.Message;
             }
-          
+
 
             return "";
         }

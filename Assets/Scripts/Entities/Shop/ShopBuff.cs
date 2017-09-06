@@ -1,30 +1,50 @@
-﻿using Assets.Scripts.Entities.Player;
+﻿using System;
 using Assets.Scripts.Enums;
+using Assets.Scripts.Interfaces.Shop;
 using Assets.Scripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Scripts.Interfaces.UI;
 
 namespace Assets.Scripts.Entities
 {
-    public class ShopBuff : MonoBehaviour
+    public class ShopBuff : MonoBehaviour, IShopBuff, ILanguageUI
     {
         public int buffAmount;
         public int buffPrice;
-        public int maxBuffAmount;
         public string buffName;
-        public string maxErrorMsg;
 
         public ShopSelectedObjectEnum buffType;
 
-        private void Start()
+        protected ShopSceneManager shopSceneManager;
+        protected PlayerStatusManager playerStatusManager;
+
+        protected void Start()
         {
-            ShopSceneManager shopSceneManager = GameObject.Find("ShopSceneManager").GetComponent<ShopSceneManager>();
+             shopSceneManager = GameObject.Find("ShopSceneManager").GetComponent<ShopSceneManager>();
+            playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
+            SetBtnListener();
+            LoadTextsLanguage();
+        }
+
+        public virtual Func<bool> CanIncreaseBuff()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Action BuyBuff()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void SetBtnListener()
+        {
             this.GetComponent<Button>().onClick.AddListener(() => shopSceneManager.SetSelectedObject(buffType, this.transform.gameObject, this.buffName));
         }
 
-        public bool HasBoughtMaxAmount(PlayerStatusData playerStatus)
+        public virtual void LoadTextsLanguage()
         {
-            return playerStatus.lifeBuff + 1 > maxBuffAmount;
+            throw new NotImplementedException();
         }
     }
 }

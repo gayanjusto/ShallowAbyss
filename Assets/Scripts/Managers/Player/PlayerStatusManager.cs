@@ -13,6 +13,20 @@ namespace Assets.Scripts.Managers
         const string playerDataFilePath = "/playerscore.dat";
         public static PlayerStatusManager instance;
 
+        static PlayerStatusData _playerDataInstance;
+        public static PlayerStatusData PlayerDataInstance
+        {
+            get
+            {
+                if(_playerDataInstance == null)
+                {
+                    _playerDataInstance = instance.LoadPlayerStatus();
+                }
+
+                return _playerDataInstance;
+            }
+        }
+
         private void Awake()
         {
             if (instance)
@@ -26,24 +40,7 @@ namespace Assets.Scripts.Managers
             }
         }
 
-        public void SavePlayerStatus(float score, int lifeBuff, int shieldBuff)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-
-            //Load currentScore with previously saved score
-            PlayerStatusData playerData = LoadPlayerStatus();
-
-            FileStream fileStream = File.Open(Application.persistentDataPath + playerDataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-
-            PlayerStatusData scoreData = new PlayerStatusData(Mathf.FloorToInt(score), lifeBuff, shieldBuff);
-
-            scoreData.score += playerData.score;
-
-            bf.Serialize(fileStream, scoreData);
-
-            fileStream.Close();
-        }
-
+   
         public void SavePlayerStatus(PlayerStatusData playerStatusData)
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -55,6 +52,8 @@ namespace Assets.Scripts.Managers
             bf.Serialize(fileStream, playerStatusData);
 
             fileStream.Close();
+
+            PlayerStatusManager._playerDataInstance = playerStatusData;
         }
 
         public PlayerStatusData LoadPlayerStatus()
@@ -69,18 +68,30 @@ namespace Assets.Scripts.Managers
             }
             else
             {
-                PlayerStatusData playerData = new PlayerStatusData(0, 0, 0);
-
-                playerData.shipsOwnedIds = new List<int>();
-
-                //player always owns the first ship by default
-                playerData.shipsOwnedIds.Add(1);
-
-                appDataReader.SaveData(playerData, playerDataFilePath);
-                SavePlayerStatus(playerData);
+                PlayerStatusData playerData = CreateInitialPlayerStatus(appDataReader);
 
                 return playerData;
             }
+        }
+
+        PlayerStatusData CreateInitialPlayerStatus(ApplicationDataReader<PlayerStatusData> appDataReader)
+        {
+            PlayerStatusData playerData = new PlayerStatusData(999999999, 2, 1);
+
+            //player always owns the first ship by default
+            playerData.GetOwnedShipsIDs().Add(1);
+
+            playerData.IncreaseDashUpgrade();
+
+            appDataReader.SaveData(playerData, playerDataFilePath);
+            SavePlayerStatus(playerData);
+
+            return playerData;
+        }
+
+        public static bool HasPlayerDataFile()
+        {
+            return File.Exists(Application.persistentDataPath + playerDataFilePath);
         }
     }
 

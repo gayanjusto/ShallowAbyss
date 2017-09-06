@@ -9,14 +9,16 @@ namespace Assets.Scripts.Managers
 {
     public class PlayerLifeManager : MonoBehaviour
     {
-        public int lifes;
+        public int lives;
         public int maxLifes;
         public List<Image> lifeImages;
         public Image initialLifeImage;
         public float lifeImageOffset_x;
-        public ScoreCounterManager scoreCounterManager;
+        public ScoreManager scoreCounterManager;
         public PlayerStatusManager playerStatusManager;
         public GameOverManager gameOverManager;
+        public DashManager dashManager;
+
 
         bool canBeHit;
         SpriteRenderer playerSpriteRenderer;
@@ -24,13 +26,15 @@ namespace Assets.Scripts.Managers
         private void Start()
         {
             playerSpriteRenderer = GetComponent<SpriteRenderer>();
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            maxLifes = playerData.GetLifeUpgrade();
+
+            playerData.SwapStoredLivesToBuff();
 
             //Player has bought life buffs?
-            if (playerData.lifeBuff > 0)
+            if (playerData.GetLifeBuff() > 0)
             {
-                maxLifes += playerData.lifeBuff;
-                lifes += playerData.lifeBuff;
+                lives += playerData.GetLifeBuff();
             }
 
             lifeImages = new List<Image>();
@@ -40,7 +44,7 @@ namespace Assets.Scripts.Managers
             float pos_x = initialLifeImage.rectTransform.anchoredPosition.x;
             float pos_y = initialLifeImage.rectTransform.anchoredPosition.y;
 
-            for (int i = 1; i < maxLifes; i++)
+            for (int i = 1; i < lives; i++)
             {
                 Image lifeImage = Instantiate(initialLifeImage);
                 lifeImage.transform.SetParent(initialLifeImage.transform.parent, false);
@@ -54,10 +58,10 @@ namespace Assets.Scripts.Managers
         {
             if (canBeHit)
             {
-                lifes--;
+                lives--;
 
                 //Game Over
-                if (lifes == 0)
+                if (lives == 0)
                 {
                     //Stop the score count
                     scoreCounterManager.enabled = false;
@@ -65,30 +69,67 @@ namespace Assets.Scripts.Managers
                     //Save player stats
                     //Turn life and shield buffs equals zero after death
                     PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
-                    playerData.lifeBuff = 0;
-                    playerData.shieldBuff = 0;
+                    playerData.SetLifeBuff(0);
+                    playerData.SetShieldBuff(0);
                     int finalScore = Mathf.FloorToInt(scoreCounterManager.score); ;
-                    playerData.score += finalScore;
+                    playerData.IncreaseScore(finalScore);
                     playerStatusManager.SavePlayerStatus(playerData);
 
                     gameOverManager.SetGameOver(finalScore);
                     DeduceLifeIcon();
                     DisablePlayer();
                 }
-
-
-                DeduceLifeIcon();
-
-                //Make player invulnerable for few seconds
-                SetPlayerInvulnerable();
-
-                //FlashPlayerWhileInvulnerable
-                if (lifes > 0)
+                else
                 {
-                    StartCoroutine(FlashPLayer());
+
+                    DeduceLifeIcon();
+
+                    //Make player invulnerable for few seconds
+                    SetPlayerInvulnerable();
                 }
+
             }
 
+        }
+
+
+        public bool CanBeHit()
+        {
+            return canBeHit;
+        }
+
+        public void SetPlayerInvulnerable()
+        {
+            if (lives > 0)
+            {
+
+                StartCoroutine(MakePlayerInvulnerable());
+                StartCoroutine(FlashPLayer());
+            }
+        }
+
+        public void IncreaseLife()
+        {
+            lives++;
+
+            int i = lifeImages.Count;
+            var lastImg = lifeImages[i - 1];
+            float pos_x = initialLifeImage.rectTransform.anchoredPosition.x;
+            float pos_y = initialLifeImage.rectTransform.anchoredPosition.y;
+
+            Image lifeImage = Instantiate(initialLifeImage);
+            lifeImage.transform.SetParent(initialLifeImage.transform.parent, false);
+            float newPosX = (pos_x * (i + 1)) + (lifeImageOffset_x * i);
+            lifeImage.rectTransform.anchoredPosition = new Vector2(newPosX, pos_y);
+            lifeImages.Add(lifeImage);
+        }
+
+        IEnumerator MakePlayerInvulnerable()
+        {
+            canBeHit = false;
+            yield return new WaitForSeconds(3);
+            canBeHit = true;
+            StopCoroutine(MakePlayerInvulnerable());
         }
 
         void DeduceLifeIcon()
@@ -102,27 +143,16 @@ namespace Assets.Scripts.Managers
                 }
             }
         }
-        public bool CanBeHit()
-        {
-            return canBeHit;
-        }
-
-        public void SetPlayerInvulnerable()
-        {
-            StartCoroutine(MakePlayerInvulnerable());
-        }
-        IEnumerator MakePlayerInvulnerable()
-        {
-            canBeHit = false;
-            yield return new WaitForSeconds(3);
-            canBeHit = true;
-        }
 
         void DisablePlayer()
         {
-            playerSpriteRenderer.enabled = false;
-            GetComponent<PlayerMovementInputController>().enabled = false;
-
+            Debug.Log("Disabled player");
+            StopAllCoroutines();
+            //Debug.Log("Player disabled");
+            //dashManager.enabled = false;
+            //playerSpriteRenderer.enabled = false;
+            //GetComponent<PlayerMovementInputController>().enabled = false;
+            this.gameObject.SetActive(false);
         }
 
         IEnumerator FlashPLayer()

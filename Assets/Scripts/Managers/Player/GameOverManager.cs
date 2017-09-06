@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Entities.Player;
 using Assets.Scripts.Managers.Ads;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,20 @@ namespace Assets.Scripts.Managers
     public class GameOverManager : MonoBehaviour
     {
         public PlayerStatusManager playerStatusManager;
-        public ScoreCounterManager scoreCounterManager;
+        public ScoreManager scoreCounterManager;
         public AdsManager adsManager;
         public Image gameOverPanel;
+        public Button dashBtn;
+        public Slider dashSlider;
+        public GameObject enemySpanwer, prizeSpawner, btnUp, btnDown, btnLeft, btnRight;
 
         public Text gameOverScoreText;
         public Button adsButton;
 
         public Button pauseButton;
+
+        public GameObject screenShotScorePanel;
+        public Text screenShotScore;
 
         public bool gameHasFinished;
         public int gameOverScore;
@@ -44,7 +51,8 @@ namespace Assets.Scripts.Managers
                     if (isAdsBonus)
                     {
                         gameOverScore = this.finalScore + finalScore;
-                    }else
+                    }
+                    else
                     {
                         gameOverScore = finalScore;
                     }
@@ -53,20 +61,33 @@ namespace Assets.Scripts.Managers
                 {
                     gameOverScore++;
                 }
-                gameOverScoreText.text =  gameOverScore.ToString();
+                gameOverScoreText.text = gameOverScore.ToString();
             }
         }
 
         public void SetGameOver(int finalScore)
         {
+            dashBtn.gameObject.SetActive(false);
+            dashSlider.gameObject.SetActive(false);
+
+            enemySpanwer.SetActive(false);
+            prizeSpawner.SetActive(false);
+            btnUp.SetActive(false);
+            btnDown.SetActive(false);
+            btnLeft.SetActive(false);
+            btnRight.SetActive(false);
+
             pauseButton.gameObject.SetActive(false);
             adsButton.gameObject.SetActive(adsManager.WillShowAdsButton());
             gameOverPanel.gameObject.SetActive(true);
             StartScoreCountDown(finalScore);
+            screenShotScore.text = finalScore.ToString();
         }
 
         public void ShareScreenShot()
         {
+            SetLayoutForScreenShot();
+
             //Stop coroutine
             StopCoroutine("ScoreCountDownCoroutine");
 
@@ -75,10 +96,21 @@ namespace Assets.Scripts.Managers
 
             string screenShotPath = Application.persistentDataPath + "/" + gameOverImage;
 
+
             //Capture screenshot
             Application.CaptureScreenshot(gameOverImage);
 
-#if UNITY_ANDROID
+            ResetLayoutAfterScreenShot();
+
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                OpenAndroidIntent(screenShotPath);
+            }
+
+        }
+
+        void OpenAndroidIntent(string screenShotPath)
+        {
             //instantiate the class Intent
             AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
 
@@ -115,14 +147,26 @@ namespace Assets.Scripts.Managers
 
             //call the activity with our Intent
             currentActivity.Call("startActivity", intentObject);
-#endif
         }
+
+        void SetLayoutForScreenShot()
+        {
+            gameOverPanel.gameObject.SetActive(false);
+            screenShotScorePanel.SetActive(true);
+        }
+
+        void ResetLayoutAfterScreenShot()
+        {
+            gameOverPanel.gameObject.SetActive(true);
+            screenShotScorePanel.SetActive(false);
+        }
+
 
         public void GiveAdsPrize()
         {
-            int bonusAmount = 100;
+            int bonusAmount = 50;
             PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
-            playerData.score += bonusAmount;
+            playerData.IncreaseScore(bonusAmount);
             scoreCounterManager.score = bonusAmount;
             playerStatusManager.SavePlayerStatus(playerData);
 
