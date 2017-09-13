@@ -7,15 +7,15 @@ using System;
 
 namespace Assets.Scripts.Entities.Shop
 {
-    public class DashUpgradeShopBuff : ShopBuff, IShopBuff, ILanguageUI
+    public class DashUpgradeShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
 
-        public override Func<bool> CanIncreaseBuff()
+        public override Func<bool> HasEnoughCreditsToBuy()
         {
             return () => PlayerStatusManager.PlayerDataInstance.CanUpgradeDash();
         }
 
-        public override Action BuyBuff()
+        public override Action BuyItem()
         {
             return () => PlayerStatusManager.PlayerDataInstance.IncreaseDashUpgrade();
         }

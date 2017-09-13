@@ -11,22 +11,19 @@ using Assets.Scripts.Services;
 
 namespace Assets.Scripts.Managers
 {
-    public class ShipSelectorManager : MonoBehaviour, IObjectSelector, ILanguageUI
+    public class ShipSelectorManager : MonoBehaviour, ILanguageUI
     {
         public GameObject SelectedObject { get; set; }
-        public Text SelectedObjectText { get; set; }
         public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
         public ShipsCarouselManager shipsCarouselManager;
         ShipCarousel selectedShip;
 
         public Text subSelectorTitle;
-        public Text returnBtnText;
         public Text goText;
 
         private void Start()
         {
             LoadTextsLanguage();
-            SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
             shipsCarouselManager.LoadOwnedShips(false);
 
             selectedShip = shipsCarouselManager.GetDefaultShip();
@@ -36,7 +33,6 @@ namespace Assets.Scripts.Managers
         {
             this.ShopSelectedObjectEnum = selectedObj;
             this.SelectedObject = selectedGameObj;
-            this.SelectedObjectText.text = objectName;
 
             selectedShip = this.SelectedObject.GetComponent<ShipCarousel>();
         }
@@ -60,7 +56,6 @@ namespace Assets.Scripts.Managers
             if (ld.isLoaded)
             {
                 subSelectorTitle.text = ld.chooseSubTitle;
-                returnBtnText.text = ld.returnMsg;
                 goText.text = ld.go;
             }
         }

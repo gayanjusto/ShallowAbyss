@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using Assets.Scripts.Entities.Player;
+using Assets.Scripts.Extensions;
+using Assets.Scripts.Enums;
 
 namespace Assets.Scripts.Managers.Shop
 {
@@ -40,6 +42,8 @@ namespace Assets.Scripts.Managers.Shop
 
             //Set all ships in the containerCarousel
             //-> For each iteration, add the 'X' offset between ships options
+            containerRT.sizeDelta = new Vector2(containerOffset_X * (ships.Length + 1), containerHeight);
+
             for (int i = 0; i < ships.Length; i++)
             {
                 currentOffset_X += shipsOffset_X;
@@ -52,6 +56,8 @@ namespace Assets.Scripts.Managers.Shop
 
                 shipInstance.transform.SetParent(containerCarousel.transform);
                 RectTransform shipRT = shipInstance.GetComponent<RectTransform>();
+                shipRT.SetAnchor(AnchorPresets.MiddleLeft);
+
                 shipRT.anchoredPosition = new Vector2(currentOffset_X, shipPosition_Y);
 
                 containerRT.sizeDelta = new Vector2(containerRT.sizeDelta.x + containerOffset_X, containerHeight);

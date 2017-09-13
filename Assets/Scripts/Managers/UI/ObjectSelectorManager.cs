@@ -16,7 +16,7 @@ namespace Assets.Scripts.Managers.UI
             if (IsInShopScene())
             {
                 shopSceneManager = GameObject.Find("ShopSceneManager").GetComponent<ShopSceneManager>();
-                selectedObjectAction = shopSceneManager.SetSelectedObject;
+
             }else if (IsInShipSelectorScene())
             {
                 shipSelectorManager = GameObject.Find("ShipSelectorManager").GetComponent<ShipSelectorManager>();

@@ -1,5 +1,6 @@
 ﻿{
-  "newGameMainMenu": "New Game",
+  "newGameMainMenu": "Play!",
+  "newGame": "New Game",
   "selectSubMainMenu": "Select Sub",
   "shopMainMenu": "Shop",
   "selectLanguageMainMenu": "Select Language",

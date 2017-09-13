@@ -3,19 +3,19 @@ using Assets.Scripts.Entities.Player;
 using Assets.Scripts.Enums;
 using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Managers.Shop;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using Assets.Scripts.Services;
 using Assets.Scripts.Entities.Internationalization;
-using Assets.Scripts.Tools;
+using Assets.Scripts.Interfaces.Shop;
 
 namespace Assets.Scripts.Managers
 {
-    public class ShopSceneManager : MonoBehaviour, IObjectSelector, ILanguageUI
+    public class ShopSceneManager : MonoBehaviour, ILanguageUI
     {
         public PlayerStatusManager playerStatusManager;
+        public SelectedObjectManager selectedObjectManager;
+
         public Text scoreAmountTxt;
         public Text tokensAmountTxt;
 
@@ -28,45 +28,29 @@ namespace Assets.Scripts.Managers
         public Text dashUpgradesTxt;
 
 
-        string lifeAmountLbl;
-        string shieldAmountLbl;
-        string storedLivesAmountLbl;
-        string storedShieldsAmountLbl;
-
         public AlertMessageManager alertMessageManager;
 
         public int playerScore;
         public ShipsCarouselManager shipsCarouselManager;
 
-        public ShipCarousel selectedShip;
-
-        public Text SelectedObjectText { get; set; }
-        public GameObject SelectedObject { get; set; }
-        public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
-
         string notEnoughMoneyMsg;
         string subAlreadyBoughtMsg;
         string itemMaxReachedMsg;
 
-        string tokenItemName;
-
-        public Text returnBtnText;
         public Text tryYourLuckBtnTxt;
         public Text buyBtnText;
 
         void Start()
         {
             LoadTextsLanguage();
-            SelectedObjectText = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
-
 
             LoadPlayerData();
         }
 
-        void BuyShip()
+        void BuyShip(IShopItem selectedShip)
         {
             //Player has enough money?
-            if (!PlayerHasEnoughFundsToBuy(selectedShip.shipPrice))
+            if (!selectedShip.HasEnoughCreditsToBuy().Invoke())
             {
                 alertMessageManager.SetAlertMessage(notEnoughMoneyMsg);
                 return;
@@ -75,20 +59,23 @@ namespace Assets.Scripts.Managers
             PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
 
             //Player already bought this ship?
-            if (!playerData.GetOwnedShipsIDs().Contains(selectedShip.shipId))
+            if (!((IShopCharacterSkin)selectedShip).AlreadyHasShip().Invoke())
             {
 
-                playerScore -= selectedShip.shipPrice;
+                playerScore -= selectedShip.GetPrice();
                 scoreAmountTxt.text = playerScore.ToString();
 
-                playerData.DecreaseScore(selectedShip.shipPrice);
-                playerData.GetOwnedShipsIDs().Add(selectedShip.shipId);
+                selectedShip.BuyItem().Invoke();
 
                 playerStatusManager.SavePlayerStatus(playerData);
-                shipsCarouselManager.DisableShipButtonClick(selectedShip.gameObject);
+
+                ((IShopCharacterSkin)selectedShip).DisableCharacterButton();
+                shipsCarouselManager.DisableShipButtonClick(((MonoBehaviour)selectedShip).gameObject);
 
                 //Clean data
-                ShopSelectedObjectEnum = ShopSelectedObjectEnum.None;
+                //remove from selectedobjectmanager
+                selectedObjectManager.RemoveSelectedObject();
+
                 selectedShip = null;
             }
             else
@@ -98,23 +85,23 @@ namespace Assets.Scripts.Managers
 
         }
 
-        void BuyBuff(ShopSelectedObjectEnum buffType, ShopBuff buff)
+        void BuyBuff(ShopBuff item)
         {
             PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
 
-            if (!buff.CanIncreaseBuff().Invoke())
+            if (!item.HasEnoughCreditsToBuy().Invoke())
             {
                 alertMessageManager.SetAlertMessage(itemMaxReachedMsg);
                 return;
             }
 
-            if (PlayerHasEnoughFundsToBuy(buff.buffPrice))
+            if (PlayerHasEnoughFundsToBuy(item.buffPrice))
             {
-                playerScore -= buff.buffPrice;
+                playerScore -= item.buffPrice;
 
-                buff.BuyBuff().Invoke();
+                item.BuyItem().Invoke();
 
-                playerData.DecreaseScore(buff.buffPrice);
+                playerData.DecreaseScore(item.buffPrice);
                 playerStatusManager.SavePlayerStatus(playerData);
                 LoadPlayerData();
             }
@@ -134,7 +121,6 @@ namespace Assets.Scripts.Managers
             PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
             playerScore = playerData.GetScore();
             scoreAmountTxt.text = playerScore.ToString();
-            shipsCarouselManager.LoadAllShipsInCarousel(true);
 
             SetTokensText(playerData.GetJackpotTokens());
             SetLivesAmountText(playerData.GetLifeBuff(), playerData.GetLifeUpgrade());
@@ -157,17 +143,17 @@ namespace Assets.Scripts.Managers
 
         void SetStoredLifesText(int amount)
         {
-            storedLivesTxt.text = string.Format("{0}: {1}", storedLivesAmountLbl, amount);
+            storedLivesTxt.text = string.Format(": {0}", amount);
         }
 
         void SetStoredShieldsText(int amount)
         {
-            storedShieldsTxt.text = string.Format("{0}: {1}", storedShieldsAmountLbl, amount);
+            storedShieldsTxt.text = string.Format(": {0}", amount);
         }
 
         void SetTokensText(int amount)
         {
-            tokensAmountTxt.text = string.Format("{0}s: {1}", tokenItemName, amount);
+            tokensAmountTxt.text = string.Format("{0}", amount);
         }
 
         void SetDashUpgradesText(int amount, int maxAmount)
@@ -175,46 +161,35 @@ namespace Assets.Scripts.Managers
             dashUpgradesTxt.text = string.Format(": {0} / {1}", amount, maxAmount);
         }
 
-        public void SetSelectedObject(ShopSelectedObjectEnum selectedObj, GameObject selectedGameObj, string objectName)
-        {
-            this.ShopSelectedObjectEnum = selectedObj;
-            this.SelectedObject = selectedGameObj;
-            this.SelectedObjectText.text = objectName;
-        }
-
         public void BuySelectedObject()
         {
-            if (ShopSelectedObjectEnum == ShopSelectedObjectEnum.Ship)
+            var selectedObject = selectedObjectManager.GetSelectedObject();
+
+            if (selectedObject.GetObjectType() == ShopSelectedObjectEnum.Ship)
             {
-                selectedShip = SelectedObject.GetComponent<ShipCarousel>();
-                BuyShip();
+                BuyShip((IShopItem)selectedObject);
                 return;
             }
 
-            if (ShopSelectedObjectEnum != ShopSelectedObjectEnum.None)
+            if (selectedObject.GetObjectType() != ShopSelectedObjectEnum.None)
             {
-                ShopBuff buff = SelectedObject.GetComponent<ShopBuff>();
-                BuyBuff(ShopSelectedObjectEnum, buff);
+                BuyBuff((ShopBuff)selectedObject);
             }
         }
 
+       
         public void LoadTextsLanguage()
         {
             LanguageDictionary ld = LanguageService.GetLanguageDictionary();
             if (ld.isLoaded)
             {
-                returnBtnText.text = ld.returnMsg;
                 buyBtnText.text = ld.buy;
                 notEnoughMoneyMsg = ld.notEnoughFundsShop;
                 subAlreadyBoughtMsg = ld.subAlreadyBoughtShop;
-                lifeAmountLbl = ld.shopLifeAmount;
-                shieldAmountLbl = ld.shopShieldsAmount;
-                storedLivesAmountLbl = ld.shopStoredLives;
-                storedShieldsAmountLbl = ld.shopStoredShields;
                 itemMaxReachedMsg = ld.maxItemReachedShop;
                 tryYourLuckBtnTxt.text = ld.tryYourLuckBtn;
-                tokenItemName = ld.tokenItem;
             }
         }
     }
 }
+ 

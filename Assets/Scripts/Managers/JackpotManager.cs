@@ -23,7 +23,6 @@ namespace Assets.Scripts.Managers
         public int maxValue;
         public int amountTokens;
 
-        public Text tokenTxt;
         public Text tokenAmountTxt;
         public Button leverBtn;
         public Text leverTxt;
@@ -351,7 +350,6 @@ namespace Assets.Scripts.Managers
                 skinItem = ld.skinItem;
                 noRewardJackPot = ld.noRewardJackPot;
                 leverTxt.text = ld.pushBtnJackPot;
-                tokenTxt.text = string.Format("{0}s",ld.tokenItem);
                 resultPreMsgTxt.text = ld.resultPreMsgJackPot;
                 returnTxt.text = ld.returnMsg;
             }

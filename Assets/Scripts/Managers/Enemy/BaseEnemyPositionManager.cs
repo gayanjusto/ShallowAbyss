@@ -36,7 +36,10 @@ namespace Assets.Scripts.Managers.Enemy
 
         protected void SetInitialSpawnPosition()
         {
-            this.transform.position = GetPositionToSpawnEnemy();
+            float pos_z = transform.position.z;
+            Vector3 rndPos = GetPositionToSpawnEnemy();
+
+            this.transform.position = new Vector3(rndPos.x, rndPos.y);
         }
 
         Vector3 GetPositionToSpawnEnemy()
@@ -46,8 +49,7 @@ namespace Assets.Scripts.Managers.Enemy
                 (
                     (int)ScreenPositionService.GetLeftEdge(Camera.main).x, (int)ScreenPositionService.GetRightEdge(Camera.main).x
                 ),
-                screenBottomEdge.y - RandomValueTool.GetRandomValue(5, 15)
-                , 0);
+                screenBottomEdge.y - RandomValueTool.GetRandomValue(5, 15));
 
             return newPos;
         }

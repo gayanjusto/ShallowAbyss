@@ -74,6 +74,11 @@ namespace Assets.Scripts.Managers
 
         void CheckPlayerWithinBoundaries()
         {
+            if (this.transform.position.y >= topCollider.position.y - .3f)
+            {
+                HitTopCollider();
+            }
+
             if (this.transform.position.y <= bottomEdge.y)
             {
                 this.transform.position = new Vector3(this.transform.position.x, bottomEdge.y + .1f);
@@ -81,12 +86,12 @@ namespace Assets.Scripts.Managers
 
             if (this.transform.position.x <= leftEdge.x)
             {
-                this.transform.position = new Vector3(leftEdge.x + .1f, this.transform.position.y);
+                this.transform.position = new Vector3(leftEdge.x + .05f, this.transform.position.y);
             }
 
             if (this.transform.position.x >= rightEdge.x)
             {
-                this.transform.position = new Vector3(rightEdge.x - .1f, this.transform.position.y);
+                this.transform.position = new Vector3(rightEdge.x - .05f, this.transform.position.y);
             }
         }
 
@@ -94,11 +99,16 @@ namespace Assets.Scripts.Managers
         {
             if (collision.gameObject.tag == Tags.TopCollider)
             {
-                playerLifeManager.DecreaseLife();
-                ResetPlayerPosition();
-                hasHitTopCollider = true;
-                DisablePlayerInput();
+                HitTopCollider();
             }
+        }
+
+        void HitTopCollider()
+        {
+            playerLifeManager.DecreaseLife();
+            ResetPlayerPosition();
+            hasHitTopCollider = true;
+            DisablePlayerInput();
         }
     }
 }

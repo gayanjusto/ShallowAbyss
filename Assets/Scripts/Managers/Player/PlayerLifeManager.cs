@@ -11,9 +11,8 @@ namespace Assets.Scripts.Managers
     {
         public int lives;
         public int maxLifes;
-        public List<Image> lifeImages;
-        public Image initialLifeImage;
-        public float lifeImageOffset_x;
+        public Text amountLifeTxt;
+
         public ScoreManager scoreCounterManager;
         public PlayerStatusManager playerStatusManager;
         public GameOverManager gameOverManager;
@@ -31,34 +30,20 @@ namespace Assets.Scripts.Managers
 
             playerData.SwapStoredLivesToBuff();
 
-            //Player has bought life buffs?
-            if (playerData.GetLifeBuff() > 0)
-            {
-                lives += playerData.GetLifeBuff();
-            }
+            lives += playerData.GetLifeBuff();
 
-            lifeImages = new List<Image>();
-            lifeImages.Add(initialLifeImage);
+            UpdateLifeText();
 
             canBeHit = true;
-            float pos_x = initialLifeImage.rectTransform.anchoredPosition.x;
-            float pos_y = initialLifeImage.rectTransform.anchoredPosition.y;
-
-            for (int i = 1; i < lives; i++)
-            {
-                Image lifeImage = Instantiate(initialLifeImage);
-                lifeImage.transform.SetParent(initialLifeImage.transform.parent, false);
-                float newPosX = (pos_x * (i + 1)) + (lifeImageOffset_x * i);
-                lifeImage.rectTransform.anchoredPosition = new Vector2(newPosX, pos_y);
-                lifeImages.Add(lifeImage);
-            }
         }
 
         public void DecreaseLife()
         {
+            Debug.Log("player hit");
+
             if (canBeHit)
             {
-                lives--;
+               // lives--;
 
                 //Game Over
                 if (lives == 0)
@@ -76,13 +61,12 @@ namespace Assets.Scripts.Managers
                     playerStatusManager.SavePlayerStatus(playerData);
 
                     gameOverManager.SetGameOver(finalScore);
-                    DeduceLifeIcon();
                     DisablePlayer();
+                    UpdateLifeText();
                 }
                 else
                 {
-
-                    DeduceLifeIcon();
+                    UpdateLifeText();
 
                     //Make player invulnerable for few seconds
                     SetPlayerInvulnerable();
@@ -110,38 +94,19 @@ namespace Assets.Scripts.Managers
 
         public void IncreaseLife()
         {
-            lives++;
-
-            int i = lifeImages.Count;
-            var lastImg = lifeImages[i - 1];
-            float pos_x = initialLifeImage.rectTransform.anchoredPosition.x;
-            float pos_y = initialLifeImage.rectTransform.anchoredPosition.y;
-
-            Image lifeImage = Instantiate(initialLifeImage);
-            lifeImage.transform.SetParent(initialLifeImage.transform.parent, false);
-            float newPosX = (pos_x * (i + 1)) + (lifeImageOffset_x * i);
-            lifeImage.rectTransform.anchoredPosition = new Vector2(newPosX, pos_y);
-            lifeImages.Add(lifeImage);
+           
         }
 
+        void UpdateLifeText()
+        {
+            amountLifeTxt.text = string.Format("x {0}", lives);
+        }
         IEnumerator MakePlayerInvulnerable()
         {
             canBeHit = false;
             yield return new WaitForSeconds(3);
             canBeHit = true;
             StopCoroutine(MakePlayerInvulnerable());
-        }
-
-        void DeduceLifeIcon()
-        {
-            for (int i = lifeImages.Count - 1; i >= 0; i--)
-            {
-                if (lifeImages[i].IsActive())
-                {
-                    lifeImages[i].gameObject.SetActive(false);
-                    break;
-                }
-            }
         }
 
         void DisablePlayer()

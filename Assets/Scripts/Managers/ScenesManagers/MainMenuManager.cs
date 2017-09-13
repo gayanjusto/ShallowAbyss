@@ -13,8 +13,6 @@ namespace Assets.Scripts.Managers
         public Text newGameBtnText;
         public Text selectSubBtnText;
         public Text shopBtnText;
-        public Text selectLanguageBtnText;
-        public Text quitBtnText;
 
         private void Start()
         {
@@ -29,8 +27,6 @@ namespace Assets.Scripts.Managers
                 newGameBtnText.text = ld.newGameMainMenu;
                 selectSubBtnText.text = ld.selectSubMainMenu;
                 shopBtnText.text = ld.shopMainMenu;
-                selectLanguageBtnText.text = ld.selectLanguageMainMenu;
-                quitBtnText.text = ld.quitMainMenu;
             }
         }
     }

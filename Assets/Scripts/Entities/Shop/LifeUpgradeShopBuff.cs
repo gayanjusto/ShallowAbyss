@@ -7,14 +7,14 @@ using System;
 
 namespace Assets.Scripts.Entities.Shop
 {
-    public class LifeUpgradeShopBuff : ShopBuff, IShopBuff, ILanguageUI
+    public class LifeUpgradeShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
-        public override Func<bool> CanIncreaseBuff()
+        public override Func<bool> HasEnoughCreditsToBuy()
         {
             return () => PlayerStatusManager.PlayerDataInstance.CanUpgradeLife();
         }
 
-        public override Action BuyBuff()
+        public override Action BuyItem()
         {
             return () => PlayerStatusManager.PlayerDataInstance.IncreaseLifeUpgrade();
 

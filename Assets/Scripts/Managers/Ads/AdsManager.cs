@@ -32,6 +32,7 @@ namespace Assets.Scripts.Managers.Ads
 
         public bool WillShowAdsButton()
         {
+			return true;
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
                 return false;

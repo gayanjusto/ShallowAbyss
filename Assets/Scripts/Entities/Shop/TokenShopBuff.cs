@@ -7,14 +7,14 @@ using System;
 
 namespace Assets.Scripts.Entities.Shop
 {
-    public class TokenShopBuff : ShopBuff, IShopBuff, ILanguageUI
+    public class TokenShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
-        public override Func<bool> CanIncreaseBuff()
+        public override Func<bool> HasEnoughCreditsToBuy()
         {
             return () => true;
         }
 
-        public override Action BuyBuff()
+        public override Action BuyItem()
         {
             return () => PlayerStatusManager.PlayerDataInstance.IncreaseJackpotTokens(1);
 
