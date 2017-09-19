@@ -28,7 +28,7 @@ namespace Assets.Scripts.Services
         }
         static LanguageDictionary LoadDictionary()
         {
-            var currentCulture = PlayerStatusManager.PlayerDataInstance.GetCurrentLanguage();
+            var currentCulture = PlayerStatusService.LoadPlayerStatus().GetCurrentLanguage();
             LanguageDictionary ld = new LanguageDictionary();
             ld.isLoaded = false;
             if (Application.platform == RuntimePlatform.Android)

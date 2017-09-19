@@ -13,7 +13,6 @@ namespace Assets.Scripts.Managers
 {
     public class ShopSceneManager : MonoBehaviour, ILanguageUI
     {
-        public PlayerStatusManager playerStatusManager;
         public SelectedObjectManager selectedObjectManager;
 
         public Text scoreAmountTxt;
@@ -50,13 +49,13 @@ namespace Assets.Scripts.Managers
         void BuyShip(IShopItem selectedShip)
         {
             //Player has enough money?
-            if (!selectedShip.HasEnoughCreditsToBuy().Invoke())
+            if (!selectedShip.HasReachedItemMax().Invoke())
             {
                 alertMessageManager.SetAlertMessage(notEnoughMoneyMsg);
                 return;
             }
 
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
             //Player already bought this ship?
             if (!((IShopCharacterSkin)selectedShip).AlreadyHasShip().Invoke())
@@ -67,7 +66,7 @@ namespace Assets.Scripts.Managers
 
                 selectedShip.BuyItem().Invoke();
 
-                playerStatusManager.SavePlayerStatus(playerData);
+                PlayerStatusService.SavePlayerStatus(playerData);
 
                 ((IShopCharacterSkin)selectedShip).DisableCharacterButton();
                 shipsCarouselManager.DisableShipButtonClick(((MonoBehaviour)selectedShip).gameObject);
@@ -87,9 +86,9 @@ namespace Assets.Scripts.Managers
 
         void BuyBuff(ShopBuff item)
         {
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
-            if (!item.HasEnoughCreditsToBuy().Invoke())
+            if (!item.HasReachedItemMax().Invoke())
             {
                 alertMessageManager.SetAlertMessage(itemMaxReachedMsg);
                 return;
@@ -102,7 +101,7 @@ namespace Assets.Scripts.Managers
                 item.BuyItem().Invoke();
 
                 playerData.DecreaseScore(item.buffPrice);
-                playerStatusManager.SavePlayerStatus(playerData);
+                PlayerStatusService.SavePlayerStatus(playerData);
                 LoadPlayerData();
             }
             else
@@ -113,12 +112,12 @@ namespace Assets.Scripts.Managers
 
         bool PlayerHasEnoughFundsToBuy(int price)
         {
-            return playerScore - price > 0;
+            return playerScore - price >= 0;
         }
 
         void LoadPlayerData()
         {
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             playerScore = playerData.GetScore();
             scoreAmountTxt.text = playerScore.ToString();
 
@@ -127,7 +126,7 @@ namespace Assets.Scripts.Managers
             SetShieldsAmountText(playerData.GetShieldBuff(), playerData.GetShieldUpgrade());
 
             SetStoredLifesText(playerData.GetStoreLifePrizes());
-            SetStoredShieldsText(playerData.GetStoreLifePrizes());
+            SetStoredShieldsText(playerData.GetStoredShieldPrizes());
             SetDashUpgradesText(playerData.GetDashUpgrade(), playerData.GetMaxDashUpgrade());
         }
 

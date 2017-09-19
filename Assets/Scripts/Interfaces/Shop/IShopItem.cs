@@ -4,7 +4,7 @@ namespace Assets.Scripts.Interfaces.Shop
 {
     public interface IShopItem
     {
-        Func<bool> HasEnoughCreditsToBuy();
+        Func<bool> HasReachedItemMax();
         Action BuyItem();
         int GetPrice();
     }

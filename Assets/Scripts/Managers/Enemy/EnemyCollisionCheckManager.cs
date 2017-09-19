@@ -1,6 +1,4 @@
 ﻿using Assets.Scripts.Constants;
-using Assets.Scripts.Controllers;
-using Assets.Scripts.Enums;
 using Assets.Scripts.Managers.Enemy;
 using UnityEngine;
 
@@ -8,13 +6,13 @@ namespace Assets.Scripts.Managers
 {
     public class EnemyCollisionCheckManager : MonoBehaviour
     {
-        EnemyPoolManager enemyPoolManager;
+        public BaseEnemyPositionManager enemyPositionManager;
         Transform topCollider;
 
         private void Start()
         {
-            enemyPoolManager = GameObject.Find("EnemyPool").GetComponent<EnemyPoolManager>();
             topCollider = GameObject.Find("TopCollider").transform;
+
         }
 
         private void Update()
@@ -22,7 +20,7 @@ namespace Assets.Scripts.Managers
             //Has hit top collider, disable and send enemy to pool
             if (this.transform.position.y >= topCollider.position.y)
             {
-                enemyPoolManager.SendObjectToPool(this.transform.parent.gameObject);
+                enemyPositionManager.SendObjectToPool();
             }
         }
 

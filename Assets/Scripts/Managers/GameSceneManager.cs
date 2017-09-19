@@ -16,6 +16,7 @@ namespace Assets.Scripts.Managers
         public Text mainMenuGameOverText;
         public Text shareText;
         public Text watchAdsText;
+        public Text gameOverText;
 
         private void Start()
         {
@@ -27,11 +28,11 @@ namespace Assets.Scripts.Managers
             if (ld.isLoaded)
             {
                 gamePausedText.text = ld.pausedTitle;
-                newGameText.text = ld.newGameMainMenu;
+                newGameText.text = ld.newGame;
                 continueText.text = ld.continueMsg;
                 mainMenuPausedText.text = ld.mainMenu;
+                gameOverText.text = ld.gameOver;
 
-                newGameText.text = ld.newGameMainMenu;
                 mainMenuGameOverText.text = ld.mainMenu;
                 shareText.text = ld.share;
                 watchAdsText.text = ld.watchAds;

@@ -4,6 +4,8 @@
     {
         public bool isLoaded;
         public string newGameMainMenu;
+        public string newGame;
+        public string gameOver;
         public string selectSubMainMenu;
         public string shopMainMenu;
         public string selectLanguageMainMenu;
@@ -39,5 +41,9 @@
         public string noRewardJackPot;
         public string pushBtnJackPot;
         public string resultPreMsgJackPot;
+        public string adsResultMsgCredits;
+        public string adsResultMsgLives;
+        public string adsResultMsgShields;
+        public string adsResultMsgTokens;
     }
 }

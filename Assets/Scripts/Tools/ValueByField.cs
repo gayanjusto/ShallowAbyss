@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Assets.Scripts.Tools
 {
@@ -6,7 +7,12 @@ namespace Assets.Scripts.Tools
     {
         public static string GetStringFieldValue(this object obj, string fieldName) 
         {
-            return obj.GetType().GetField(fieldName).GetValue(obj) as string;
+            return (obj.GetType().GetField(fieldName).GetValue(obj)).ToString();
+        }
+
+        public static object GetObjectFieldValue(this object obj, string fieldName)
+        {
+            return obj.GetType().GetField(fieldName).GetValue(obj);
         }
     }
 }

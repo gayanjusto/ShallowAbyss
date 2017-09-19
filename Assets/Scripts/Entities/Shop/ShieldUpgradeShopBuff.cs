@@ -10,14 +10,14 @@ namespace Assets.Scripts.Entities.Shop
     public class ShieldUpgradeShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
 
-        public override Func<bool> HasEnoughCreditsToBuy()
+        public override Func<bool> HasReachedItemMax()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.CanUpgradeShield();
+            return () => PlayerStatusService.LoadPlayerStatus().CanUpgradeShield();
         }
 
         public override Action BuyItem()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.IncreaseShieldUpgrade();
+            return () => PlayerStatusService.LoadPlayerStatus().IncreaseShieldUpgrade();
         }
 
         public override void LoadTextsLanguage()

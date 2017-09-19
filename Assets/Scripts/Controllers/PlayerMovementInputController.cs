@@ -23,7 +23,10 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public ParticleSystem bubblesParticle;
 
-    public SpriteRenderer spriteRenderer;
+    //public SpriteRenderer spriteRenderer;
+    //public SpriteRenderer propellerRenderer;
+    public PlayerSpritesManager playerSpritesManager;
+
     public PlayerLifeManager playerLifeManager;
     public UserInputManager userInputManager;
     float h_value;
@@ -35,6 +38,7 @@ public class PlayerMovementInputController : MonoBehaviour
 
     private void Start()
     {
+        playerSpritesManager = GetComponent<PlayerSpritesManager>();
         bubblesVelocity = bubblesParticle.velocityOverLifetime;
     }
 
@@ -47,21 +51,22 @@ public class PlayerMovementInputController : MonoBehaviour
             v_value = 0;
     }
 
-    void FlipSprite(float x_value)
-    {
-        //is moving left?
-        if (x_value < 0 && !spriteRenderer.flipX)
-        {
-            spriteRenderer.flipX = !spriteRenderer.flipX;
-            dashParticleGameObject.transform.localScale = new Vector3(1, -1, 1);
-        }
-        //is moving right?
-        else if (x_value > 0 && spriteRenderer.flipX)
-        {
-            spriteRenderer.flipX = false;
-            dashParticleGameObject.transform.localScale = new Vector3(1, 1, 1);
-        }
-    }
+    //void FlipSprite(float x_value)
+    //{
+    //    //is moving left?
+    //    if (x_value < 0 && !playerSpritesManager.IsMovingLeft())
+    //    {
+    //        playerSpritesManager.FlipSprites_X();
+    //        dashParticleGameObject.transform.localScale = new Vector3(1, -1, 1);
+    //    }
+    //    //is moving right?
+    //    else if (x_value > 0 && playerSpritesManager.IsMovingLeft())
+    //    {
+    //        playerSpritesManager.FlipSprites_X();
+
+    //        dashParticleGameObject.transform.localScale = new Vector3(1, 1, 1);
+    //    }
+    //}
 
     void ChangeDashParticlePositionRotation(Vector2 currentMovement)
     {
@@ -198,9 +203,10 @@ public class PlayerMovementInputController : MonoBehaviour
 
         bubblesParticle.Play();
 
-        if (!spriteRenderer.flipX)
+        //Is moving right
+        if (!playerSpritesManager.IsMovingLeft())
         {
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            playerSpritesManager.FlipSprites_X();
         }
     }
 
@@ -218,9 +224,9 @@ public class PlayerMovementInputController : MonoBehaviour
 
         bubblesParticle.Play();
 
-        if (spriteRenderer.flipX)
+        if (playerSpritesManager.IsMovingLeft())
         {
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            playerSpritesManager.FlipSprites_X();
         }
     }
 

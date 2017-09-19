@@ -16,6 +16,9 @@ namespace Assets.Scripts.Managers.Enemy
         public Vector3 screenRightEdge;
         public Vector3 screenBottomEdge;
 
+        public Transform objPool;
+
+    
         protected void Start()
         {
             wallsManager = GameObject.Find("WallsManager").GetComponent<WallsManager>();
@@ -27,11 +30,12 @@ namespace Assets.Scripts.Managers.Enemy
             screenBottomEdge = ScreenPositionService.GetBottomEdge(Camera.main);
 
             enemyPoolManager = GameObject.Find("EnemyPool").GetComponent<EnemyPoolManager>();
+
         }
 
         public void SendObjectToPool()
         {
-            enemyPoolManager.SendObjectToPool(this.gameObject);
+            enemyPoolManager.SendObjectToPool(objPool, this.gameObject);
         }
 
         protected void SetInitialSpawnPosition()

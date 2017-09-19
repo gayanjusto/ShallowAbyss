@@ -10,7 +10,7 @@ namespace Assets.Scripts.Managers.Enemy
         {
             enemySpawnerManager = GameObject.Find("EnemySpawner").GetComponent<EnemySpawnerManager>();
         }
-        public void SendObjectToPool(GameObject obj)
+        public void SendObjectToPool(Transform poolToSend, GameObject obj)
         {
             //if game object equals to heavy enemy, decrease the amount of heavy enemy spawned
             if (obj.name.Contains("Heavy"))
@@ -18,7 +18,7 @@ namespace Assets.Scripts.Managers.Enemy
                 enemySpawnerManager.currentAmountHeavyEnemyInScene--;
             }
             enemySpawnerManager.amountSpawnedEnemies--;
-            obj.transform.parent = this.transform;
+            obj.transform.parent = poolToSend;
 
             //set all children to inactive
             foreach (Transform item in obj.transform)

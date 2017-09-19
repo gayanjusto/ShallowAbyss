@@ -9,14 +9,14 @@ namespace Assets.Scripts.Entities.Shop
 {
     public class LifeShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
-        public override Func<bool> HasEnoughCreditsToBuy()
+        public override Func<bool> HasReachedItemMax()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.CanIncreaseLifeBuff();
+            return () => PlayerStatusService.LoadPlayerStatus().CanIncreaseLifeBuff();
         }
 
         public override Action BuyItem()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.IncreaseLifeBuff(1);
+            return () => PlayerStatusService.LoadPlayerStatus().IncreaseLifeBuff(1);
         }
 
         public override void LoadTextsLanguage()

@@ -20,11 +20,10 @@ namespace Assets.Scripts.Entities.Player
         }
 
         public int score;
-        public int credits;
         public int lifeBuff;
         public int shieldBuff;
         public List<int> shipsOwnedIds;
-        public string shipSpritePath;
+        public int selectedShipId;
         public int jackPotTokens;
         public int storedLifePrizes;
         public int storedShieldPrizes;
@@ -53,10 +52,6 @@ namespace Assets.Scripts.Entities.Player
             this.score -= score;
         }
 
-        public int GetCredits()
-        {
-            return this.credits;
-        }
 
         public int GetLifeBuff()
         {
@@ -85,7 +80,7 @@ namespace Assets.Scripts.Entities.Player
 
         public void SetShieldBuff(int value)
         {
-            this.lifeBuff = value;
+            this.shieldBuff = value;
         }
 
         public void IncreaseShieldBuff(int amount)
@@ -101,16 +96,16 @@ namespace Assets.Scripts.Entities.Player
         public List<int> GetOwnedShipsIDs()
         {
             return this.shipsOwnedIds;
-        } 
-
-        public string GetShipSpritePath()
-        {
-            return this.shipSpritePath;
         }
 
-        public void SetShipSpritePath(string path)
+        public int GetSelectedShipId()
         {
-            this.shipSpritePath = path;
+            return this.selectedShipId;
+        }
+
+        public void SetSelectedShipId(int id)
+        {
+            this.selectedShipId = id;
         }
 
         public int GetJackpotTokens()
@@ -140,7 +135,7 @@ namespace Assets.Scripts.Entities.Player
 
         public bool CanBuyBuff(string buffName, int amount)
         {
-            if(buffName == MemberInfo.GetMemberName(() => this.lifeBuff))
+            if (buffName == MemberInfo.GetMemberName(() => this.lifeBuff))
             {
                 return CanIncreaseLifeBuff();
             }
@@ -202,7 +197,7 @@ namespace Assets.Scripts.Entities.Player
 
         public bool IncreaseLifeUpgrade()
         {
-            if(lifeUpgrade <= maxLifeUpgrade)
+            if (lifeUpgrade <= maxLifeUpgrade)
             {
                 lifeUpgrade++;
                 return true;
@@ -245,7 +240,7 @@ namespace Assets.Scripts.Entities.Player
             {
                 lifeBuff++;
                 storedLifePrizes--;
-                if(!CanIncreaseLifeBuff())
+                if (!CanIncreaseLifeBuff())
                 {
                     return;
                 }

@@ -1,6 +1,7 @@
 ﻿{
   "newGameMainMenu": "Play!",
   "newGame": "New Game",
+  "gameOver": "Game Over!",
   "selectSubMainMenu": "Select Sub",
   "shopMainMenu": "Shop",
   "selectLanguageMainMenu": "Select Language",
@@ -35,5 +36,10 @@
   "twoPointsDashWarningJackPot": "To earn an Upgrade Dash",
   "noRewardJackPot": "Nothing",
   "pushBtnJackPot": "Push",
-  "resultPreMsgJackPot": "You've Earned:"
+  "resultPreMsgJackPot": "You've Earned:",
+  
+  "adsResultMsgCredits": "{0}x Credits from this round!",
+  "adsResultMsgLives": "An Extra Stored Life!",
+  "adsResultMsgShields": "An Extra Stored Shield!",
+  "adsResultMsgTokens": "A Token!"
 }

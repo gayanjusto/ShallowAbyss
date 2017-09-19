@@ -26,7 +26,7 @@ namespace Assets.Scripts.Managers
 
         void Start()
         {
-            int dashUpgrades = PlayerStatusManager.PlayerDataInstance.GetDashUpgrade();
+            int dashUpgrades = PlayerStatusService.LoadPlayerStatus().GetDashUpgrade();
 
             if (dashUpgrades > 0)
             {

@@ -20,11 +20,13 @@ namespace Assets.Scripts.Managers
         {
 
             PlayerLifeManager playerLifeManager = GetComponent<PlayerLifeManager>();
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
             playerData.SwapStoredShields();
             amountShields =  playerData.GetShieldBuff();
             int initialAmountShields = amountShields;
+
+            PlayerStatusService.SavePlayerStatus(playerData);
 
             UpdateShieldText();
         }

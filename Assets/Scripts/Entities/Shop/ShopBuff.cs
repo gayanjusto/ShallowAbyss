@@ -18,15 +18,17 @@ namespace Assets.Scripts.Entities
         public ShopSelectedObjectEnum buffType;
 
         protected ShopSceneManager shopSceneManager;
-        protected PlayerStatusManager playerStatusManager;
         protected Color originalColor;
         protected SelectedObjectManager selectedObjectManager;
+
+        protected Text priceTxt;
 
         protected void Start()
         {
             shopSceneManager = GameObject.Find("ShopSceneManager").GetComponent<ShopSceneManager>();
-            playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
             selectedObjectManager = GameObject.Find("SelectedObjectManager").GetComponent<SelectedObjectManager>();
+            priceTxt = transform.FindChild("Price").GetComponent<Text>();
+            priceTxt.text = string.Format("$ {0}", buffPrice);
 
             LoadTextsLanguage();
             originalColor = GetComponent<Image>().color;
@@ -35,7 +37,7 @@ namespace Assets.Scripts.Entities
             GetComponent<Button>().onClick.AddListener(() => selectedObjectManager.SetSelectedObject(this));
         }
 
-        public virtual Func<bool> HasEnoughCreditsToBuy()
+        public virtual Func<bool> HasReachedItemMax()
         {
             throw new NotImplementedException();
         }

@@ -17,7 +17,7 @@ namespace Assets.Scripts.Managers.Shop
         [Range(0,1)]
         public float verticalSliderValue;
 
-        ShipCarousel[] instantiatedShips;
+        Ship[] instantiatedShips;
 
         void Start()
         {
@@ -36,10 +36,10 @@ namespace Assets.Scripts.Managers.Shop
             return ships;
         }
 
-        void DisableOwnedShips(ShipCarousel[] instantiatedShips)
+        void DisableOwnedShips(Ship[] instantiatedShips)
         {
             //player data in ShipCarousel instance has not been loaded yet, so we'll have to do it manually
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
             foreach (var shipInstance in instantiatedShips)
             {
@@ -57,7 +57,7 @@ namespace Assets.Scripts.Managers.Shop
         }
         public void PlotShipsIntoCarousel(GameObject[] ships, bool displayPriceTag)
         {
-            instantiatedShips = new ShipCarousel[ships.Length];
+            instantiatedShips = new Ship[ships.Length];
 
             RectTransform containerRT = containerCarousel.GetComponent<RectTransform>();
             float containerWidth = containerRT.sizeDelta.x;
@@ -72,7 +72,7 @@ namespace Assets.Scripts.Managers.Shop
             for (int i = 0; i < ships.Length; i++)
             {
                 GameObject shipInstance = Instantiate(ships[i]);
-                instantiatedShips[i] = shipInstance.GetComponent<ShipCarousel>();
+                instantiatedShips[i] = shipInstance.GetComponent<Ship>();
                 if (!displayPriceTag)
                 {
                     shipInstance.transform.FindChild("PriceTag").gameObject.SetActive(false);

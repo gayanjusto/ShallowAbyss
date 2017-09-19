@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Entities.Player;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +12,6 @@ namespace Assets.Scripts.Managers
         public Text amountLifeTxt;
 
         public ScoreManager scoreCounterManager;
-        public PlayerStatusManager playerStatusManager;
         public GameOverManager gameOverManager;
         public DashManager dashManager;
 
@@ -25,7 +22,7 @@ namespace Assets.Scripts.Managers
         private void Start()
         {
             playerSpriteRenderer = GetComponent<SpriteRenderer>();
-            PlayerStatusData playerData = PlayerStatusManager.PlayerDataInstance;
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             maxLifes = playerData.GetLifeUpgrade();
 
             playerData.SwapStoredLivesToBuff();
@@ -35,15 +32,16 @@ namespace Assets.Scripts.Managers
             UpdateLifeText();
 
             canBeHit = true;
+
+            PlayerStatusService.SavePlayerStatus(playerData);
         }
 
         public void DecreaseLife()
         {
-            Debug.Log("player hit");
 
             if (canBeHit)
             {
-               // lives--;
+                //lives--;
 
                 //Game Over
                 if (lives == 0)
@@ -53,12 +51,12 @@ namespace Assets.Scripts.Managers
 
                     //Save player stats
                     //Turn life and shield buffs equals zero after death
-                    PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+                    PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
                     playerData.SetLifeBuff(0);
                     playerData.SetShieldBuff(0);
-                    int finalScore = Mathf.FloorToInt(scoreCounterManager.score); ;
+                    int finalScore = Mathf.FloorToInt(scoreCounterManager.score);
                     playerData.IncreaseScore(finalScore);
-                    playerStatusManager.SavePlayerStatus(playerData);
+                    PlayerStatusService.SavePlayerStatus(playerData);
 
                     gameOverManager.SetGameOver(finalScore);
                     DisablePlayer();
@@ -111,12 +109,7 @@ namespace Assets.Scripts.Managers
 
         void DisablePlayer()
         {
-            Debug.Log("Disabled player");
             StopAllCoroutines();
-            //Debug.Log("Player disabled");
-            //dashManager.enabled = false;
-            //playerSpriteRenderer.enabled = false;
-            //GetComponent<PlayerMovementInputController>().enabled = false;
             this.gameObject.SetActive(false);
         }
 
@@ -134,5 +127,6 @@ namespace Assets.Scripts.Managers
                 StopCoroutine(FlashPLayer());
             }
         }
+      
     }
 }

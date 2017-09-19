@@ -13,9 +13,9 @@ namespace Assets.Scripts.Managers
         public void SetInitialSpawnConfiguration()
         {
             base.Start();
-            float wallScale = base.wallsManager.GetLeftWallScale().x;
-            leftOffset = this.transform.localScale.x / 2 + wallScale;
-            rightOffset = leftOffset + this.transform.localScale.x;
+            //float wallScale = base.wallsManager.GetLeftWallScale().x;
+            //leftOffset = this.transform.localScale.x / 2 + wallScale;
+            //rightOffset = leftOffset + this.transform.localScale.x;
             base.SetInitialSpawnPosition();
         }
 

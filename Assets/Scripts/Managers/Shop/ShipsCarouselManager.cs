@@ -11,7 +11,6 @@ namespace Assets.Scripts.Managers.Shop
 {
     public class ShipsCarouselManager : MonoBehaviour
     {
-        public PlayerStatusManager playerStatusManager;
         public GameObject containerCarousel;
         public float shipsOffset_X;
         public float shipPosition_Y;
@@ -19,13 +18,9 @@ namespace Assets.Scripts.Managers.Shop
 
         float currentOffset_X;
         GameObject[] shipsInstance;
-        ShipCarousel defaultShip;
+        Ship defaultShip;
 
-        void Start()
-        {
-            playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
-        }
-
+      
         GameObject[] GetAllShipsFromPrefabList()
         {
             //Get all ships available from repository
@@ -66,19 +61,19 @@ namespace Assets.Scripts.Managers.Shop
                 //set defaultShip
                 if(i == 0)
                 {
-                    defaultShip = shipInstance.GetComponent<ShipCarousel>();
+                    defaultShip = shipInstance.GetComponent<Ship>();
                 }
             }
         }
 
         void DisableOwnedShips()
         {
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
             foreach (var shipInstance in shipsInstance)
             {
                 //if player has already bought this ship, disable its button
-                if (playerData.GetOwnedShipsIDs().Contains(shipInstance.GetComponent<ShipCarousel>().shipId))
+                if (playerData.GetOwnedShipsIDs().Contains(shipInstance.GetComponent<Ship>().shipId))
                 {
                     DisableShipButtonClick(shipInstance);
                 }
@@ -94,22 +89,22 @@ namespace Assets.Scripts.Managers.Shop
 
         public void LoadOwnedShips(bool displayPriceTag)
         {
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             GameObject[] ships = GetAllShipsFromPrefabList();
             GameObject[] filteredList = ships.Where(x =>
-            playerData.GetOwnedShipsIDs().Contains(x.GetComponent<ShipCarousel>().shipId)).ToArray();
+            playerData.GetOwnedShipsIDs().Contains(x.GetComponent<Ship>().shipId)).ToArray();
             PlotShipsIntoCarousel(filteredList, displayPriceTag);
         }
 
         public void HideNotOwnedShips()
         {
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             List<int> ownedShipsIDs = playerData.GetOwnedShipsIDs();
 
             foreach (var shipInstance in shipsInstance)
             {
                 //if player doesn't have a ship, remove it from the interface
-                if (!ownedShipsIDs.Contains(shipInstance.GetComponent<ShipCarousel>().shipId))
+                if (!ownedShipsIDs.Contains(shipInstance.GetComponent<Ship>().shipId))
                 {
                     shipInstance.SetActive(false);
                 }
@@ -126,7 +121,7 @@ namespace Assets.Scripts.Managers.Shop
             shipImage.color = new Color(shipOriginalColor.r, shipOriginalColor.g, shipOriginalColor.b, .1f);
         }
 
-        public ShipCarousel GetDefaultShip()
+        public Ship GetDefaultShip()
         {
             return defaultShip;
         }

@@ -1,6 +1,7 @@
 ﻿{
   "newGameMainMenu": "Jogar!",
-  "newGame": "New Game",
+  "newGame": "Nova Partida",
+  "gameOver": "Acabou!",
   "selectSubMainMenu": "Escolher Submarino",
   "shopMainMenu": "Loja",
   "selectLanguageMainMenu": "Escolher Idioma",
@@ -35,5 +36,9 @@
   "twoPointsDashWarningJackPot": "Para Melhorar Dash e necessário obter 3 pontos.",
   "noRewardJackPot": "Nada",
   "pushBtnJackPot": "Aperte",
-  "resultPreMsgJackPot": "Voce Ganhou:"
+  "resultPreMsgJackPot": "Voce Ganhou:",
+  "adsResultMsgCredits": "{0}x Creditos Dessa Partida!",
+  "adsResultMsgLives": "Mais uma Vida Armazenada!",
+  "adsResultMsgShields": "Mais um Escudo Armazenado!",
+  "adsResultMsgTokens": "Uma Ficha!"
 }

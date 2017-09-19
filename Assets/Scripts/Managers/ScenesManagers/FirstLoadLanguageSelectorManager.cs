@@ -8,13 +8,12 @@ namespace Assets.Scripts.Managers
     {
 
         public ScenesManager scenesManager;
-        public PlayerStatusManager playerStatusManager;
 
         public GameObject englishBtn, portugueseBtn;
 
         private void Start()
         {
-            if (PlayerStatusManager.HasPlayerDataFile())
+            if (PlayerStatusService.HasPlayerDataFile())
             {
                 scenesManager.LoadMainMenu();
             }else
@@ -25,10 +24,10 @@ namespace Assets.Scripts.Managers
         }
         public void SetCulture(string culture)
         {
-            var playerData = PlayerStatusManager.PlayerDataInstance;
+            var playerData = PlayerStatusService.LoadPlayerStatus();
             playerData.SetCurrentLanguage(culture);
 
-            playerStatusManager.SavePlayerStatus(playerData);
+            PlayerStatusService.SavePlayerStatus(playerData);
 
             scenesManager.LoadMainMenu();
         }

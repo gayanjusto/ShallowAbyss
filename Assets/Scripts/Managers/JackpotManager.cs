@@ -38,6 +38,7 @@ namespace Assets.Scripts.Managers
 
         public Image firstImage, secondImage, thirdImage;
         public float timeToStopImage;
+        public Button firstButton, secondButton, thirdButton;
 
 
         Queue<Image> imageQueue;
@@ -46,8 +47,6 @@ namespace Assets.Scripts.Managers
         bool isRollingImage;
         int currentImgValue;
         int rollingPrizeVal;
-
-        PlayerStatusManager playerStatusManager;
 
         string shieldItem;
         string lifeItem;
@@ -61,8 +60,8 @@ namespace Assets.Scripts.Managers
         string twoPointsSkinsWarningJackPot;
         string twoPointsDashWarningJackPot;
 
-
-
+        string stockedShieldMsg;
+        string stockedLifeMsg;
 
 
         int firstImgValue, secondImgValue, thirdImgValue;
@@ -71,9 +70,8 @@ namespace Assets.Scripts.Managers
         {
             notEnoughTokensMsg = "Not enough tokens!";
             spritesForResult = new List<Sprite>();
-            playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
 
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             amountTokens = playerData.GetJackpotTokens();
             tokenAmountTxt.text = amountTokens.ToString();
 
@@ -102,13 +100,13 @@ namespace Assets.Scripts.Managers
 
         public void PullLever()
         {
-            if (1 + 1 == 2/*amountTokens > 0 && !gameActive*/)
+            if (amountTokens > 0 && !gameActive)
             {
                 resultPanelPrizeImg.sprite = spritesForResult[0];
 
-                PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+                PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
                 playerData.DecreaseJackpotTokens(1);
-                playerStatusManager.SavePlayerStatus(playerData);
+                PlayerStatusService.SavePlayerStatus(playerData);
                 tokenAmountTxt.text = playerData.GetJackpotTokens().ToString();
 
                 leverBtn.interactable = false;
@@ -122,6 +120,7 @@ namespace Assets.Scripts.Managers
                 StartCoroutine(RollImage());
 
                 gameActive = true;
+                EnableButtons();
             }
             else
             {
@@ -135,6 +134,19 @@ namespace Assets.Scripts.Managers
             ReenableLeverButton();
         }
 
+        void DisableButtons()
+        {
+            firstButton.interactable = false;
+            secondButton.interactable = false;
+            thirdButton.interactable = false;
+        }
+
+        void EnableButtons()
+        {
+            firstButton.interactable = true;
+            secondButton.interactable = true;
+            thirdButton.interactable = true;
+        }
         void ReenableLeverButton()
         {
             leverBtn.interactable = true;
@@ -181,7 +193,7 @@ namespace Assets.Scripts.Managers
 
         void GetPrizeObject(int prizeNum, bool bestPrize)
         {
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             switch (prizeNum)
             {
                 case 1: //Life Buff
@@ -191,17 +203,20 @@ namespace Assets.Scripts.Managers
                 GetShieldPrize(bestPrize, playerData, prizeNum);
                 break;
                 case 3: //Extra Credits
-                resultMsgTxt.text = creditsItem;
                 resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
                 if (bestPrize)
                 {
+                    resultMsgTxt.text = string.Format("+300 {0}", creditsItem);
+
                     playerData.IncreaseScore(300);
                 }
                 else
                 {
+                    resultMsgTxt.text = string.Format("+50 {0}", creditsItem);
+
                     playerData.IncreaseScore(50);
                 }
-                playerStatusManager.SavePlayerStatus(playerData);
+                PlayerStatusService.SavePlayerStatus(playerData);
                 break;
                 case 4: //Dash Upgrade
                 if (bestPrize && playerData.CanUpgradeDash())
@@ -229,6 +244,7 @@ namespace Assets.Scripts.Managers
             resultMsgTxt.text = lifeItem;
             if (bestPrize)
             {
+                resultMsgTxt.text = string.Format("+3 {0}", lifeItem);
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -238,11 +254,11 @@ namespace Assets.Scripts.Managers
                     }
                     else
                     {
-                        playerData.IncreaseShielStock(1);
+                        resultMsgTxt.text = string.Format("+1 {0}", stockedLifeMsg);
+
+                        playerData.IncreaseLifeStock(1);
                     }
                 }
-
-                playerData.IncreaseLifeUpgrade();
             }
             else
             {
@@ -252,10 +268,12 @@ namespace Assets.Scripts.Managers
                 }
                 else
                 {
+                    resultMsgTxt.text = string.Format("+1 {0}", stockedLifeMsg);
+
                     playerData.IncreaseLifeStock(1);
                 }
             }
-            playerStatusManager.SavePlayerStatus(playerData);
+            PlayerStatusService.SavePlayerStatus(playerData);
             resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
         }
 
@@ -264,6 +282,8 @@ namespace Assets.Scripts.Managers
             resultMsgTxt.text = shieldItem;
             if (bestPrize)
             {
+                resultMsgTxt.text = string.Format("+3 {0}", shieldItem);
+
                 for (int i = 0; i < 3; i++)
                 {
                     if (playerData.CanIncreaseShieldBuff())
@@ -272,7 +292,9 @@ namespace Assets.Scripts.Managers
                     }
                     else
                     {
-                        playerData.IncreaseShieldBuff(1);
+                        resultMsgTxt.text = string.Format("+3 {0}", stockedShieldMsg);
+
+                        playerData.IncreaseShielStock(1);
                     }
                 }
             }else
@@ -283,10 +305,12 @@ namespace Assets.Scripts.Managers
                 }
                 else
                 {
-                    playerData.IncreaseShieldBuff(1);
+                    resultMsgTxt.text = string.Format("+1 {0}", stockedShieldMsg);
+
+                    playerData.IncreaseShielStock(1);
                 }
             }
-            playerStatusManager.SavePlayerStatus(playerData);
+            PlayerStatusService.SavePlayerStatus(playerData);
             resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
         }
 
@@ -328,6 +352,7 @@ namespace Assets.Scripts.Managers
             {
                 thirdImgValue = rollingPrizeVal;
                 GetPrize(firstImgValue, secondImgValue, thirdImgValue);
+                DisableButtons();
                 return;
             }
 
@@ -342,16 +367,19 @@ namespace Assets.Scripts.Managers
                 notEnoughTokensMsg = ld.notEnoughTokensJackPot;
                 twoPointsSkinsWarningJackPot = ld.twoPointsSkinsWarningJackPot;
                 twoPointsDashWarningJackPot = ld.twoPointsDashWarningJackPot;
-
                 shieldItem = ld.shieldItem;
                 lifeItem = ld.lifeItem;
                 dashUpgradeItem = ld.dashUpgradeItem;
                 creditsItem = ld.creditsItem;
                 skinItem = ld.skinItem;
                 noRewardJackPot = ld.noRewardJackPot;
+                stockedLifeMsg = ld.shopStoredLives;
+                stockedShieldMsg = ld.shopStoredShields;
+
                 leverTxt.text = ld.pushBtnJackPot;
                 resultPreMsgTxt.text = ld.resultPreMsgJackPot;
                 returnTxt.text = ld.returnMsg;
+
             }
         }
     }

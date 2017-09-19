@@ -16,7 +16,7 @@ namespace Assets.Scripts.Managers
         public GameObject SelectedObject { get; set; }
         public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
         public ShipsCarouselManager shipsCarouselManager;
-        ShipCarousel selectedShip;
+        Ship selectedShip;
 
         public Text subSelectorTitle;
         public Text goText;
@@ -34,18 +34,16 @@ namespace Assets.Scripts.Managers
             this.ShopSelectedObjectEnum = selectedObj;
             this.SelectedObject = selectedGameObj;
 
-            selectedShip = this.SelectedObject.GetComponent<ShipCarousel>();
+            selectedShip = this.SelectedObject.GetComponent<Ship>();
         }
 
         public void DefineShip()
         {
-            PlayerStatusManager playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
-            PlayerStatusData playerdata = playerStatusManager.LoadPlayerStatus();
-            string spritePath = selectedShip.shipSpritePath;
+            PlayerStatusData playerdata = PlayerStatusService.LoadPlayerStatus();
 
-            playerdata.SetShipSpritePath(spritePath);
+            playerdata.SetSelectedShipId(selectedShip.GetId());
 
-            playerStatusManager.SavePlayerStatus(playerdata);
+            PlayerStatusService.SavePlayerStatus(playerdata);
 
             GameObject.Find("SceneManager").GetComponent<ScenesManager>().LoadNewGame();
         }

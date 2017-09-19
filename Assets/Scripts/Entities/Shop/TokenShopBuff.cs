@@ -9,14 +9,14 @@ namespace Assets.Scripts.Entities.Shop
 {
     public class TokenShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
-        public override Func<bool> HasEnoughCreditsToBuy()
+        public override Func<bool> HasReachedItemMax()
         {
             return () => true;
         }
 
         public override Action BuyItem()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.IncreaseJackpotTokens(1);
+            return () => PlayerStatusService.LoadPlayerStatus().IncreaseJackpotTokens(1);
 
         }
 

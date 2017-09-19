@@ -17,7 +17,7 @@ namespace Assets.Scripts.DAO
             fileStream.Close();
         }
 
-        public T LoadPlayerStatus(string pathToData)
+        public T LoadData(string pathToData)
         {
             if (File.Exists(Application.persistentDataPath + pathToData))
             {

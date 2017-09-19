@@ -6,22 +6,33 @@ namespace Assets.Scripts.Managers
 {
     public class PlayerShipManager : MonoBehaviour
     {
-        public SpriteRenderer shipRenderer;
-        const string defaultShipSprite = "Sprites/Standard Enemy Sprites/0";
+        public Animator playerAnimator;
 
         private void Start()
         {
-            shipRenderer = GetComponent<SpriteRenderer>();
-            PlayerStatusManager playerStatusManager = GameObject.Find("PlayerStatusManager").GetComponent<PlayerStatusManager>();
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
+            playerAnimator = GetComponent<Animator>();
+            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
-            Sprite loadedShipSprite = Resources.Load<Sprite>(playerData.GetShipSpritePath());
-
-            if(loadedShipSprite == null)
+            int selectedShipId = playerData.GetSelectedShipId();
+            if (selectedShipId == 0)
             {
-                loadedShipSprite = Resources.Load<Sprite>(defaultShipSprite);
+                selectedShipId = 1;
             }
-            shipRenderer.sprite = loadedShipSprite;
+            GameObject loadedShipPrefab = Resources.Load<GameObject>("Prefabs/Ships/" + selectedShipId);
+            Ship ship = loadedShipPrefab.GetComponent<Ship>();
+            //Load propeller
+            GameObject propeller = Instantiate(Resources.Load<GameObject>(ship.propellerPath));
+            propeller.transform.parent = this.transform;
+
+            //Load props
+            for (int i = 0; i < ship.propsPath.Length; i++)
+            {
+                var prop = Instantiate(Resources.Load<GameObject>(ship.propsPath[i]));
+                prop.transform.parent = this.transform;
+            }
+
+            //Load all sprite renderers into sprites manager
+            GetComponent<PlayerSpritesManager>().LoadSpriteRenderers();
         }
 
 

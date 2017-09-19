@@ -10,14 +10,14 @@ namespace Assets.Scripts.Entities.Shop
     public class DashUpgradeShopBuff : ShopBuff, IShopItem, ILanguageUI
     {
 
-        public override Func<bool> HasEnoughCreditsToBuy()
+        public override Func<bool> HasReachedItemMax()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.CanUpgradeDash();
+            return () => PlayerStatusService.LoadPlayerStatus().CanUpgradeDash();
         }
 
         public override Action BuyItem()
         {
-            return () => PlayerStatusManager.PlayerDataInstance.IncreaseDashUpgrade();
+            return () => PlayerStatusService.LoadPlayerStatus().IncreaseDashUpgrade();
         }
 
         public override void LoadTextsLanguage()

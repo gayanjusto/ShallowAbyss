@@ -98,14 +98,5 @@ namespace Assets.Scripts.Managers
             return _wall;
         }
 
-        public Vector3 GetLeftWallScale()
-        {
-            return currentLeftWall.transform.localScale;
-        }
-
-        public Vector3 GetRighttWallScale()
-        {
-            return currentLeftWall.transform.localScale;
-        }
     }
 }

@@ -13,9 +13,11 @@ namespace Assets.Scripts.Managers
         public Text newGameBtnText;
         public Text selectSubBtnText;
         public Text shopBtnText;
+        public Text versionText;
 
         private void Start()
         {
+            versionText.text = string.Format("v{0} - alpha", Application.version);
             LoadTextsLanguage();
         }
 

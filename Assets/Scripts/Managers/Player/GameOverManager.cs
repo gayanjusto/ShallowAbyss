@@ -1,5 +1,8 @@
-﻿using Assets.Scripts.Entities.Player;
+﻿using Assets.Scripts.Entities.Ads;
+using Assets.Scripts.Entities.Player;
 using Assets.Scripts.Managers.Ads;
+using Assets.Scripts.Managers.UI;
+using Assets.Scripts.Services;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
@@ -9,13 +12,13 @@ namespace Assets.Scripts.Managers
 {
     public class GameOverManager : MonoBehaviour
     {
-        public PlayerStatusManager playerStatusManager;
         public ScoreManager scoreCounterManager;
         public AdsManager adsManager;
         public Image gameOverPanel;
         public Button dashBtn;
         public Slider dashSlider;
         public GameObject enemySpanwer, prizeSpawner, btnUp, btnDown, btnLeft, btnRight;
+        public PrizeResultManager prizeResultManager;
 
         public Text gameOverScoreText;
         public Button adsButton;
@@ -78,7 +81,7 @@ namespace Assets.Scripts.Managers
             btnRight.SetActive(false);
 
             pauseButton.gameObject.SetActive(false);
-            adsButton.gameObject.SetActive(adsManager.WillShowAdsButton());
+            adsButton.gameObject.SetActive(adsManager.WillShowAdsButton(finalScore));
             gameOverPanel.gameObject.SetActive(true);
             StartScoreCountDown(finalScore);
             screenShotScore.text = finalScore.ToString();
@@ -164,13 +167,27 @@ namespace Assets.Scripts.Managers
 
         public void GiveAdsPrize()
         {
-            int bonusAmount = 50;
-            PlayerStatusData playerData = playerStatusManager.LoadPlayerStatus();
-            playerData.IncreaseScore(bonusAmount);
-            scoreCounterManager.score = bonusAmount;
-            playerStatusManager.SavePlayerStatus(playerData);
+            var prize = AdsPrizeService.GetRandomPrize(this.finalScore);
+            prize.GivePrize(this);
+            PlayerStatusService.SavePlayerStatus(PlayerStatusService.LoadPlayerStatus());
+        }
 
-            StartCoroutine(ScoreCountDownCoroutine(bonusAmount, true));
+        public int GetFinalScore()
+        {
+            return this.finalScore;
+        }
+
+        public void SetPrizeMessage(AdsPrizeData prizeData)
+        {
+            prizeResultManager.gameObject.SetActive(true);
+            prizeResultManager.SetPrizeImage(prizeData.prizeSprite);
+            prizeResultManager.SetPrizeMessage(prizeData.message);
+        }
+
+        public void RollScoreForAdsCredits(int bonusScore)
+        {
+            scoreCounterManager.score = bonusScore;
+            StartCoroutine(ScoreCountDownCoroutine(bonusScore, true));
         }
     }
 }
