@@ -25,7 +25,7 @@ namespace Assets.Scripts.Managers
 
         public bool CanBeHit()
         {
-            return playerLifeManager.CanBeHit() && playerShieldManager.CanBeHit();
+            return playerLifeManager.CanBeHit()/* && playerShieldManager.CanBeHit()*/;
         }
 
         private void Start()
@@ -79,9 +79,9 @@ namespace Assets.Scripts.Managers
                 HitTopCollider();
             }
 
-            if (this.transform.position.y <= bottomEdge.y)
+            if (this.transform.position.y <= bottomCollider.position.y)
             {
-                this.transform.position = new Vector3(this.transform.position.x, bottomEdge.y + .1f);
+                this.transform.position = new Vector3(this.transform.position.x, bottomCollider.position.y + .1f);
             }
 
             if (this.transform.position.x <= leftEdge.x)

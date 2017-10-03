@@ -11,6 +11,7 @@ namespace Assets.Scripts.Managers
         public Transform prizesPool;
         public PrizeType prizeType;
         public float speed;
+        public AudioSource audioSource;
 
         private void Update()
         {
@@ -28,6 +29,8 @@ namespace Assets.Scripts.Managers
         {
             if (collision.gameObject.tag == Tags.Player)
             {
+                audioSource.Play();
+
                 if (prizeType == PrizeType.Life)
                 {
                     collision.gameObject.GetComponent<PlayerLifeManager>().IncreaseLife();
@@ -35,12 +38,12 @@ namespace Assets.Scripts.Managers
                     return;
                 }
 
-                if (prizeType == PrizeType.Shield)
-                {
-                    collision.gameObject.GetComponent<PlayerShieldManager>().IncreaseShield();
-                    DeactivatePrize();
-                    return;
-                }
+                //if (prizeType == PrizeType.Shield)
+                //{
+                //    collision.gameObject.GetComponent<PlayerShieldManager>().IncreaseShield();
+                //    DeactivatePrize();
+                //    return;
+                //}
 
                 if (prizeType == PrizeType.Credits)
                 {

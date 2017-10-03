@@ -13,6 +13,9 @@ namespace Assets.Scripts.Managers
 {
     public class ShopSceneManager : MonoBehaviour, ILanguageUI
     {
+        public AudioSource buyAudioSource;
+        public AudioSource errorAudioSource;
+
         public SelectedObjectManager selectedObjectManager;
 
         public Text scoreAmountTxt;
@@ -30,7 +33,6 @@ namespace Assets.Scripts.Managers
         public AlertMessageManager alertMessageManager;
 
         public int playerScore;
-        public ShipsCarouselManager shipsCarouselManager;
 
         string notEnoughMoneyMsg;
         string subAlreadyBoughtMsg;
@@ -41,6 +43,9 @@ namespace Assets.Scripts.Managers
 
         void Start()
         {
+            buyAudioSource.clip.LoadAudioData();
+            errorAudioSource.clip.LoadAudioData();
+
             LoadTextsLanguage();
 
             LoadPlayerData();
@@ -49,8 +54,10 @@ namespace Assets.Scripts.Managers
         void BuyShip(IShopItem selectedShip)
         {
             //Player has enough money?
-            if (!selectedShip.HasReachedItemMax().Invoke())
+            
+            if (!PlayerHasEnoughFundsToBuy(selectedShip.GetPrice()))
             {
+                PlayErrorSound();
                 alertMessageManager.SetAlertMessage(notEnoughMoneyMsg);
                 return;
             }
@@ -69,16 +76,18 @@ namespace Assets.Scripts.Managers
                 PlayerStatusService.SavePlayerStatus(playerData);
 
                 ((IShopCharacterSkin)selectedShip).DisableCharacterButton();
-                shipsCarouselManager.DisableShipButtonClick(((MonoBehaviour)selectedShip).gameObject);
 
-                //Clean data
+                //Clear data
                 //remove from selectedobjectmanager
                 selectedObjectManager.RemoveSelectedObject();
 
                 selectedShip = null;
+
+                PlayBuySound();
             }
             else
             {
+                PlayErrorSound();
                 alertMessageManager.SetAlertMessage(subAlreadyBoughtMsg);
             }
 
@@ -90,6 +99,7 @@ namespace Assets.Scripts.Managers
 
             if (!item.HasReachedItemMax().Invoke())
             {
+                PlayErrorSound();
                 alertMessageManager.SetAlertMessage(itemMaxReachedMsg);
                 return;
             }
@@ -103,9 +113,14 @@ namespace Assets.Scripts.Managers
                 playerData.DecreaseScore(item.buffPrice);
                 PlayerStatusService.SavePlayerStatus(playerData);
                 LoadPlayerData();
+
+                item.DeselectObject();
+                selectedObjectManager.RemoveSelectedObject();
+                PlayBuySound();
             }
             else
             {
+                PlayErrorSound();
                 alertMessageManager.SetAlertMessage(notEnoughMoneyMsg);
             }
         }
@@ -160,10 +175,23 @@ namespace Assets.Scripts.Managers
             dashUpgradesTxt.text = string.Format(": {0} / {1}", amount, maxAmount);
         }
 
+        void PlayBuySound()
+        {
+            buyAudioSource.Play();
+        }
+
+        void PlayErrorSound()
+        {
+            errorAudioSource.Play();
+        }
         public void BuySelectedObject()
         {
             var selectedObject = selectedObjectManager.GetSelectedObject();
 
+            if(selectedObject == null)
+            {
+                return;
+            }
             if (selectedObject.GetObjectType() == ShopSelectedObjectEnum.Ship)
             {
                 BuyShip((IShopItem)selectedObject);
@@ -176,7 +204,6 @@ namespace Assets.Scripts.Managers
             }
         }
 
-       
         public void LoadTextsLanguage()
         {
             LanguageDictionary ld = LanguageService.GetLanguageDictionary();

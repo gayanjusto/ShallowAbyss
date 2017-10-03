@@ -8,11 +8,19 @@ namespace Assets.Scripts.Managers.ScenesManagers
     {
         public ScenesManager scenesManager;
         public Image audioBtnImage;
+        public AudioSource selectAudioSource;
 
         public Sprite[] audioSprites;
 
+        private void Start()
+        {
+            audioBtnImage.sprite = audioSprites[(int)AudioListener.volume];
+        }
+
         public void SetCulture(string culture)
         {
+            selectAudioSource.Play();
+
             var playerData = PlayerStatusService.LoadPlayerStatus();
             playerData.SetCurrentLanguage(culture);
 
@@ -25,6 +33,8 @@ namespace Assets.Scripts.Managers.ScenesManagers
 
         public void ChangeAudio()
         {
+            selectAudioSource.Play();
+
             if (AudioListener.volume == 0)
                 AudioListener.volume = 1;
             else

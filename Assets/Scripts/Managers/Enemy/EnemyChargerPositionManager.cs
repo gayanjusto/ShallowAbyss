@@ -11,15 +11,21 @@ namespace Assets.Scripts.Managers
 
         public int chargeDirection;
 
+        public SpriteRenderer spriteRenderer;
 
-        void Update()
+
+        protected override void Start()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            base.Start();
+        }
+        protected override void Update()
         {
             if (this.transform.position.y >= playerObj.transform.position.y)
             {
                 //Set vertical direction to zero
                 enemyController.verticalDirection = 0;
                 enemyController.horizontalDirection = chargeDirection;
-                enemyController.minSpeed = 5;
             }
 
             if (this.transform.position.x <= base.screenLeftEdge.x - 2
@@ -27,15 +33,22 @@ namespace Assets.Scripts.Managers
             {
                 //remove speed from object
                 enemyController.horizontalDirection = 0;
-                base.SendObjectToPool();
+                this.SendObjectToPool();
             }
         }
 
-        public void SetInitialSpawnConfiguration()
+        public override void SendObjectToPool()
         {
-            base.Start();
+            base.enemySpawnerManager.currentAmountChargerEnemyInScene--;
+            base.SendObjectToPool();
+        }
+
+        public override void SetInitialSpawnConfiguration()
+        {
+            Start();
             int side = RandomValueTool.GetRandomValue(0, 100);
 
+            bool flipX = false;
             //Left side
             if (side < 50)
             {
@@ -48,10 +61,15 @@ namespace Assets.Scripts.Managers
                 //Right to Left
                 chargeDirection = -1;
                 this.transform.position = new Vector3(base.screenRightEdge.x, base.screenRightEdge.y);
+
+                //Flip Sprite
+                flipX = true;
             }
+
 
             enemyController.verticalDirection = 1;
             enemyController.SetRandomSpeed();
+            spriteRenderer.flipX = flipX;
         }
 
     }

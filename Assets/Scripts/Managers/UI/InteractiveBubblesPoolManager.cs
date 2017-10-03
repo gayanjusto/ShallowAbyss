@@ -8,34 +8,57 @@ namespace Assets.Scripts.Managers.UI
     public class InteractiveBubblesPoolManager : MonoBehaviour
     {
         public GameObject bubblesPool;
+        public int maxBubbles;
+
+        List<Transform> spawnedHolders;
 
         private void Start()
         {
+            spawnedHolders = new List<Transform>();
+            maxBubbles = bubblesPool.transform.childCount;
             StartCoroutine(GetBubbleFromPool());
         }
         public void DisableBubble(GameObject bubble)
         {
+            spawnedHolders.Remove(bubble.transform.parent);
             bubble.SetActive(false);
-            StartCoroutine(GetBubbleFromPool());
+
+            if (spawnedHolders.Count < maxBubbles)
+            {
+                StartCoroutine(GetBubbleFromPool());
+            }
         }
 
         IEnumerator GetBubbleFromPool()
         {
-            yield return new WaitForSeconds(2);
-
-            int bubbleHolder_posX = RandomValueTool.GetRandomValue(-3, 3);
-            //Find bubble from pool
-            foreach (Transform bubbleHolder in bubblesPool.transform)
+            while (spawnedHolders.Count < maxBubbles)
             {
-                GameObject bubble = bubbleHolder.GetChild(0).gameObject;
-                if (!bubble.active)
+                yield return new WaitForSeconds(2);
+
+                Debug.Log("Spawning bubble");
+
+                bool hasBubbles = false;
+                int bubbleHolder_posX = RandomValueTool.GetRandomValue(-5, 5);
+                //Find bubble from pool
+                foreach (Transform bubbleHolder in bubblesPool.transform)
                 {
+                    if (spawnedHolders.Contains(bubbleHolder)) { continue; }
+                    spawnedHolders.Add(bubbleHolder);
                     bubbleHolder.transform.position = new Vector3(bubbleHolder_posX, bubbleHolder.position.y);
-                    bubble.SetActive(true);
-                    StopCoroutine(GetBubbleFromPool());
-                    break;
+
+                    foreach (Transform bubble in bubbleHolder.transform)
+                    {
+                        if (!bubble.gameObject.active)
+                        {
+                            bubble.gameObject.SetActive(true);
+                            hasBubbles = true;
+                        }
+                    }
+
+                    if (hasBubbles) { break; }
                 }
             }
+
         }
     }
 }

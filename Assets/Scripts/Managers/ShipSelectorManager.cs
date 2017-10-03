@@ -15,7 +15,7 @@ namespace Assets.Scripts.Managers
     {
         public GameObject SelectedObject { get; set; }
         public ShopSelectedObjectEnum ShopSelectedObjectEnum { get; set; }
-        public ShipsCarouselManager shipsCarouselManager;
+        public ShipSelectorCarouselManager shipsCarouselManager;
         Ship selectedShip;
 
         public Text subSelectorTitle;

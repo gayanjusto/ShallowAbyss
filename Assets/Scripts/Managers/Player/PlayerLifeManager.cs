@@ -14,14 +14,13 @@ namespace Assets.Scripts.Managers
         public ScoreManager scoreCounterManager;
         public GameOverManager gameOverManager;
         public DashManager dashManager;
-
+        public AudioSource hitAudioSource;
 
         bool canBeHit;
-        SpriteRenderer playerSpriteRenderer;
-
+        PlayerSpritesManager playerSpritesManager;
         private void Start()
         {
-            playerSpriteRenderer = GetComponent<SpriteRenderer>();
+            playerSpritesManager = GetComponent<PlayerSpritesManager>();
             PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
             maxLifes = playerData.GetLifeUpgrade();
 
@@ -34,6 +33,8 @@ namespace Assets.Scripts.Managers
             canBeHit = true;
 
             PlayerStatusService.SavePlayerStatus(playerData);
+
+            hitAudioSource.clip.LoadAudioData();
         }
 
         public void DecreaseLife()
@@ -41,7 +42,10 @@ namespace Assets.Scripts.Managers
 
             if (canBeHit)
             {
-                //lives--;
+                hitAudioSource.Play();
+
+                lives--;
+                PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
                 //Game Over
                 if (lives == 0)
@@ -50,10 +54,8 @@ namespace Assets.Scripts.Managers
                     scoreCounterManager.enabled = false;
 
                     //Save player stats
-                    //Turn life and shield buffs equals zero after death
-                    PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
                     playerData.SetLifeBuff(0);
-                    playerData.SetShieldBuff(0);
+
                     int finalScore = Mathf.FloorToInt(scoreCounterManager.score);
                     playerData.IncreaseScore(finalScore);
                     PlayerStatusService.SavePlayerStatus(playerData);
@@ -64,6 +66,9 @@ namespace Assets.Scripts.Managers
                 }
                 else
                 {
+                    //buffs means extra lives, so we reduce one from total amount of lives the player has
+                    playerData.SetLifeBuff(lives -1);
+                    PlayerStatusService.SavePlayerStatus(playerData);
                     UpdateLifeText();
 
                     //Make player invulnerable for few seconds
@@ -84,15 +89,15 @@ namespace Assets.Scripts.Managers
         {
             if (lives > 0)
             {
-
                 StartCoroutine(MakePlayerInvulnerable());
-                StartCoroutine(FlashPLayer());
+                playerSpritesManager.FlashSprites();
             }
         }
 
         public void IncreaseLife()
         {
-           
+            lives++;
+            UpdateLifeText();
         }
 
         void UpdateLifeText()
@@ -112,21 +117,5 @@ namespace Assets.Scripts.Managers
             StopAllCoroutines();
             this.gameObject.SetActive(false);
         }
-
-        IEnumerator FlashPLayer()
-        {
-            while (!canBeHit)
-            {
-                yield return new WaitForSeconds(0.1f);
-                playerSpriteRenderer.enabled = !playerSpriteRenderer.enabled;
-            }
-
-            if (canBeHit)
-            {
-                playerSpriteRenderer.enabled = true;
-                StopCoroutine(FlashPLayer());
-            }
-        }
-      
     }
 }

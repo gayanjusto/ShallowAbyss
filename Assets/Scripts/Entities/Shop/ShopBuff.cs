@@ -28,7 +28,7 @@ namespace Assets.Scripts.Entities
             shopSceneManager = GameObject.Find("ShopSceneManager").GetComponent<ShopSceneManager>();
             selectedObjectManager = GameObject.Find("SelectedObjectManager").GetComponent<SelectedObjectManager>();
             priceTxt = transform.FindChild("Price").GetComponent<Text>();
-            priceTxt.text = string.Format("$ {0}", buffPrice);
+            priceTxt.text = string.Format("{0}", buffPrice);
 
             LoadTextsLanguage();
             originalColor = GetComponent<Image>().color;

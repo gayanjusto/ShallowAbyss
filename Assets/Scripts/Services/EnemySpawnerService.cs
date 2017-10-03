@@ -13,7 +13,7 @@ namespace Assets.Scripts.Services
             get
             {
                 return (Enum.GetValues(typeof(EnemyTypeEnum)) as EnemyTypeEnum[]).Length - 1;
-                
+
             }
         }
 
@@ -37,7 +37,7 @@ namespace Assets.Scripts.Services
 
             if (enemyType == EnemyTypeEnum.Standard)
             {
-                if(EnemyKindLevel.GetStandardKindsLevel()[spawnKindVal] > currentLevel)
+                if (EnemyKindLevel.GetStandardKindsLevel()[spawnKindVal] > currentLevel)
                 {
                     return GetEnemyKind(enemyType, maxVal, currentLevel);
                 }
@@ -75,6 +75,48 @@ namespace Assets.Scripts.Services
 
             }
             return spawnKindVal;
+        }
+
+        public static int SetInitialDifficult(float timeThreshold)
+        {
+            var timeExperience = PlayerTimeExperienceDataService.LoadTimeExperience();
+            float averageTime = 0;
+            if (timeExperience != null)
+            {
+                averageTime = timeExperience.GetAverageGameTime();
+            }
+
+            //Beginner
+            if (timeThreshold > averageTime)
+            {
+                return 5;
+            }
+
+            //Normal
+            if (averageTime > timeThreshold * 2)
+            {
+                return 7;
+            }
+
+            //Hard
+            if (averageTime > timeThreshold * 5)
+            {
+                return 10;
+            }
+
+            //Expert
+            if (averageTime > timeThreshold * 10)
+            {
+                return 15;
+            }
+
+            //Expert
+            if (averageTime > timeThreshold * 15)
+            {
+                return 20;
+            }
+
+            return 5;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Assets.Scripts.Managers
 
         public GameObject enemyPool;
         public int amountSpawnedEnemies;
+        public int timeExperienceThreshold;
         public int amountEnemiesBaseLevel;
         public int currentMaxAmountEnemies;
         public int intervalLevelForBreathing;
@@ -41,12 +42,13 @@ namespace Assets.Scripts.Managers
 
         private void Start()
         {
+            amountEnemiesBaseLevel = EnemySpawnerService.SetInitialDifficult(timeExperienceThreshold);
             maxEnemiesTypes = (Enum.GetValues(typeof(EnemyTypeEnum)) as EnemyTypeEnum[]).Length - 1;
 
             currentDifficultTime = timeToChangeDifficult;
             currentMaxAmountEnemies = amountEnemiesBaseLevel;
 
-
+            //These are used with the method: GetMaxAmountOfEnemyType()
             amountStandard = Convert.ToInt16(Resources.Load<TextAsset>("EnemyTypeCount/standard").text);
             amountLight = Convert.ToInt16(Resources.Load<TextAsset>("EnemyTypeCount/light").text);
             amountCharger = Convert.ToInt16(Resources.Load<TextAsset>("EnemyTypeCount/charger").text);
@@ -62,7 +64,7 @@ namespace Assets.Scripts.Managers
             ChangeDifficult();
 
             //canSpawnEnemy
-            if (amountSpawnedEnemies <= currentMaxAmountEnemies)
+            if (amountSpawnedEnemies < currentMaxAmountEnemies)
             {
                 SpawnEnemies();
             }
@@ -82,8 +84,14 @@ namespace Assets.Scripts.Managers
 
         void ChangeMaxAmountEnemies()
         {
-            if(currentBreathingLevelAmount > 0)
+
+
+            if (currentBreathingLevelAmount > 0)
             {
+                //if is breathing, keep increasing max amount
+                if (currentLevelDifficult % 2 == 0)
+                    realMaxAmout += 2;
+
                 currentBreathingLevelAmount--;
                 return;
             }
@@ -99,7 +107,8 @@ namespace Assets.Scripts.Managers
             currentMaxAmountEnemies = realMaxAmout != 0 ? realMaxAmout : currentMaxAmountEnemies;
             if (currentLevelDifficult % 2 == 0 && (currentMaxAmountEnemies + 1) < gameMaxAmountEnemies)
             {
-                currentMaxAmountEnemies++;
+                currentMaxAmountEnemies += 2;
+                realMaxAmout = currentMaxAmountEnemies;
             }
         }
 
@@ -133,7 +142,8 @@ namespace Assets.Scripts.Managers
             }
 
             //Get the number of the enemy type. E.g: Standard/0 or Standard/1
-            string enemyMaxVal = this.GetStringFieldValue("amount" + enemyTypeToSpawn.ToString());
+            string enemyMaxVal = GetMaxAmountOfEnemyType(enemyTypeToSpawn);
+
             var enemyKindVal = EnemySpawnerService.GetEnemyKind(enemyTypeToSpawn, Convert.ToInt32(enemyMaxVal), currentLevelDifficult);
 
             //Find the enemytype category in the Hierachy. It's contained inside EnemyPool
@@ -142,6 +152,11 @@ namespace Assets.Scripts.Managers
 
 
             InstantiateEnemiesFromPool(enemyCategory, amountEnemiesToSpawn);
+        }
+
+        string GetMaxAmountOfEnemyType(EnemyTypeEnum enemyTypeToSpawn)
+        {
+            return this.GetStringFieldValue("amount" + enemyTypeToSpawn.ToString());
         }
 
         bool CanSpawnChargerEnemy(ref int amountEnemiesToSpawn)
@@ -187,6 +202,11 @@ namespace Assets.Scripts.Managers
 
             foreach (Transform enemy in enemyPool)
             {
+                if(amountSpawned >= amountToSpawn)
+                {
+                    return;
+                }
+
                 if (!enemy.gameObject.active)
                 {
                     enemy.GetComponent<BaseEnemyPositionManager>().objPool = enemyPool;

@@ -10,18 +10,17 @@ using Assets.Scripts.Interfaces.UI;
 using System;
 using Assets.Scripts.Entities.Internationalization;
 using Assets.Scripts.Services;
+using System.Text;
 
 namespace Assets.Scripts.Managers
 {
     public class JackpotManager : MonoBehaviour, ILanguageUI
     {
-        //Suggested prizes: Life, Shield, 50 Credits, DashDuration, Character Skin
-        //Best Prizes: 3x Life / 3x Shield / 300 Credits / DashDuration / LifeUpgrade /  Character Skin (may not exist)
-        //Second Best Prizes: Life / Shield
+        public AudioSource leverPullAudioSource, errorAudioSource, selectAudioSource;
+
         List<Sprite> spritesForResult;
 
         public int maxValue;
-        public int amountTokens;
 
         public Text tokenAmountTxt;
         public Button leverBtn;
@@ -39,7 +38,7 @@ namespace Assets.Scripts.Managers
         public Image firstImage, secondImage, thirdImage;
         public float timeToStopImage;
         public Button firstButton, secondButton, thirdButton;
-
+        public Button returnBtn;
 
         Queue<Image> imageQueue;
         bool gameActive;
@@ -63,34 +62,28 @@ namespace Assets.Scripts.Managers
         string stockedShieldMsg;
         string stockedLifeMsg;
 
+        int skinPrizeId;
+        Sprite skinPrize;
 
         int firstImgValue, secondImgValue, thirdImgValue;
+
+        PlayerStatusData playerData;
 
         private void Start()
         {
             notEnoughTokensMsg = "Not enough tokens!";
             spritesForResult = new List<Sprite>();
 
-            PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
-            amountTokens = playerData.GetJackpotTokens();
-            tokenAmountTxt.text = amountTokens.ToString();
+            playerData = PlayerStatusService.LoadPlayerStatus();
+            tokenAmountTxt.text = playerData.GetJackpotTokens().ToString();
 
             imageQueue = new Queue<Image>();
 
             var _spritesForResult = Resources.LoadAll<Sprite>("Sprites/Jackpot/RollingImages");
-            var playerSkins = Resources.LoadAll<Sprite>("Sprites/Player");
-            var ownedIdsStr = playerData.GetOwnedShipsIDs().Select(x => x.ToString());
-            playerSkins = playerSkins.Where(x => !ownedIdsStr.Contains(x.name)).ToArray();
 
             foreach (var item in _spritesForResult)
             {
                 spritesForResult.Add(item);
-            }
-            if (playerSkins.Length > 0)
-            {
-                int rndSkin = RandomValueTool.GetRandomValue(0, playerSkins.Length - 1);
-                Sprite playerSkin = playerSkins[rndSkin];
-                spritesForResult.Add(playerSkin);
             }
 
             maxValue = (short)(spritesForResult.Count - 1);
@@ -98,40 +91,32 @@ namespace Assets.Scripts.Managers
             LoadTextsLanguage();
         }
 
-        public void PullLever()
+        void LoadSkinForPrize()
         {
-            if (amountTokens > 0 && !gameActive)
+            //Has already loaded a prize from before
+            if (skinPrize != null)
             {
-                resultPanelPrizeImg.sprite = spritesForResult[0];
+                spritesForResult.Remove(skinPrize);
+            }
+            var playerSkins = Resources.LoadAll<Sprite>("Sprites/Player/Previews");
+            List<int> owendSkins = PlayerStatusService.LoadPlayerStatus().GetOwnedShipsIDs();
+            int[] skinsIds = playerSkins.Select(x => Convert.ToInt32(x.name)).ToArray();
+            skinsIds = skinsIds.Where(x => !owendSkins.Contains(x)).ToArray();
 
-                PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
-                playerData.DecreaseJackpotTokens(1);
-                PlayerStatusService.SavePlayerStatus(playerData);
-                tokenAmountTxt.text = playerData.GetJackpotTokens().ToString();
+            var ownedIdsStr = owendSkins.Select(x => x.ToString());
+            playerSkins = playerSkins.Where(x => !ownedIdsStr.Contains(x.name)).ToArray();
 
-                leverBtn.interactable = false;
-
-                imageQueue.Enqueue(secondImage);
-                imageQueue.Enqueue(thirdImage);
-
-                currentRollingImage = firstImage;
-                currentImgValue = 0;
-                isRollingImage = true;
-                StartCoroutine(RollImage());
-
-                gameActive = true;
-                EnableButtons();
+            if (playerSkins.Length > 0)
+            {
+                skinPrizeId = RandomValueTool.GetRandomValue(skinsIds.Min(), skinsIds.Max());
+                skinPrize = playerSkins.First(x => skinPrizeId.ToString() == x.name);
+                spritesForResult.Add(skinPrize);
             }
             else
             {
-                alertMessageManager.SetAlertMessage(notEnoughTokensMsg);
+                maxValue = spritesForResult.Count -1;
+                Debug.Log("max value:" + maxValue);
             }
-        }
-
-        public void AcceptResult()
-        {
-            resultPanel.gameObject.SetActive(false);
-            ReenableLeverButton();
         }
 
         void DisableButtons()
@@ -147,8 +132,10 @@ namespace Assets.Scripts.Managers
             secondButton.interactable = true;
             thirdButton.interactable = true;
         }
+
         void ReenableLeverButton()
         {
+            returnBtn.interactable = true;
             leverBtn.interactable = true;
         }
 
@@ -161,6 +148,9 @@ namespace Assets.Scripts.Managers
             {
                 //Return best prize
                 GetPrizeObject(firstValue, true);
+                resultPanel.gameObject.SetActive(true);
+
+                return;
             }
 
             //Two numbers equal
@@ -185,24 +175,27 @@ namespace Assets.Scripts.Managers
             {
                 //Return second best prize
                 GetPrizeObject(equalNum.Value, false);
+                resultPanel.gameObject.SetActive(true);
+
+                return;
             }
 
             //return nothing
             resultPanel.gameObject.SetActive(true);
+
+            PlayerStatusService.SavePlayerStatus(null);
         }
 
         void GetPrizeObject(int prizeNum, bool bestPrize)
         {
             PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
+
             switch (prizeNum)
             {
                 case 1: //Life Buff
                 GetLifePrize(bestPrize, playerData, prizeNum);
                 break;
-                case 2: //Shield Buff
-                GetShieldPrize(bestPrize, playerData, prizeNum);
-                break;
-                case 3: //Extra Credits
+                case 2: //Extra Credits XXX 
                 resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
                 if (bestPrize)
                 {
@@ -216,9 +209,8 @@ namespace Assets.Scripts.Managers
 
                     playerData.IncreaseScore(50);
                 }
-                PlayerStatusService.SavePlayerStatus(playerData);
                 break;
-                case 4: //Dash Upgrade
+                case 3:  //Dash Upgrade
                 if (bestPrize && playerData.CanUpgradeDash())
                 {
                     playerData.IncreaseDashUpgrade();
@@ -228,14 +220,18 @@ namespace Assets.Scripts.Managers
                 else
                     resultMsgTxt.text = twoPointsDashWarningJackPot;
                 break;
-                case 5: //New Skin
+                case 4: //New Skin
                 if (bestPrize)
+                {
                     resultMsgTxt.text = skinItem;
+                    resultPanelPrizeImg.sprite = skinPrize;
+                    playerData.GetOwnedShipsIDs().Add(skinPrizeId);
+                }
                 else
                     resultMsgTxt.text = twoPointsSkinsWarningJackPot;
                 break;
             }
-
+            PlayerStatusService.SavePlayerStatus(playerData);
 
         }
 
@@ -254,9 +250,9 @@ namespace Assets.Scripts.Managers
                     }
                     else
                     {
-                        resultMsgTxt.text = string.Format("+1 {0}", stockedLifeMsg);
+                        resultMsgTxt.text = string.Format("+3 {0}", stockedLifeMsg);
 
-                        playerData.IncreaseLifeStock(1);
+                        playerData.IncreaseLifeStock(3);
                     }
                 }
             }
@@ -273,7 +269,6 @@ namespace Assets.Scripts.Managers
                     playerData.IncreaseLifeStock(1);
                 }
             }
-            PlayerStatusService.SavePlayerStatus(playerData);
             resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
         }
 
@@ -297,7 +292,8 @@ namespace Assets.Scripts.Managers
                         playerData.IncreaseShielStock(1);
                     }
                 }
-            }else
+            }
+            else
             {
                 if (playerData.CanIncreaseShieldBuff())
                 {
@@ -310,7 +306,6 @@ namespace Assets.Scripts.Managers
                     playerData.IncreaseShielStock(1);
                 }
             }
-            PlayerStatusService.SavePlayerStatus(playerData);
             resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
         }
 
@@ -320,7 +315,6 @@ namespace Assets.Scripts.Managers
             {
                 yield return new WaitForSeconds(.1f);
                 rollingPrizeVal = RandomValueTool.GetRandomValue(0, maxValue);
-
                 currentRollingImage.sprite = spritesForResult[rollingPrizeVal];
             }
         }
@@ -333,6 +327,8 @@ namespace Assets.Scripts.Managers
             }
             isRollingImage = false;
             StopAllCoroutines();
+
+            selectAudioSource.Play();
 
             if (currentImgValue == 0) //stopped first img
             {
@@ -353,6 +349,8 @@ namespace Assets.Scripts.Managers
                 thirdImgValue = rollingPrizeVal;
                 GetPrize(firstImgValue, secondImgValue, thirdImgValue);
                 DisableButtons();
+                gameActive = false;
+
                 return;
             }
 
@@ -376,11 +374,51 @@ namespace Assets.Scripts.Managers
                 stockedLifeMsg = ld.shopStoredLives;
                 stockedShieldMsg = ld.shopStoredShields;
 
-                leverTxt.text = ld.pushBtnJackPot;
                 resultPreMsgTxt.text = ld.resultPreMsgJackPot;
-                returnTxt.text = ld.returnMsg;
+            }
+        }
+
+        public void PullLever()
+        {
+            if (playerData.GetJackpotTokens() > 0 && !gameActive)
+            {
+                LoadSkinForPrize();
+                leverPullAudioSource.Play();
+
+                returnBtn.interactable = false;
+
+                resultPanelPrizeImg.sprite = spritesForResult[0];
+
+                playerData.DecreaseJackpotTokens(1);
+                tokenAmountTxt.text = playerData.GetJackpotTokens().ToString();
+                PlayerStatusService.SavePlayerStatus(playerData);
+
+                leverBtn.interactable = false;
+
+                imageQueue.Enqueue(secondImage);
+                imageQueue.Enqueue(thirdImage);
+
+                currentRollingImage = firstImage;
+                currentImgValue = 0;
+                isRollingImage = true;
+                StartCoroutine(RollImage());
+
+                gameActive = true;
+                EnableButtons();
 
             }
+            else
+            {
+                errorAudioSource.Play();
+                alertMessageManager.SetAlertMessage(notEnoughTokensMsg);
+            }
+        }
+
+        public void AcceptResult()
+        {
+            selectAudioSource.Play();
+            resultPanel.gameObject.SetActive(false);
+            ReenableLeverButton();
         }
     }
 }

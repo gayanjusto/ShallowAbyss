@@ -2,6 +2,7 @@
 using Assets.Scripts.Entities.Player;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Assets.Scripts.Managers.Shop
 {
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Managers.Shop
 
         void Start()
         {
-            var ships = GetAllShipsFromPrefabList();
+            var ships = GetNotOwnedShipsFromPrefabList();
 
             PlotShipsIntoCarousel(ships, true);
             DisableOwnedShips(instantiatedShips);
@@ -29,11 +30,13 @@ namespace Assets.Scripts.Managers.Shop
             SetVerticalSliderValue();
         }
 
-        GameObject[] GetAllShipsFromPrefabList()
+        GameObject[] GetNotOwnedShipsFromPrefabList()
         {
             //Get all ships available from repository
             GameObject[] ships = Resources.LoadAll<GameObject>("Prefabs/Ships");
-            return ships;
+            var ownedShipdsIds = PlayerStatusService.LoadPlayerStatus().GetOwnedShipsIDs();
+            
+            return ships.Where(x => !ownedShipdsIds.Contains(x.GetComponent<Ship>().GetId())).ToArray();
         }
 
         void DisableOwnedShips(Ship[] instantiatedShips)

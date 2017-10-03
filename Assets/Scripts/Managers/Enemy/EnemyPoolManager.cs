@@ -17,6 +17,7 @@ namespace Assets.Scripts.Managers.Enemy
             {
                 enemySpawnerManager.currentAmountHeavyEnemyInScene--;
             }
+
             enemySpawnerManager.amountSpawnedEnemies--;
             obj.transform.parent = poolToSend;
 

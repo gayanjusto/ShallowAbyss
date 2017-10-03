@@ -68,14 +68,14 @@ namespace Assets.Scripts.Managers
                 lifePrize.gameObject.SetActive(true);
                 prize = lifePrize;
             }
-            else if (prizeValue < 90 && prizeValue >= 80)
-            {
-                //spawn shield
-                shieldPrize.transform.parent = null;
-                shieldPrize.gameObject.SetActive(true);
-                prize = shieldPrize;
-            }
-            else if (prizeValue < 80 && prizeValue >= 0)
+            //else if (prizeValue < 90 && prizeValue >= 80)
+            //{
+            //    //spawn shield
+            //    shieldPrize.transform.parent = null;
+            //    shieldPrize.gameObject.SetActive(true);
+            //    prize = shieldPrize;
+            //}
+            else if (prizeValue < 90 && prizeValue >= 0)
             {
                 //spawn credits (50)
                 creditsPrize.transform.parent = null;

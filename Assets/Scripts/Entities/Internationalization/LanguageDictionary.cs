@@ -8,9 +8,8 @@
         public string gameOver;
         public string selectSubMainMenu;
         public string shopMainMenu;
-        public string selectLanguageMainMenu;
-        public string quitMainMenu;
-        public string returnMsg;
+        
+        
         public string buy;
         public string notEnoughFundsShop;
         public string subAlreadyBoughtShop;
@@ -39,11 +38,23 @@
         public string twoPointsSkinsWarningJackPot;
         public string twoPointsDashWarningJackPot;
         public string noRewardJackPot;
-        public string pushBtnJackPot;
         public string resultPreMsgJackPot;
+
         public string adsResultMsgCredits;
         public string adsResultMsgLives;
         public string adsResultMsgShields;
         public string adsResultMsgTokens;
-    }
+
+        public string tutDontShowAgain;
+        public string tutMainGameMovement;
+        public string tutMainGameScoring;
+        public string tutMainGameDash;
+        public string tutMainGameLifeShield;
+
+        public string tutShopLifeShieldBuff;
+        public string tutShopStoredLifeShield;
+        public string tutShopDashBuff;
+        public string tutShopCredits;
+        public string tutShopToken;   
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }

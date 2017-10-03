@@ -29,6 +29,8 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public PlayerLifeManager playerLifeManager;
     public UserInputManager userInputManager;
+    public AudioSource swimAudio;
+
     float h_value;
     float v_value;
 
@@ -164,6 +166,8 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public void MoveUp()
     {
+        swimAudio.Play();
+
         RemoveVelocity();
 
         v_value = 1 * mov_boost_value;
@@ -177,6 +181,8 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public void MoveDown()
     {
+        swimAudio.Play();
+
         RemoveVelocity();
 
         v_value = -1 * mov_boost_value;
@@ -190,6 +196,8 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public void MoveLeft()
     {
+        swimAudio.Play();
+
         short directionValue = -1;
         SetDashParticleDirection(directionValue * -1, directionValue);
 
@@ -212,6 +220,8 @@ public class PlayerMovementInputController : MonoBehaviour
 
     public void MoveRight()
     {
+        swimAudio.Play();
+
         short directionValue = 1;
         SetDashParticleDirection(directionValue * -1, directionValue);
 

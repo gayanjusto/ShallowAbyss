@@ -3,6 +3,7 @@ using Assets.Scripts.Entities.Player;
 using Assets.Scripts.Managers.Ads;
 using Assets.Scripts.Managers.UI;
 using Assets.Scripts.Services;
+using Assets.Scripts.Services.AdMob;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
@@ -35,6 +36,8 @@ namespace Assets.Scripts.Managers
 
         void StartScoreCountDown(int finalScore)
         {
+            Debug.Log(finalScore);
+
             this.finalScore = finalScore;
             StartCoroutine(ScoreCountDownCoroutine(finalScore, false));
         }
@@ -68,8 +71,24 @@ namespace Assets.Scripts.Managers
             }
         }
 
+        void SaveGameTimeExperience()
+        {
+            var enemySpawnerManager = enemySpanwer.GetComponent<EnemySpawnerManager>();
+            var levels = enemySpawnerManager.currentLevelDifficult;
+            var difficultTime = enemySpawnerManager.currentDifficultTime;
+
+            var totalTime = (levels * enemySpawnerManager.timeToChangeDifficult) + difficultTime;
+
+            PlayerTimeExperienceDataService.SaveTimeExperience(totalTime);
+        }
+
         public void SetGameOver(int finalScore)
         {
+            enemySpanwer.SetActive(false);
+
+            //Save game time experience
+            SaveGameTimeExperience();
+
             dashBtn.gameObject.SetActive(false);
             dashSlider.gameObject.SetActive(false);
 
@@ -79,12 +98,22 @@ namespace Assets.Scripts.Managers
             btnDown.SetActive(false);
             btnLeft.SetActive(false);
             btnRight.SetActive(false);
-
             pauseButton.gameObject.SetActive(false);
-            adsButton.gameObject.SetActive(adsManager.WillShowAdsButton(finalScore));
-            gameOverPanel.gameObject.SetActive(true);
-            StartScoreCountDown(finalScore);
+
+
             screenShotScore.text = finalScore.ToString();
+
+            StartCoroutine(ShowGameOverPanel(finalScore));
+        }
+
+        IEnumerator ShowGameOverPanel(int finalScore)
+        {
+            yield return new WaitForSeconds(1);
+
+            //Wait to show gameover panel and final score
+            gameOverPanel.gameObject.SetActive(true);
+            adsButton.gameObject.SetActive(adsManager.WillShowAds(finalScore));
+            StartScoreCountDown(finalScore);
         }
 
         public void ShareScreenShot()
@@ -149,7 +178,9 @@ namespace Assets.Scripts.Managers
             AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
 
             //call the activity with our Intent
-            currentActivity.Call("startActivity", intentObject);
+            //currentActivity.Call("startActivity", intentObject);
+            AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share Via");
+            currentActivity.Call("startActivity", jChooser);
         }
 
         void SetLayoutForScreenShot()

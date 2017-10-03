@@ -26,6 +26,8 @@ namespace Assets.Scripts.Entities.Ads
 
 
             gameOverManager.SetPrizeMessage(prizeData);
+            resultPrizeOkBtn.onClick.RemoveAllListeners();
+            resultPrizeOkBtn.onClick.AddListener(() => { resultPrizePanel.SetActive(false); });
         }
     }
 }

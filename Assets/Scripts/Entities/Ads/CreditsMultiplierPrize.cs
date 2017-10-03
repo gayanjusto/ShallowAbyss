@@ -31,11 +31,8 @@ namespace Assets.Scripts.Entities.Ads
 
 
             gameOverManager.SetPrizeMessage(prizeData);
-
-            //override prize ads result button event
-            var panel = GameObject.Find("PrizeResultPanel");
-            var okBtn = panel.transform.FindChild("Button").GetComponent<Button>();
-            okBtn.onClick.AddListener(() => { panel.gameObject.SetActive(false); gameOverManager.RollScoreForAdsCredits(totalCredits); });
+            resultPrizeOkBtn.onClick.RemoveAllListeners();
+            resultPrizeOkBtn.onClick.AddListener(() => { resultPrizePanel.SetActive(false); gameOverManager.RollScoreForAdsCredits(totalCredits); });
         }
     }
 }

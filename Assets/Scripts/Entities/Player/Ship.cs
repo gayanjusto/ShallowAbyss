@@ -15,6 +15,8 @@ namespace Assets.Scripts.Entities
         public Sprite shipImage;
         public string[] propsPath;
         public string propellerPath;
+        public string bodyPath;
+
         public string shipDescription;
         public int shipPrice;
         public int shipId;
@@ -29,7 +31,7 @@ namespace Assets.Scripts.Entities
         {
             playerData = PlayerStatusService.LoadPlayerStatus();
 
-            priceTag.text = string.Format("$ {0}", shipPrice);
+            priceTag.text = string.Format("{0}", shipPrice);
             ui_shipDescription = GameObject.Find("SelectedItemDescription").GetComponent<Text>();
             var selectedObjectManager = GameObject.Find("SelectedObjectManager").GetComponent<SelectedObjectManager>();
 
@@ -105,7 +107,7 @@ namespace Assets.Scripts.Entities
 
         public Func<bool> AlreadyHasShip()
         {
-            return () => !playerData.GetOwnedShipsIDs().Contains(shipId);
+            return () => playerData.GetOwnedShipsIDs().Contains(shipId);
         }
     }
 }

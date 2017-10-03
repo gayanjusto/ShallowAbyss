@@ -8,17 +8,18 @@ namespace Assets.Scripts.Managers.UI
         public InteractiveBubblesPoolManager interactiveBubblesPoolManager;
         int explodingBool = Animator.StringToHash("Exploded");
         Animator animator;
-        Vector3 clickedPosition;
+        AudioSource bubblePlopAudioSource;
 
         private void Start()
         {
+            bubblePlopAudioSource = GetComponent<AudioSource>();
             animator = GetComponent<Animator>();
         }
 
    
         private void OnMouseDown()
         {
-            clickedPosition = this.transform.localPosition;
+            bubblePlopAudioSource.Play();
             animator.SetBool(explodingBool, true);
             StartCoroutine(WaitForAnimation());
             //Play exploding animation

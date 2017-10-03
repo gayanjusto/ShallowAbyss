@@ -25,6 +25,7 @@ namespace Assets.Scripts.Managers.Shop
         public void RemoveSelectedObject()
         {
             this.selectedItem = null;
+            selectedObjNameTxt.text = string.Empty;
         }
 
         public IShopSelectedObject GetSelectedObject()

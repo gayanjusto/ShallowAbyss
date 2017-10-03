@@ -29,7 +29,7 @@ namespace Assets.Scripts.Managers
             if (collision.gameObject.tag == Tags.Player)
             {
                 PlayerCollisionManager playerCollisionManager = collision.gameObject.GetComponent<PlayerCollisionManager>();
-                PlayerShieldManager shieldManager = collision.gameObject.GetComponent<PlayerShieldManager>();
+                //PlayerShieldManager shieldManager = collision.gameObject.GetComponent<PlayerShieldManager>();
 
                 if (!playerCollisionManager.CanBeHit())
                 {
@@ -37,14 +37,14 @@ namespace Assets.Scripts.Managers
                 }
 
                 //If player has shield, decrease it instead of life
-                if (shieldManager.HasShield())
-                {
-                    shieldManager.DecreaseShield();
-                }
-                else
-                {
+                //if (shieldManager.HasShield())
+                //{
+                //    shieldManager.DecreaseShield();
+                //}
+                //else
+                //{
                     collision.gameObject.GetComponent<PlayerLifeManager>().DecreaseLife();
-                }
+                //}
             }
         }
     }

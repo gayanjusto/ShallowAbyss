@@ -15,8 +15,8 @@ namespace Assets.Scripts.Dictionaries
 
                 _enemyLevel.Add(EnemyTypeEnum.Standard, 0);
                 _enemyLevel.Add(EnemyTypeEnum.Light, 5);
-                _enemyLevel.Add(EnemyTypeEnum.Charger, 10);
-                _enemyLevel.Add(EnemyTypeEnum.Heavy, 10);
+                _enemyLevel.Add(EnemyTypeEnum.Charger, 8);
+                _enemyLevel.Add(EnemyTypeEnum.Heavy, 12);
             }
 
             return _enemyLevel;

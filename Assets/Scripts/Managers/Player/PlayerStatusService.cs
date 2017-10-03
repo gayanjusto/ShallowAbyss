@@ -4,30 +4,51 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using UnityEngine;
 
 namespace Assets.Scripts.Managers
 {
     public static class PlayerStatusService
     {
-        const string playerDataFilePath = "/playerscore.dat";
+        static string playerDataFilePath
+        {
+            get
+            {
+                return Application.persistentDataPath + "/playerscore.dat";
+            }
+        }
 
         static PlayerStatusData _playerDataInstance;
 
+        public static void SavePlayerStatus(PlayerStatusData playerStatusData = null)
+        {
+            var appDataReader = new ApplicationDataReader<PlayerStatusData>();
 
-        public static void SavePlayerStatus(PlayerStatusData playerStatusData)
+            if(playerStatusData == null)
+            {
+                playerStatusData = appDataReader.LoadData(playerDataFilePath);
+            }
+            appDataReader.SaveData(playerStatusData, playerDataFilePath);
+        }
+
+        static void SaveData(string appDataPath, PlayerStatusData playerStatusData = null)
         {
             BinaryFormatter bf = new BinaryFormatter();
 
             //Load currentScore with previously saved score
 
-            FileStream fileStream = File.Open(Application.persistentDataPath + playerDataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            FileStream fileStream = File.Open(appDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
-            bf.Serialize(fileStream, playerStatusData);
+            if (playerStatusData == null)
+                bf.Serialize(fileStream, _playerDataInstance);
+            else
+            {
+                _playerDataInstance = playerStatusData;
+                bf.Serialize(fileStream, playerStatusData);
+            }
 
             fileStream.Close();
-
-            _playerDataInstance = playerStatusData;
         }
 
         public static PlayerStatusData LoadPlayerStatus()
@@ -41,8 +62,8 @@ namespace Assets.Scripts.Managers
                 _playerDataInstance = playerData;
                 return _playerDataInstance;
             }
-          
-            if(_playerDataInstance == null)
+
+            if (_playerDataInstance == null)
             {
                 _playerDataInstance = appDataReader.LoadData(playerDataFilePath);
             }
@@ -67,7 +88,7 @@ namespace Assets.Scripts.Managers
 
         public static bool HasPlayerDataFile()
         {
-            return File.Exists(Application.persistentDataPath + playerDataFilePath);
+            return File.Exists(playerDataFilePath);
         }
     }
 

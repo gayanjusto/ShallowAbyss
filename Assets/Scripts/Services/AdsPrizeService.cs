@@ -10,8 +10,6 @@ namespace Assets.Scripts.Services
         {
             var prizeChildren = ClassChildren.GetArrayOfType<AdsPrize>(null);
 
-            return prizeChildren[2];
-
             //if the player's score is less than 30 always give him credits multiplier
             //other prizes can be generated only with a better score
             if (currentScore < 30)

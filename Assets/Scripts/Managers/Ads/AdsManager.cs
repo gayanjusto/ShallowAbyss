@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.DAO;
 using Assets.Scripts.Entities.Ads;
+using Assets.Scripts.Services.AdMob;
 using Assets.Scripts.Tools;
 using System;
 using System.Collections;
@@ -11,7 +12,12 @@ namespace Assets.Scripts.Managers.Ads
 {
     public class AdsManager : MonoBehaviour
     {
-        const string adsDataPath = "/adsData.dat";
+        static string adsDataPath {
+            get
+            {
+                return Application.persistentDataPath + "/adsData.dat";
+            }
+        }
         public GameOverManager gameOverManager;
         public GameObject watchAdsBtn;
 
@@ -20,6 +26,10 @@ namespace Assets.Scripts.Managers.Ads
         [SerializeField]
         string gameId = "1487925";
 
+        private void Start()
+        {
+            AdMobService.RequestBanner();
+        }
         public void ShowAdsQuitBtn()
         {
             if (Application.internetReachability == NetworkReachability.NotReachable)
@@ -53,6 +63,7 @@ namespace Assets.Scripts.Managers.Ads
 
         public void InitializeAdForQuit()
         {
+            GameObject.Find("BtnQuit").GetComponent<Button>().interactable = false;
             Advertisement.Initialize(gameId, true);
 
             StartCoroutine(ShowAdWhenReadyForQuit());
@@ -83,23 +94,16 @@ namespace Assets.Scripts.Managers.Ads
             Advertisement.Show(null, showOptions);
         }
 
-        public bool WillShowAdsButton(int playerScore)
+        public bool WillShowAds(int playerScore)
         {
-            return true;
-            //If the player didn't play for enough time, don't allow him to see a watch
-            //This is due to the hypothesis of the player trying to exploit ads bonification
-            if (playerScore < 10)
-            {
-                return false;
-            }
-
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
                 return false;
             }
-            int value = RandomValueTool.GetRandomValue(0, 100);
 
-            return value >= 25;
+            AdMobService.ShowBannerAd();
+            
+            return true;
         }
 
         void HandleAdsResultForQuit(ShowResult result)
