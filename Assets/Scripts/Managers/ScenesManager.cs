@@ -19,6 +19,41 @@ public class ScenesManager : MonoBehaviour
         }
 
     }
+
+    void PlayMusic()
+    {
+        if (!audioManager)
+        {
+            audioManager = GameObject.Find("MainMusicAudioManager");
+        }
+        AudioSource audioSource = audioManager.GetComponent<AudioSource>();
+        if (!audioSource.isPlaying)
+            audioManager.GetComponent<AudioSource>().Play();
+    }
+
+    void StopMusic()
+    {
+        if (!audioManager)
+        {
+            audioManager = GameObject.Find("MainMusicAudioManager");
+        }
+        audioManager.GetComponent<AudioSource>().Stop();
+    }
+
+    void PlaySelectAudio()
+    {
+        if (selectAudioSource == null)
+        {
+            selectAudioSource = GameObject.Find("SelectAudio").GetComponent<AudioSource>();
+        }
+        selectAudioSource.Play();
+    }
+
+    void RemoveAds()
+    {
+        AdMobService.RemoveBannerAd();
+    }
+
     public void LoadMainMenu()
     {
         PlaySelectAudio();
@@ -75,37 +110,6 @@ public class ScenesManager : MonoBehaviour
         Application.Quit();
     }
 
-    void PlayMusic()
-    {
-        if (!audioManager)
-        {
-            audioManager = GameObject.Find("AudioManager");
-        }
-        AudioSource audioSource = audioManager.GetComponent<AudioSource>();
-        if (!audioSource.isPlaying)
-            audioManager.GetComponent<AudioSource>().Play();
-    }
+  
 
-    void StopMusic()
-    {
-        if (!audioManager)
-        {
-            audioManager = GameObject.Find("AudioManager");
-        }
-        audioManager.GetComponent<AudioSource>().Stop();
-    }
-
-    void PlaySelectAudio()
-    {
-        if (selectAudioSource == null)
-        {
-            selectAudioSource = GameObject.Find("SelectAudio").GetComponent<AudioSource>();
-        }
-        selectAudioSource.Play();
-    }
-
-    void RemoveAds()
-    {
-        AdMobService.RemoveBannerAd();
-    }
 }

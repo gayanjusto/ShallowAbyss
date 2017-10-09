@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace Assets.Scripts.Managers.Ads
 {
-    public class AdsBubbleManager : MonoBehaviour
+    public class AdsGameOverManager : MonoBehaviour
     {
         public AdsManager adsManager;
+        public GameObject gameOverPanel;
 
         Animator animator;
         int explodedTrigger = Animator.StringToHash("Exploded");
@@ -19,8 +20,7 @@ namespace Assets.Scripts.Managers.Ads
 
         public void ClickAdsBubble()
         {
-            animator.SetTrigger(explodedTrigger);
-            adsManager.InitializeAd();
+            adsManager.ShowAd();
         }
     }
 }

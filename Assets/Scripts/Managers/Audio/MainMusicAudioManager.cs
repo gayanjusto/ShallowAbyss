@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Managers.Audio
 {
-    public class AudioManager : MonoBehaviour
+    public class MainMusicAudioManager : MonoBehaviour
     {
         AudioSource audioSource;
 
@@ -15,7 +15,9 @@ namespace Assets.Scripts.Managers.Audio
 
             DontDestroyOnLoad(this);
             audioSource = GetComponent<AudioSource>();
-            PlayMusic();
+
+            if (audioSource.enabled)
+                PlayMusic();
         }
 
         public void StopMusic()

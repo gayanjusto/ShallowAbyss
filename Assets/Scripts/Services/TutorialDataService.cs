@@ -41,7 +41,7 @@ namespace Assets.Scripts.Services
 
         public static void SaveTutorialData(TutorialData data)
         {
-            DataReader.SaveData(data, tutorialDataPath);
+            DataReader.SaveDataAsync(data, tutorialDataPath);
         }
     }
 }

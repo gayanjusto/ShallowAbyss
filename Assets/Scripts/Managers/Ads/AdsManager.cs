@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.DAO;
 using Assets.Scripts.Entities.Ads;
 using Assets.Scripts.Services.AdMob;
-using Assets.Scripts.Tools;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,12 +11,14 @@ namespace Assets.Scripts.Managers.Ads
 {
     public class AdsManager : MonoBehaviour
     {
-        static string adsDataPath {
+        static string adsDataPath
+        {
             get
             {
                 return Application.persistentDataPath + "/adsData.dat";
             }
         }
+        public GameObject gameOverPanel;
         public GameOverManager gameOverManager;
         public GameObject watchAdsBtn;
 
@@ -28,8 +29,10 @@ namespace Assets.Scripts.Managers.Ads
 
         private void Start()
         {
+            LoadAd();
             AdMobService.RequestBanner();
         }
+
         public void ShowAdsQuitBtn()
         {
             if (Application.internetReachability == NetworkReachability.NotReachable)
@@ -43,19 +46,20 @@ namespace Assets.Scripts.Managers.Ads
             if (data == null || data.CanShowAd())
             {
                 var newDate = DateTime.Today;
-                if(data == null)
+                if (data == null)
                 {
                     data = new LastSeenAdsData();
                 }
 
                 data.day = newDate.Day;
-                data.month= newDate.Month;
+                data.month = newDate.Month;
                 data.year = newDate.Year;
 
-                appDataReader.SaveData(data, adsDataPath);
+                appDataReader.SaveDataAsync(data, adsDataPath);
 
                 InitializeAdForQuit();
-            }else
+            }
+            else
             {
                 Application.Quit();
             }
@@ -69,10 +73,12 @@ namespace Assets.Scripts.Managers.Ads
             StartCoroutine(ShowAdWhenReadyForQuit());
         }
 
-        public void InitializeAd()
+        public void LoadAd()
         {
             Advertisement.Initialize(gameId, true);
-
+        }
+        public void ShowAd()
+        {
             StartCoroutine(ShowAdWhenReady());
         }
 
@@ -94,7 +100,7 @@ namespace Assets.Scripts.Managers.Ads
             Advertisement.Show(null, showOptions);
         }
 
-        public bool WillShowAds(int playerScore)
+        public bool WillShowBannerAds()
         {
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
@@ -102,7 +108,22 @@ namespace Assets.Scripts.Managers.Ads
             }
 
             AdMobService.ShowBannerAd();
-            
+
+            return true;
+        }
+
+        public bool CanShowVideoAds()
+        {
+            Debug.Log(Advertisement.GetPlacementState());
+
+            if (Application.internetReachability == NetworkReachability.NotReachable
+               || (Advertisement.GetPlacementState() == PlacementState.NoFill
+               || Advertisement.GetPlacementState() == PlacementState.NotAvailable)
+               )
+            {
+                return false;
+            }
+
             return true;
         }
 

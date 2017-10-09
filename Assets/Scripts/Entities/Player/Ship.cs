@@ -16,6 +16,7 @@ namespace Assets.Scripts.Entities
         public string[] propsPath;
         public string propellerPath;
         public string bodyPath;
+        public string musicPath;
 
         public string shipDescription;
         public int shipPrice;

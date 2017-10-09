@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Services;
+﻿using Assets.Scripts.Managers.Audio;
+using Assets.Scripts.Services;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,19 @@ namespace Assets.Scripts.Managers.ScenesManagers
         public ScenesManager scenesManager;
         public Image audioBtnImage;
         public AudioSource selectAudioSource;
-
-        public Sprite[] audioSprites;
+        public AudioSourcesManager audioSourcesManager;
+        public Button musicBtn, sfxBtn;
 
         private void Start()
         {
-            audioBtnImage.sprite = audioSprites[(int)AudioListener.volume];
+            ChangeButton(musicBtn, !AudioDataService.HasMusicOn());
+            ChangeButton(sfxBtn, !AudioDataService.HasSfxOn());
         }
 
+        void ChangeButton(Button btn, bool status)
+        {
+            btn.transform.GetChild(0).gameObject.SetActive(status);
+        }
         public void SetCulture(string culture)
         {
             selectAudioSource.Play();
@@ -31,16 +37,38 @@ namespace Assets.Scripts.Managers.ScenesManagers
             scenesManager.LoadMainMenu();
         }
 
-        public void ChangeAudio()
+        public void ChangeMusic()
         {
+            var musicAudioSource = audioSourcesManager.GetMainMusic();
+            if (AudioDataService.HasMusicOn())
+            {
+                ChangeButton(musicBtn, true);
+                AudioDataService.SetMusic(false);
+            }
+            else
+            {
+                ChangeButton(musicBtn, false);
+                AudioDataService.SetMusic(true);
+            }
+            AudioDataService.CheckMusicOn(new[] { musicAudioSource });
             selectAudioSource.Play();
 
-            if (AudioListener.volume == 0)
-                AudioListener.volume = 1;
-            else
-                AudioListener.volume = 0;
+        }
 
-            audioBtnImage.sprite = audioSprites[(int)AudioListener.volume];
+        public void ChangeSfx()
+        {
+            if (AudioDataService.HasSfxOn())
+            {
+                ChangeButton(sfxBtn, true);
+                AudioDataService.SetSfx(false);
+            }
+            else
+            {
+                ChangeButton(sfxBtn, false);
+                AudioDataService.SetSfx(true);
+            }
+            AudioDataService.CheckSfxOn(audioSourcesManager.GetSfxSources());
+            selectAudioSource.Play();
         }
     }
 }

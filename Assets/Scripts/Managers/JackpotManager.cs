@@ -16,7 +16,7 @@ namespace Assets.Scripts.Managers
 {
     public class JackpotManager : MonoBehaviour, ILanguageUI
     {
-        public AudioSource leverPullAudioSource, errorAudioSource, selectAudioSource;
+        public AudioSource leverPullAudioSource, errorAudioSource, selectAudioSource, noPrizeAudioSource, prizeAudioSource, bestPrizeAudioSource;
 
         List<Sprite> spritesForResult;
 
@@ -108,17 +108,27 @@ namespace Assets.Scripts.Managers
 
             if (playerSkins.Length > 0)
             {
-                skinPrizeId = RandomValueTool.GetRandomValue(skinsIds.Min(), skinsIds.Max());
-                skinPrize = playerSkins.First(x => skinPrizeId.ToString() == x.name);
+                skinPrize = GetSkinPrize(skinsIds, playerSkins);
                 spritesForResult.Add(skinPrize);
             }
             else
             {
-                maxValue = spritesForResult.Count -1;
+                maxValue = spritesForResult.Count - 1;
                 Debug.Log("max value:" + maxValue);
             }
         }
 
+        Sprite GetSkinPrize(int[] skinsIds, Sprite[] playerSkins)
+        {
+            skinPrizeId = RandomValueTool.GetRandomValue(skinsIds.Min(), skinsIds.Max());
+            skinPrize = playerSkins.FirstOrDefault(x => skinPrizeId.ToString() == x.name);
+            if (skinPrize == null)
+            {
+                return GetSkinPrize(skinsIds, playerSkins);
+            }
+
+            return skinPrize;
+        }
         void DisableButtons()
         {
             firstButton.interactable = false;
@@ -147,9 +157,11 @@ namespace Assets.Scripts.Managers
             if (firstValue == secondValue && secondValue == thirdValue)
             {
                 //Return best prize
-                GetPrizeObject(firstValue, true);
+                var hasPrize = GetPrizeObject(firstValue, true);
                 resultPanel.gameObject.SetActive(true);
 
+                if (hasPrize)
+                    bestPrizeAudioSource.Play();
                 return;
             }
 
@@ -174,26 +186,32 @@ namespace Assets.Scripts.Managers
             if (equalNum.HasValue)
             {
                 //Return second best prize
-                GetPrizeObject(equalNum.Value, false);
+                var hasPrize = GetPrizeObject(equalNum.Value, false);
                 resultPanel.gameObject.SetActive(true);
+
+                if (hasPrize)
+                    prizeAudioSource.Play();
 
                 return;
             }
 
             //return nothing
             resultPanel.gameObject.SetActive(true);
+            noPrizeAudioSource.Play();
 
             PlayerStatusService.SavePlayerStatus(null);
         }
 
-        void GetPrizeObject(int prizeNum, bool bestPrize)
+        bool GetPrizeObject(int prizeNum, bool bestPrize)
         {
+            bool hasPrize = false;
             PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
             switch (prizeNum)
             {
                 case 1: //Life Buff
                 GetLifePrize(bestPrize, playerData, prizeNum);
+                hasPrize = true;
                 break;
                 case 2: //Extra Credits XXX 
                 resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
@@ -209,6 +227,7 @@ namespace Assets.Scripts.Managers
 
                     playerData.IncreaseScore(50);
                 }
+                hasPrize = true;
                 break;
                 case 3:  //Dash Upgrade
                 if (bestPrize && playerData.CanUpgradeDash())
@@ -216,6 +235,7 @@ namespace Assets.Scripts.Managers
                     playerData.IncreaseDashUpgrade();
                     resultMsgTxt.text = dashUpgradeItem;
                     resultPanelPrizeImg.sprite = spritesForResult[prizeNum];
+                    hasPrize = true;
                 }
                 else
                     resultMsgTxt.text = twoPointsDashWarningJackPot;
@@ -226,6 +246,7 @@ namespace Assets.Scripts.Managers
                     resultMsgTxt.text = skinItem;
                     resultPanelPrizeImg.sprite = skinPrize;
                     playerData.GetOwnedShipsIDs().Add(skinPrizeId);
+                    hasPrize = true;
                 }
                 else
                     resultMsgTxt.text = twoPointsSkinsWarningJackPot;
@@ -233,6 +254,7 @@ namespace Assets.Scripts.Managers
             }
             PlayerStatusService.SavePlayerStatus(playerData);
 
+            return hasPrize;
         }
 
         void GetLifePrize(bool bestPrize, PlayerStatusData playerData, int prizeNum)

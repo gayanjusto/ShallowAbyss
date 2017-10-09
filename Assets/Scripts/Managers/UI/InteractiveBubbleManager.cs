@@ -8,11 +8,10 @@ namespace Assets.Scripts.Managers.UI
         public InteractiveBubblesPoolManager interactiveBubblesPoolManager;
         int explodingBool = Animator.StringToHash("Exploded");
         Animator animator;
-        AudioSource bubblePlopAudioSource;
+        public AudioSource bubblePlopAudioSource;
 
         private void Start()
         {
-            bubblePlopAudioSource = GetComponent<AudioSource>();
             animator = GetComponent<Animator>();
         }
 
@@ -22,8 +21,6 @@ namespace Assets.Scripts.Managers.UI
             bubblePlopAudioSource.Play();
             animator.SetBool(explodingBool, true);
             StartCoroutine(WaitForAnimation());
-            //Play exploding animation
-            //interactiveBubblesPoolManager.DisableBubble(this.gameObject);
         }
 
         IEnumerator WaitForAnimation()

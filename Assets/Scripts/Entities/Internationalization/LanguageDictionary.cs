@@ -8,7 +8,8 @@
         public string gameOver;
         public string selectSubMainMenu;
         public string shopMainMenu;
-        
+
+        public string shareMsg;
         
         public string buy;
         public string notEnoughFundsShop;

@@ -25,34 +25,5 @@ namespace Assets.Scripts.Managers.Enemy
             objectSpriteRenderer = GetComponent<SpriteRenderer>();
             resourcesPath = string.Format("Sprites/{0}/", enemyResourcesFolder);
         }
-
-        //public void SetSpriteForBackgroundContext()
-        //{
-        //    if (backgroundManager.currentBackgroundLevel < maxAmountSprites)
-        //    {
-        //        currentMaxSpriteModel = backgroundManager.currentBackgroundLevel + 1;
-        //    }
-        //    else
-        //    {
-        //        currentMaxSpriteModel = maxAmountSprites;
-        //    }
-
-        //    int fraction = 100 / currentMaxSpriteModel;
-        //    int minVal = 0;
-        //    int maxVal = fraction;
-
-        //    int spriteValueRange = UnityEngine.Random.Range(0, 100);
-
-        //    for (int spriteValue = 0; spriteValue < currentMaxSpriteModel; spriteValue++)
-        //    {
-        //        if (spriteValueRange >= minVal && spriteValueRange < maxVal)
-        //        {
-        //            objectSpriteRenderer.sprite = Resources.Load<Sprite>(string.Format("{0}{1}", resourcesPath, spriteValue));
-        //        }
-
-        //        minVal += fraction;
-        //        maxVal += fraction;
-        //    }
-        //}
     }
 }

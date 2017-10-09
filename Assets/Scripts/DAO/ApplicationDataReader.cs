@@ -7,7 +7,7 @@ namespace Assets.Scripts.DAO
 {
     public class ApplicationDataReader<T> where T : class
     {
-        public void SaveData(T dataToSave, string pathToData)
+        public void SaveDataAsync(T dataToSave, string pathToData)
         {
             Thread trSave = new Thread(() =>
             {
@@ -21,13 +21,17 @@ namespace Assets.Scripts.DAO
             });
 
             trSave.Start();
-            //BinaryFormatter bf = new BinaryFormatter();
+        }
 
-            //FileStream fileStream = File.Open(Application.persistentDataPath + pathToData, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        public void SaveData(T dataToSave, string pathToData)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
 
-            //bf.Serialize(fileStream, dataToSave);
+            FileStream fileStream = File.Open(pathToData, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
-            //fileStream.Close();
+            bf.Serialize(fileStream, dataToSave);
+
+            fileStream.Close();
         }
 
         public T LoadData(string pathToData)

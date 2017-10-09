@@ -49,11 +49,17 @@ namespace Assets.Scripts.Controllers
             //moving to the left
             if(horizontalDirection == -1)
             {
+                FlipSprite(true);
                 spriteRenderer.flipX = true;
             }else if(horizontalDirection == 1)
             {
-                spriteRenderer.flipX = false;
+                FlipSprite(false);
             }
+        }
+
+        protected virtual void FlipSprite(bool flipX)
+        {
+            spriteRenderer.flipX = flipX;
         }
     }
 }

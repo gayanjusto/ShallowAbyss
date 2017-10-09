@@ -35,8 +35,6 @@ namespace Assets.Scripts.Managers.UI
             {
                 yield return new WaitForSeconds(2);
 
-                Debug.Log("Spawning bubble");
-
                 bool hasBubbles = false;
                 int bubbleHolder_posX = RandomValueTool.GetRandomValue(-5, 5);
                 //Find bubble from pool

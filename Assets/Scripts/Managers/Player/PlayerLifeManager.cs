@@ -7,6 +7,8 @@ namespace Assets.Scripts.Managers
 {
     public class PlayerLifeManager : MonoBehaviour
     {
+        public GameObject dummyDeadPlayer;
+
         public int lives;
         public int maxLifes;
         public Text amountLifeTxt;
@@ -37,6 +39,13 @@ namespace Assets.Scripts.Managers
             hitAudioSource.clip.LoadAudioData();
         }
 
+        void SetDummyDeadPlayer()
+        {
+            dummyDeadPlayer.transform.position = this.transform.position;
+            dummyDeadPlayer.gameObject.SetActive(true);
+
+            dummyDeadPlayer.GetComponent<SpriteRenderer>().flipX = GetComponent<SpriteRenderer>().flipX;
+        }
         public void DecreaseLife()
         {
 
@@ -48,8 +57,12 @@ namespace Assets.Scripts.Managers
                 PlayerStatusData playerData = PlayerStatusService.LoadPlayerStatus();
 
                 //Game Over
-                if (lives == 0)
+                if (lives <= 0)
                 {
+
+                    SetDummyDeadPlayer();
+
+                    gameOverManager.TakeScreenShot();
                     //Stop the score count
                     scoreCounterManager.enabled = false;
 

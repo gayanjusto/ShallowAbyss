@@ -15,14 +15,19 @@ namespace Assets.Scripts.Services.AdMob
 
                 string adUnitId = "ca-app-pub-3940256099942544/6300978111";
 
-                var bannerSizer = new AdSize(200, 200);
-                // Create a 320x50 banner at the top of the screen.
-                BannerView bannerView = new BannerView(adUnitId, bannerSizer, 5, 60);
+                int x, y;
+                AdPosition pos;
+                BannerView bannerView;
+                if (Screen.dpi <= 160) { bannerView = new BannerView(adUnitId, new AdSize(320, 50), AdPosition.TopLeft); }
+                else { bannerView = new BannerView(adUnitId, new AdSize(300, 250), 0, 60); }
+                
                 // Create an empty ad request.
                 AdRequest request = new AdRequest.Builder().Build();
                 // Load the banner with the request.
                 bannerView.LoadAd(request);
+
                 bannerView.Hide();
+
                 _bannerView = bannerView;
             }
         }

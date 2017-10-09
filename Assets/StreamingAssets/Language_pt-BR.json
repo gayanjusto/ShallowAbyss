@@ -2,7 +2,7 @@
   "newGameMainMenu": "JOGAR!",
   "newGame": "NOVA PARTIDA",
   "gameOver": "ACABOU!",
-  "selectSubMainMenu": "ESCOLHER PERSONAGEM",
+  "selectSubMainMenu": "MEUS PERSONAGENS",
   "shopMainMenu": "LOJA",
   
   "shareMsg": "Compartilhar por",
@@ -32,7 +32,7 @@
   "skinItem": "PERSONAGEM",
   "shopStoredLives": "VIDAS ARMAZENADAS",
   "shopStoredShields": "ESCUDOS ARMAZENADOS",
-  "tryYourLuckBtn": "TENTE A SORTE",
+  "tryYourLuckBtn": "TENTE A SORTE!",
   
   "notEnoughTokensJackPot": "Sem fichas suficientes",
   "twoPointsSkinsWarningJackPot": "Para obter Personagem é necessário obter 3 pontos.",
@@ -40,7 +40,7 @@
   "noRewardJackPot": "Nada",
   "resultPreMsgJackPot": "VOCÊ GANHOU:",
   
-  "adsResultMsgCredits": "{0}x Creditos Dessa Partida!",
+  "adsResultMsgCredits": "Mais {0}x Créditos Dessa Partida!",
   "adsResultMsgLives": "Mais uma Vida Armazenada!",
   "adsResultMsgShields": "Mais um Escudo Armazenado!",
   "adsResultMsgTokens": "Uma Ficha!",
@@ -53,7 +53,7 @@
   
   "tutShopLifeShieldBuff": "O ícone abaixo mostra quantas vidas extras você possui. Você pode aumentar o máximo de extras (o número após '/') comprando a melhoria de vida na Loja.",
   "tutShopStoredLifeShield": "O ícone abaixo exibe quantas vidas armazenadas você possui. Essas são obtidas através de premiações. Serão utilizadas automaticamente ao iniciar uma partida caso você não tenha o máximo de vidas.",
-  "tutShopDashBuff": "Este ícone representa as melhorias de ''Dash''. Você pode comprar melhoras na loja. Ao melhorar ''Dash'' o tempo de invencibilidade será aumentado ao utilizar o movimento especial.",
+  "tutShopDashBuff": "Este ícone representa as melhorias de ''Dash''. Você pode comprar melhorias na loja. Ao melhorar ''Dash'' o tempo de invencibilidade será aumentado ao utilizar o movimento especial.",
   "tutShopCredits": "O ícone da moeda representa a quantidade de Créditos que você possui. Você pode obter Créditos jogando o jogo ou através de bonificações.",
   "tutShopToken": "Este ícone representa a quantidade de Fichas que você possui para ''TENTE A SORTE''." 
 }

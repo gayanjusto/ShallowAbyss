@@ -13,6 +13,7 @@ namespace Assets.Scripts.Managers
 {
     public class GameOverManager : MonoBehaviour
     {
+        public AudioSource prizeAudioSource, scoreCounterAudioSource;
         public ScoreManager scoreCounterManager;
         public AdsManager adsManager;
         public Image gameOverPanel;
@@ -36,8 +37,7 @@ namespace Assets.Scripts.Managers
 
         void StartScoreCountDown(int finalScore)
         {
-            Debug.Log(finalScore);
-
+            scoreCounterAudioSource.Play();
             this.finalScore = finalScore;
             StartCoroutine(ScoreCountDownCoroutine(finalScore, false));
         }
@@ -69,6 +69,8 @@ namespace Assets.Scripts.Managers
                 }
                 gameOverScoreText.text = gameOverScore.ToString();
             }
+
+            scoreCounterAudioSource.Stop();
         }
 
         void SaveGameTimeExperience()
@@ -112,10 +114,21 @@ namespace Assets.Scripts.Managers
 
             //Wait to show gameover panel and final score
             gameOverPanel.gameObject.SetActive(true);
-            adsButton.gameObject.SetActive(adsManager.WillShowAds(finalScore));
+
+            adsManager.WillShowBannerAds();
+            adsButton.gameObject.SetActive(adsManager.CanShowVideoAds());
             StartScoreCountDown(finalScore);
         }
 
+        public void TakeScreenShot()
+        {
+            //SetLayoutForScreenShot();
+
+            //Capture screenshot
+            Application.CaptureScreenshot(gameOverImage);
+
+            //ResetLayoutAfterScreenShot();
+        }
         public void ShareScreenShot()
         {
             SetLayoutForScreenShot();
@@ -129,19 +142,19 @@ namespace Assets.Scripts.Managers
             string screenShotPath = Application.persistentDataPath + "/" + gameOverImage;
 
 
-            //Capture screenshot
-            Application.CaptureScreenshot(gameOverImage);
+            ////Capture screenshot
+            //Application.CaptureScreenshot(gameOverImage);
 
             ResetLayoutAfterScreenShot();
 
             if (Application.platform == RuntimePlatform.Android)
             {
-                OpenAndroidIntent(screenShotPath);
+                OpenAndroidIntent(screenShotPath, LanguageService.GetLanguageDictionary().shareMsg);
             }
 
         }
 
-        void OpenAndroidIntent(string screenShotPath)
+        void OpenAndroidIntent(string screenShotPath, string shareMsg)
         {
             //instantiate the class Intent
             AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
@@ -179,7 +192,7 @@ namespace Assets.Scripts.Managers
 
             //call the activity with our Intent
             //currentActivity.Call("startActivity", intentObject);
-            AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share Via");
+            AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, shareMsg);
             currentActivity.Call("startActivity", jChooser);
         }
 
@@ -201,6 +214,7 @@ namespace Assets.Scripts.Managers
             var prize = AdsPrizeService.GetRandomPrize(this.finalScore);
             prize.GivePrize(this);
             PlayerStatusService.SavePlayerStatus(PlayerStatusService.LoadPlayerStatus());
+            prizeAudioSource.Play();
         }
 
         public int GetFinalScore()
@@ -218,6 +232,7 @@ namespace Assets.Scripts.Managers
         public void RollScoreForAdsCredits(int bonusScore)
         {
             scoreCounterManager.score = bonusScore;
+            scoreCounterAudioSource.Play();
             StartCoroutine(ScoreCountDownCoroutine(bonusScore, true));
         }
     }

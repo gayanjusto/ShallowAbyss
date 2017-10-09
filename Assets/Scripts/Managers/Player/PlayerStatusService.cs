@@ -29,7 +29,7 @@ namespace Assets.Scripts.Managers
             {
                 playerStatusData = appDataReader.LoadData(playerDataFilePath);
             }
-            appDataReader.SaveData(playerStatusData, playerDataFilePath);
+            appDataReader.SaveDataAsync(playerStatusData, playerDataFilePath);
         }
 
         static void SaveData(string appDataPath, PlayerStatusData playerStatusData = null)
@@ -80,7 +80,7 @@ namespace Assets.Scripts.Managers
 
             playerData.IncreaseDashUpgrade();
 
-            appDataReader.SaveData(playerData, playerDataFilePath);
+            appDataReader.SaveDataAsync(playerData, playerDataFilePath);
             SavePlayerStatus(playerData);
 
             return playerData;

@@ -24,7 +24,7 @@ namespace Assets.Scripts.Services
                 data = new PlayerExperienceData();
             }
             data.InsertGameDuration(timeExperience);
-            appReader.SaveData(data, playerDataFilePath);
+            appReader.SaveDataAsync(data, playerDataFilePath);
         }
 
         public static PlayerExperienceData LoadTimeExperience()
