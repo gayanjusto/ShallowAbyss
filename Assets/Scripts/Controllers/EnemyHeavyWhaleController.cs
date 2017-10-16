@@ -13,10 +13,10 @@ namespace Assets.Scripts.Controllers
 
             if (tailRenderer.flipX)
             {
-                tailRenderer.transform.localPosition = new Vector2(1, 0);
+                tailRenderer.transform.localPosition = new Vector2(.95f, 0);
             }else
             {
-                tailRenderer.transform.localPosition = new Vector2(-1, 0);
+                tailRenderer.transform.localPosition = new Vector2(-.95f, 0);
             }
         }
     }

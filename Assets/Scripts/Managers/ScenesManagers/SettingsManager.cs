@@ -53,6 +53,9 @@ namespace Assets.Scripts.Managers.ScenesManagers
             AudioDataService.CheckMusicOn(new[] { musicAudioSource });
             selectAudioSource.Play();
 
+            if (AudioDataService.HasMusicOn())
+                musicAudioSource.Play();
+
         }
 
         public void ChangeSfx()

@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Entities.Ads;
 using Assets.Scripts.Entities.Player;
+using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Managers.Ads;
 using Assets.Scripts.Managers.UI;
 using Assets.Scripts.Services;
@@ -8,10 +9,11 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace Assets.Scripts.Managers
 {
-    public class GameOverManager : MonoBehaviour
+    public class GameOverManager : MonoBehaviour, ILanguageUI
     {
         public AudioSource prizeAudioSource, scoreCounterAudioSource;
         public ScoreManager scoreCounterManager;
@@ -23,6 +25,8 @@ namespace Assets.Scripts.Managers
         public PrizeResultManager prizeResultManager;
 
         public Text gameOverScoreText;
+        public Text matchFinalScoreText, matchFinalScoreValueText;
+        public Text bestHighScoreText, bestHighScoreValueText;
         public Button adsButton;
 
         public Button pauseButton;
@@ -32,17 +36,24 @@ namespace Assets.Scripts.Managers
 
         public bool gameHasFinished;
         public int gameOverScore;
+
+        int currentPlayerScore;
+
         const string gameOverImage = "gameOver.png";
         int finalScore;
-
-        void StartScoreCountDown(int finalScore)
+        int scoreCountUp;
+        void StartScoreCountDown(int roundScore)
         {
             scoreCounterAudioSource.Play();
-            this.finalScore = finalScore;
-            StartCoroutine(ScoreCountDownCoroutine(finalScore, false));
+
+            //set final score currently equals the total amount the player has
+            currentPlayerScore = PlayerStatusService.LoadPlayerStatus().GetScore();
+            scoreCountUp = currentPlayerScore - roundScore;
+            gameOverScoreText.text = (currentPlayerScore - roundScore).ToString();
+            StartCoroutine(ScoreCountDownCoroutine(currentPlayerScore, false));
         }
 
-        IEnumerator ScoreCountDownCoroutine(int finalScore, bool isAdsBonus)
+        IEnumerator ScoreCountDownCoroutine(int finalScoreSum, bool isAdsBonus)
         {
             while (scoreCounterManager.score > 0)
             {
@@ -56,20 +67,24 @@ namespace Assets.Scripts.Managers
                     scoreCounterManager.ZeroScore();
                     if (isAdsBonus)
                     {
-                        gameOverScore = this.finalScore + finalScore;
+                        //gameOverScore = this.finalScore + finalScoreSum;
+                        scoreCountUp = finalScoreSum;
                     }
                     else
                     {
-                        gameOverScore = finalScore;
+                        //gameOverScore = finalScoreSum;
+                        scoreCountUp = finalScoreSum;
                     }
                 }
                 else
                 {
-                    gameOverScore++;
+                    scoreCountUp++;
                 }
-                gameOverScoreText.text = gameOverScore.ToString();
+                gameOverScoreText.text = (scoreCountUp).ToString();
             }
 
+            currentPlayerScore = finalScoreSum;
+            scoreCountUp = currentPlayerScore;
             scoreCounterAudioSource.Stop();
         }
 
@@ -84,11 +99,15 @@ namespace Assets.Scripts.Managers
             PlayerTimeExperienceDataService.SaveTimeExperience(totalTime);
         }
 
-        public void SetGameOver(int finalScore)
+        private void Start()
+        {
+            LoadTextsLanguage();
+        }
+
+        public void SetGameOver(int roundScore)
         {
             enemySpanwer.SetActive(false);
 
-            //Save game time experience
             SaveGameTimeExperience();
 
             dashBtn.gameObject.SetActive(false);
@@ -103,12 +122,20 @@ namespace Assets.Scripts.Managers
             pauseButton.gameObject.SetActive(false);
 
 
-            screenShotScore.text = finalScore.ToString();
+            this.finalScore = roundScore;
+            screenShotScore.text = roundScore.ToString();
+            matchFinalScoreValueText.text = roundScore.ToString();
 
-            StartCoroutine(ShowGameOverPanel(finalScore));
+            //Save in case of highScore
+            HighScoreService.SaveNewScore(roundScore);
+
+            //Load highest score
+            bestHighScoreValueText.text = HighScoreService.GetHighestScore().ToString();
+
+            StartCoroutine(ShowGameOverPanel(roundScore));
         }
 
-        IEnumerator ShowGameOverPanel(int finalScore)
+        IEnumerator ShowGameOverPanel(int roundScore)
         {
             yield return new WaitForSeconds(1);
 
@@ -117,7 +144,7 @@ namespace Assets.Scripts.Managers
 
             adsManager.WillShowBannerAds();
             adsButton.gameObject.SetActive(adsManager.CanShowVideoAds());
-            StartScoreCountDown(finalScore);
+            StartScoreCountDown(roundScore);
         }
 
         public void TakeScreenShot()
@@ -233,7 +260,19 @@ namespace Assets.Scripts.Managers
         {
             scoreCounterManager.score = bonusScore;
             scoreCounterAudioSource.Play();
-            StartCoroutine(ScoreCountDownCoroutine(bonusScore, true));
+            scoreCountUp = currentPlayerScore;
+            StartCoroutine(ScoreCountDownCoroutine(bonusScore + currentPlayerScore, true));
+        }
+
+        public void LoadTextsLanguage()
+        {
+            var ld = LanguageService.GetLanguageDictionary();
+
+            if (ld.isLoaded)
+            {
+                bestHighScoreText.text = ld.gameOverBestScore;
+                matchFinalScoreText.text = ld.gameOverMatchScore;
+            }
         }
     }
 }

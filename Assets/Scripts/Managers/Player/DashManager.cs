@@ -79,21 +79,26 @@ namespace Assets.Scripts.Managers
 
             if (dashDurationTickTime >= dashDuration)
             {
-                isCoolingDownDash = true;
-                playerMovementInputController.mov_boost_value = 1;
-
-                dashDurationTickTime = 0;
-                isDashing = false;
-                dashParticleGameObject.SetActive(false);
-
-
-                GetComponent<Collider2D>().enabled = true;
-                Color originalColor = spriteRenderer.color;
-                spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+                DisableDash();
             }
         }
 
-        public void Dash()
+        void DisableDash()
+        {
+            isCoolingDownDash = true;
+            playerMovementInputController.mov_boost_value = 1;
+
+            dashDurationTickTime = 0;
+            isDashing = false;
+            dashParticleGameObject.SetActive(false);
+
+
+            GetComponent<Collider2D>().enabled = true;
+            Color originalColor = spriteRenderer.color;
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+        }
+
+        void EnableDash()
         {
             playerMovementInputController.mov_boost_value = dashBoost;
             isDashing = true;
@@ -107,6 +112,22 @@ namespace Assets.Scripts.Managers
             Color originalColor = spriteRenderer.color;
             spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, .3f);
             dashParticle.Play();
+        }
+
+        public void Dash()
+        {
+            if (!isDashing)
+                EnableDash();
+        }
+
+        public void DisableButtonInteraction()
+        {
+            dashBtn.GetComponent<Button>().interactable = false;
+        }
+
+        public void EnableButtonInteraction()
+        {
+            dashBtn.GetComponent<Button>().interactable = true;
         }
     }
 }

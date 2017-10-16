@@ -11,6 +11,7 @@ namespace Assets.Scripts.Managers
         public ScenesManager scenesManager;
 
         public GameObject englishBtn, portugueseBtn;
+        public AudioSource musicAudioSource;
 
         private void Awake()
         {
@@ -22,6 +23,11 @@ namespace Assets.Scripts.Managers
 
         private void Start()
         {
+            if (AudioDataService.HasMusicOn())
+            {
+                musicAudioSource.Play();
+            }
+
             if (PlayerStatusService.HasPlayerDataFile())
             {
                 scenesManager.LoadMainMenu();

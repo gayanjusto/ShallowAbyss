@@ -24,7 +24,7 @@ namespace Assets.Scripts.Managers.Tutorial
             }
         }
 
-        protected void ActivatePanel(bool dontShowPanel)
+        protected void DeactivatePanel(bool dontShowPanel)
         {
             if (dontShowPanel)
             {
@@ -58,12 +58,11 @@ namespace Assets.Scripts.Managers.Tutorial
             paginationTxt.text = string.Format("{0}/{1}", currentPage + 1, maxPages);
         }
 
-        protected void PressOk(TutorialData tutorialData)
+        protected void SaveAndRelease(TutorialData tutorialData)
         {
             TutorialDataService.SaveTutorialData(tutorialData);
             Time.timeScale = 1;
             tutorialPanel.SetActive(false);
-            this.gameObject.SetActive(false);
         }
 
         public void NextPage()
@@ -100,6 +99,6 @@ namespace Assets.Scripts.Managers.Tutorial
                 pageBackBtn.gameObject.SetActive(true);
             }
         }
-        
+
     }
 }

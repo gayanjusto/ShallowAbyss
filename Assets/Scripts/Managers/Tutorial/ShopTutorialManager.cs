@@ -18,19 +18,12 @@ namespace Assets.Scripts.Managers.Tutorial
         private void Awake()
         {
             var tutorialData = TutorialDataService.GetTutorialData();
-            base.ActivatePanel(tutorialData.dontShowShopTutorial);
+            base.DeactivatePanel(tutorialData.dontShowShopTutorial);
             Time.timeScale = 1;
 
             LoadTextsLanguage();
         }
 
-        public void PressOk()
-        {
-            var tutorialData = TutorialDataService.GetTutorialData();
-            tutorialData.dontShowShopTutorial = dontShowToggle.isOn;
-
-            base.PressOk(tutorialData);
-        }
         public void LoadTextsLanguage()
         {
             var ld = LanguageService.GetLanguageDictionary();
@@ -45,6 +38,22 @@ namespace Assets.Scripts.Managers.Tutorial
                 creditsTxt.text = ld.tutShopCredits;
                 tokensTxt.text = ld.tutShopToken;
             }
+        }
+
+        public void PressOk()
+        {
+            var tutorialData = TutorialDataService.GetTutorialData();
+            tutorialData.dontShowShopTutorial = dontShowToggle.isOn;
+
+            base.SaveAndRelease(tutorialData);
+        }
+
+        public void ShowTutorial()
+        {
+            var tutorialData = TutorialDataService.GetTutorialData();
+            dontShowToggle.isOn = tutorialData.dontShowShopTutorial;
+
+            DeactivatePanel(false);
         }
     }
 }

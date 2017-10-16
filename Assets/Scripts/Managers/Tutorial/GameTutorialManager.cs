@@ -12,21 +12,20 @@ namespace Assets.Scripts.Managers.Tutorial
         public Text scoringTxt;
         public Text dashTxt;
         public Text lifeShieldTxt;
+        public Button pauseBtn;
+
+        bool openViaPause;
 
         private void Awake()
         {
             var tutorialData = TutorialDataService.GetTutorialData();
-            base.ActivatePanel(tutorialData.dontShowGameTutorial);
+            base.DeactivatePanel(tutorialData.dontShowGameTutorial);
 
+            if (!tutorialData.dontShowGameTutorial)
+            {
+                pauseBtn.interactable = false;
+            }
             LoadTextsLanguage();
-        }
-
-        public void PressOk()
-        {
-            var tutorialData = TutorialDataService.GetTutorialData();
-            tutorialData.dontShowGameTutorial = dontShowToggle.isOn;
-
-            base.PressOk(tutorialData);
         }
 
         public void LoadTextsLanguage()
@@ -42,5 +41,35 @@ namespace Assets.Scripts.Managers.Tutorial
                 lifeShieldTxt.text = ld.tutMainGameLifeShield;
             }
         }
+
+        public void PressOk()
+        {
+            var tutorialData = TutorialDataService.GetTutorialData();
+            tutorialData.dontShowGameTutorial = dontShowToggle.isOn;
+
+            if (openViaPause)
+            {
+                TutorialDataService.SaveTutorialData(tutorialData);
+                openViaPause = false;
+                tutorialPanel.SetActive(false);
+            }
+            else
+            {
+                SaveAndRelease(tutorialData);
+                pauseBtn.interactable = true;
+            }
+
+        }
+
+        public void ShowTutorial()
+        {
+            openViaPause = true;
+            var tutorialData = TutorialDataService.GetTutorialData();
+            dontShowToggle.isOn = tutorialData.dontShowGameTutorial;
+
+            DeactivatePanel(false);
+        }
+
+
     }
 }

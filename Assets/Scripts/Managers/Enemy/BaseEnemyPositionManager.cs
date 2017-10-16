@@ -23,6 +23,8 @@ namespace Assets.Scripts.Managers.Enemy
         public float leftOffset;
         public float rightOffset;
 
+        public float z_Position;
+
         Vector3 GetPositionToSpawnEnemy()
         {
             Vector3 newPos = new Vector3(
@@ -84,7 +86,7 @@ namespace Assets.Scripts.Managers.Enemy
             float pos_z = transform.position.z;
             Vector3 rndPos = GetPositionToSpawnEnemy();
 
-            this.transform.position = new Vector3(rndPos.x, rndPos.y);
+            this.transform.position = new Vector3(rndPos.x, rndPos.y, z_Position);
         }
        
         public virtual void SetInitialSpawnConfiguration()

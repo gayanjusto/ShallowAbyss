@@ -1,8 +1,6 @@
 ﻿using Assets.Scripts.Entities.Internationalization;
 using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Services;
-using Assets.Scripts.Tools;
-using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +12,10 @@ namespace Assets.Scripts.Managers
         public Text selectSubBtnText;
         public Text shopBtnText;
         public Text versionText;
-
+        
         private void Start()
         {
-            versionText.text = string.Format("v{0} - alpha", Application.version);
+            versionText.text = string.Format("v{0}", Application.version);
             LoadTextsLanguage();
         }
 
@@ -30,6 +28,11 @@ namespace Assets.Scripts.Managers
                 selectSubBtnText.text = ld.selectSubMainMenu;
                 shopBtnText.text = ld.shopMainMenu;
             }
+        }
+
+        public void Quit()
+        {
+            Application.Quit();
         }
     }
 }

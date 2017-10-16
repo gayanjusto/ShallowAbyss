@@ -51,9 +51,12 @@
   "tutMainGameDash": "Aperte o botão abaixo para usar o movimento Dash. Com este movimento você se torna invencível até que a barra de Dash se esgote. Tenha cuidado para não sair da tela!",
   "tutMainGameLifeShield": "Caso seja acertado ou saia da tela você perderá uma vida. Vidas extras podem aparecer durante o jogo.",
   
-  "tutShopLifeShieldBuff": "O ícone abaixo mostra quantas vidas extras você possui. Você pode aumentar o máximo de extras (o número após '/') comprando a melhoria de vida na Loja.",
+  "tutShopLifeShieldBuff": "O ícone abaixo à esquerda mostra quantas vidas extras você possui. Você pode aumentar o máximo de extras (o número após '/') comprando a melhoria de vida na Loja representada pelo ìcone à direita.",
   "tutShopStoredLifeShield": "O ícone abaixo exibe quantas vidas armazenadas você possui. Essas são obtidas através de premiações. Serão utilizadas automaticamente ao iniciar uma partida caso você não tenha o máximo de vidas.",
   "tutShopDashBuff": "Este ícone representa as melhorias de ''Dash''. Você pode comprar melhorias na loja. Ao melhorar ''Dash'' o tempo de invencibilidade será aumentado ao utilizar o movimento especial.",
   "tutShopCredits": "O ícone da moeda representa a quantidade de Créditos que você possui. Você pode obter Créditos jogando o jogo ou através de bonificações.",
-  "tutShopToken": "Este ícone representa a quantidade de Fichas que você possui para ''TENTE A SORTE''." 
+  "tutShopToken": "Este ícone representa a quantidade de Fichas que você possui para ''TENTE A SORTE''.",
+  
+  "gameOverMatchScore": "Pontos:",
+  "gameOverBestScore": "Melhor:"
 }

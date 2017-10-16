@@ -47,7 +47,7 @@ namespace Assets.Scripts.Managers
 
                 if (prizeType == PrizeType.Credits)
                 {
-                    GameObject.Find("ScoreCounterManager").GetComponent<ScoreManager>().score += 15;
+                    GameObject.Find("ScoreCounterManager").GetComponent<ScoreManager>().score += 10;
                     DeactivatePrize();
                     return;
                 }

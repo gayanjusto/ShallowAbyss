@@ -11,8 +11,19 @@ namespace Assets.Scripts.Entities.Ads
 
         public CreditsMultiplierPrize()
         {
+            int maxVal = 1;
+            var probability = RandomValueTool.GetRandomValue(0, 100);
+
+            if(probability > 95)
+            {
+                maxVal = 3;
+            }else if(probability <= 95 && probability > 80)
+            {
+                maxVal = 2;
+            }
+
             //Multiplier
-            base.Amount = RandomValueTool.GetRandomValue(1, 3);
+            base.Amount = RandomValueTool.GetRandomValue(1, maxVal);
         }
 
         public override void GivePrize(GameOverManager gameOverManager)

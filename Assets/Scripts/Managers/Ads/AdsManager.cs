@@ -22,8 +22,6 @@ namespace Assets.Scripts.Managers.Ads
         public GameOverManager gameOverManager;
         public GameObject watchAdsBtn;
 
-        ApplicationDataReader<LastSeenAdsData> appDataReader;
-
         [SerializeField]
         string gameId = "1487925";
 
@@ -33,46 +31,6 @@ namespace Assets.Scripts.Managers.Ads
             AdMobService.RequestBanner();
         }
 
-        public void ShowAdsQuitBtn()
-        {
-            if (Application.internetReachability == NetworkReachability.NotReachable)
-            {
-                Application.Quit();
-            }
-
-            appDataReader = new ApplicationDataReader<LastSeenAdsData>();
-            var data = appDataReader.LoadData(adsDataPath);
-
-            if (data == null || data.CanShowAd())
-            {
-                var newDate = DateTime.Today;
-                if (data == null)
-                {
-                    data = new LastSeenAdsData();
-                }
-
-                data.day = newDate.Day;
-                data.month = newDate.Month;
-                data.year = newDate.Year;
-
-                appDataReader.SaveDataAsync(data, adsDataPath);
-
-                InitializeAdForQuit();
-            }
-            else
-            {
-                Application.Quit();
-            }
-        }
-
-        public void InitializeAdForQuit()
-        {
-            GameObject.Find("BtnQuit").GetComponent<Button>().interactable = false;
-            Advertisement.Initialize(gameId, true);
-
-            StartCoroutine(ShowAdWhenReadyForQuit());
-        }
-
         public void LoadAd()
         {
             Advertisement.Initialize(gameId, true);
@@ -80,15 +38,6 @@ namespace Assets.Scripts.Managers.Ads
         public void ShowAd()
         {
             StartCoroutine(ShowAdWhenReady());
-        }
-
-        IEnumerator ShowAdWhenReadyForQuit()
-        {
-            while (!Advertisement.IsReady())
-                yield return null;
-
-            var showOptions = new ShowOptions() { resultCallback = HandleAdsResultForQuit };
-            Advertisement.Show(null, showOptions);
         }
 
         IEnumerator ShowAdWhenReady()

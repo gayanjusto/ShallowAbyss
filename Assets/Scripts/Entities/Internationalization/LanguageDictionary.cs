@@ -56,6 +56,9 @@
         public string tutShopStoredLifeShield;
         public string tutShopDashBuff;
         public string tutShopCredits;
-        public string tutShopToken;   
+        public string tutShopToken;
+
+        public string gameOverMatchScore;
+        public string gameOverBestScore;
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }

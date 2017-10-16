@@ -7,6 +7,7 @@ namespace Assets.Scripts.Managers
     public class PauseManager : MonoBehaviour
     {
         public GameObject pausePanel;
+        public DashManager dashManager;
         public Button pauseButton;
         public bool isPaused;
 
@@ -27,9 +28,11 @@ namespace Assets.Scripts.Managers
                 UnpauseGame();
                 return;
             }
+
             pausePanel.SetActive(true);
             Time.timeScale = pausedValue;
             isPaused = !isPaused;
+            dashManager.DisableButtonInteraction();
         }
 
         public void UnpauseGame()
@@ -40,6 +43,7 @@ namespace Assets.Scripts.Managers
             pausePanel.SetActive(false);
 
             isPaused = false;
+            dashManager.EnableButtonInteraction();
         }
 
         public void ReturnToMainMenu()
@@ -47,5 +51,7 @@ namespace Assets.Scripts.Managers
             Time.timeScale = unpausedValue;
             scenesManager.LoadMainMenu();
         }
+
+
     }
 }

@@ -50,6 +50,8 @@ namespace Assets.Scripts.Managers.UI
                         {
                             bubble.gameObject.SetActive(true);
                             hasBubbles = true;
+                            var rndScale = Random.Range(1, 3);
+                            bubble.transform.localScale = new Vector3(rndScale, rndScale, rndScale);
                         }
                     }
 
