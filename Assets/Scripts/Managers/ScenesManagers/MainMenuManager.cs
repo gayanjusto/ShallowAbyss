@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Entities.Internationalization;
 using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Services;
+using Assets.Scripts.Services.SocialServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,10 +12,19 @@ namespace Assets.Scripts.Managers
         public Text newGameBtnText;
         public Text selectSubBtnText;
         public Text shopBtnText;
+        public Text rateUsBtnText;
         public Text versionText;
+        public Button googlePlayGameBtn;
         
         private void Start()
         {
+            if (!GoogleGamePlayService.PlayerIsAuthenticated() && Application.internetReachability != NetworkReachability.NotReachable)
+            {
+                googlePlayGameBtn.interactable = true;
+            }else
+            {
+                googlePlayGameBtn.interactable = false;
+            }
             versionText.text = string.Format("v{0}", Application.version);
             LoadTextsLanguage();
         }
@@ -27,12 +37,23 @@ namespace Assets.Scripts.Managers
                 newGameBtnText.text = ld.newGameMainMenu;
                 selectSubBtnText.text = ld.selectSubMainMenu;
                 shopBtnText.text = ld.shopMainMenu;
+                rateUsBtnText.text = ld.rateUs;
             }
         }
 
         public void Quit()
         {
+            GoogleGamePlayService.LogOut();
             Application.Quit();
+        }
+
+        public void RateUs() { Application.OpenURL("https://play.google.com/store/apps/details?id=com.NsaGames.Blu"); }
+
+        public void LogInGoogleGamePlay()
+        {
+            GoogleGamePlayService.LogIn();
+
+            googlePlayGameBtn.interactable = false;
         }
     }
 }

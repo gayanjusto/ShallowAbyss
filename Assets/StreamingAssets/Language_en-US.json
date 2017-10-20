@@ -58,5 +58,12 @@
   "tutShopToken": "This icon represents the amount of Tokens you have to play the Jackpot in ''TRY YOUR LUCK''.",
   
   "gameOverMatchScore": "Score:",
-  "gameOverBestScore": "Best:"
+  "gameOverBestScore": "Best:",
+  "gameOverScores": "Best Players",
+  
+  
+  "tutGoogleGamePlayTitle": "BE SOCIAL",
+  "tutGoogleGamePlay": "Sign In your Google Game Play account and get the chance of checking out the best scores among your friends and the whole world! Your best score will be automatically shared. It'll require to sign in by pressing on the indicated button below everytime you open the game.",
+  
+  "rateUs": "Rate Us"
 }

@@ -13,7 +13,39 @@ namespace Assets.Scripts.Managers
         private void Start()
         {
              playerLifeManager = GetComponent<PlayerLifeManager>();
-        } 
+        }
+
+        IEnumerator FlashPLayer()
+        {
+            while (!playerLifeManager.CanBeHit())
+            {
+                yield return new WaitForSeconds(0.1f);
+                EnableFlashingSprites();
+            }
+
+            if (playerLifeManager.CanBeHit())
+            {
+                EnableSprites();
+                StopCoroutine(FlashPLayer());
+            }
+        }
+
+        void EnableFlashingSprites()
+        {
+            for (int i = 0; i < spritesRenderers.Length; i++)
+            {
+                spritesRenderers[i].enabled = !spritesRenderers[i].enabled;
+            }
+        }
+
+        void EnableSprites()
+        {
+            for (int i = 0; i < spritesRenderers.Length; i++)
+            {
+                spritesRenderers[i].enabled = true;
+            }
+        }
+
         public void LoadSpriteRenderers()
         {
             var renderers = new List<SpriteRenderer>();
@@ -52,24 +84,27 @@ namespace Assets.Scripts.Managers
             StartCoroutine(FlashPLayer());
         }
 
-        IEnumerator FlashPLayer()
+        public void DisableFlashSpriteCoroutine()
         {
-            while (!playerLifeManager.CanBeHit())
+            StopCoroutine(FlashPLayer());
+            EnableSprites();
+        }
+      
+        public void SetSpritesTransparent()
+        {
+            for (int i = 0; i < spritesRenderers.Length; i++)
             {
-                yield return new WaitForSeconds(0.1f);
-                for (int i = 0; i < spritesRenderers.Length; i++)
-                {
-                    spritesRenderers[i].enabled = !spritesRenderers[i].enabled;
-                }
+                Color originalColor = spritesRenderers[i].color;
+                spritesRenderers[i].color = new Color(originalColor.r, originalColor.g, originalColor.b, .3f);
             }
+        }
 
-            if (playerLifeManager.CanBeHit())
+        public void SetSpritesOpaque()
+        {
+            for (int i = 0; i < spritesRenderers.Length; i++)
             {
-                for (int i = 0; i < spritesRenderers.Length; i++)
-                {
-                    spritesRenderers[i].enabled = true;
-                }
-                StopCoroutine(FlashPLayer());
+                Color originalColor = spritesRenderers[i].color;
+                spritesRenderers[i].color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
             }
         }
     }

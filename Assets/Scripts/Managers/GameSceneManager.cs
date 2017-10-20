@@ -17,6 +17,7 @@ namespace Assets.Scripts.Managers
         public Text shareText;
         public Text watchAdsText;
         public Text gameOverText;
+        public Text bestPlayersText;
 
         private void Start()
         {
@@ -36,6 +37,7 @@ namespace Assets.Scripts.Managers
                 mainMenuGameOverText.text = ld.mainMenu;
                 shareText.text = ld.share;
                 watchAdsText.text = ld.watchAds;
+                bestPlayersText.text = ld.gameOverScores;
             }
         }
     }

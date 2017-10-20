@@ -8,6 +8,7 @@ namespace Assets.Scripts.Managers
         public PlayerLifeManager playerLifeManager;
         public SpriteRenderer spriteRenderer;
         public PlayerMovementInputController playerMovementInputController;
+        public PlayerSpritesManager playerSpritesManager;
 
         public GameObject dashParticleGameObject;
         public ParticleSystem dashParticle;
@@ -85,6 +86,9 @@ namespace Assets.Scripts.Managers
 
         void DisableDash()
         {
+            playerLifeManager.SetVulnerableAfterDash();
+            //playerSpritesManager.DisableFlashSpriteCoroutine();
+
             isCoolingDownDash = true;
             playerMovementInputController.mov_boost_value = 1;
 
@@ -94,23 +98,24 @@ namespace Assets.Scripts.Managers
 
 
             GetComponent<Collider2D>().enabled = true;
-            Color originalColor = spriteRenderer.color;
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+            playerSpritesManager.SetSpritesOpaque();
         }
 
         void EnableDash()
         {
             playerMovementInputController.mov_boost_value = dashBoost;
             isDashing = true;
-            playerLifeManager.SetPlayerInvulnerable();
+            playerLifeManager.SetInvulnerableForDash();
+
+            
             GetComponent<Collider2D>().enabled = false;
 
             dashBtn.gameObject.SetActive(false);
             dashParticleGameObject.SetActive(true);
 
             //set player transparent
-            Color originalColor = spriteRenderer.color;
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, .3f);
+            playerSpritesManager.SetSpritesTransparent();
+            
             dashParticle.Play();
         }
 

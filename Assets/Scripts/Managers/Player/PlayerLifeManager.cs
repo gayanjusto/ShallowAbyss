@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Entities.Player;
+using Assets.Scripts.Services.SocialServices;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -69,7 +70,7 @@ namespace Assets.Scripts.Managers
                     //Save player stats
                     playerData.SetLifeBuff(0);
 
-                    int finalScore = Mathf.FloorToInt(scoreCounterManager.score);
+                    int finalScore =  scoreCounterManager.FinishAndGetFinalScore();
                     playerData.IncreaseScore(finalScore);
                     PlayerStatusService.SavePlayerStatus(playerData);
 
@@ -102,7 +103,7 @@ namespace Assets.Scripts.Managers
         {
             if (lives > 0)
             {
-                StartCoroutine(MakePlayerInvulnerable());
+                StartCoroutine(MakePlayerInvulnerableRoutine());
                 playerSpritesManager.FlashSprites();
             }
         }
@@ -113,16 +114,26 @@ namespace Assets.Scripts.Managers
             UpdateLifeText();
         }
 
+        public void SetInvulnerableForDash()
+        {
+            canBeHit = false;
+        }
+
+        public void SetVulnerableAfterDash()
+        {
+            SetPlayerInvulnerable();
+        }
+
         void UpdateLifeText()
         {
             amountLifeTxt.text = string.Format("x {0}", lives);
         }
-        IEnumerator MakePlayerInvulnerable()
+        IEnumerator MakePlayerInvulnerableRoutine()
         {
             canBeHit = false;
             yield return new WaitForSeconds(3);
             canBeHit = true;
-            StopCoroutine(MakePlayerInvulnerable());
+            StopCoroutine(MakePlayerInvulnerableRoutine());
         }
 
         void DisablePlayer()

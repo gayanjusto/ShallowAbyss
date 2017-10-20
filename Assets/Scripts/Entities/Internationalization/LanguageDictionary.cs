@@ -60,5 +60,11 @@
 
         public string gameOverMatchScore;
         public string gameOverBestScore;
+        public string gameOverScores;
+
+        public string tutGoogleGamePlayTitle;
+        public string tutGoogleGamePlay;
+
+        public string rateUs;
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }

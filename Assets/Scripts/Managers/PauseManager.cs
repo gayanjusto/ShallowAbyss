@@ -9,8 +9,9 @@ namespace Assets.Scripts.Managers
         public GameObject pausePanel;
         public DashManager dashManager;
         public Button pauseButton;
-        public bool isPaused;
+        public AudioSource musicAudioSource;
 
+        public bool isPaused;
         ScenesManager scenesManager;
         const int unpausedValue = 1;
         const int pausedValue = 0;
@@ -33,6 +34,7 @@ namespace Assets.Scripts.Managers
             Time.timeScale = pausedValue;
             isPaused = !isPaused;
             dashManager.DisableButtonInteraction();
+            musicAudioSource.Pause();
         }
 
         public void UnpauseGame()
@@ -44,6 +46,7 @@ namespace Assets.Scripts.Managers
 
             isPaused = false;
             dashManager.EnableButtonInteraction();
+            musicAudioSource.UnPause();
         }
 
         public void ReturnToMainMenu()

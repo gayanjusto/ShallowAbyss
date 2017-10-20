@@ -1,11 +1,7 @@
-﻿using Assets.Scripts.DAO;
-using Assets.Scripts.Entities.Ads;
-using Assets.Scripts.Services.AdMob;
-using System;
+﻿using Assets.Scripts.Services.AdMob;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.Managers.Ads
 {

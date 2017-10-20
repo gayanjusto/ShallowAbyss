@@ -14,6 +14,7 @@ namespace Assets.Scripts.Managers
         bool playerInRedZone;
 
         float previousScoreVal;
+        float finalScore;
 
         private void Start()
         {
@@ -76,6 +77,17 @@ namespace Assets.Scripts.Managers
         public bool PlayerInRedZone()
         {
             return playerInRedZone;
+        }
+
+        public int FinishAndGetFinalScore()
+        {
+            finalScore = score;
+            return Mathf.FloorToInt(finalScore);
+        }
+
+        public int GetFinalScore()
+        {
+            return Mathf.FloorToInt(finalScore);
         }
     }
 }

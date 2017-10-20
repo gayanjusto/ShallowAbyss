@@ -13,6 +13,7 @@ namespace Assets.Scripts.Managers.Tutorial
         public Text dashTxt;
         public Text lifeShieldTxt;
         public Button pauseBtn;
+        public DashManager dashManager;
 
         bool openViaPause;
 
@@ -24,6 +25,7 @@ namespace Assets.Scripts.Managers.Tutorial
             if (!tutorialData.dontShowGameTutorial)
             {
                 pauseBtn.interactable = false;
+                dashManager.DisableButtonInteraction();
             }
             LoadTextsLanguage();
         }
@@ -57,6 +59,7 @@ namespace Assets.Scripts.Managers.Tutorial
             {
                 SaveAndRelease(tutorialData);
                 pauseBtn.interactable = true;
+                dashManager.EnableButtonInteraction();
             }
 
         }
@@ -66,7 +69,7 @@ namespace Assets.Scripts.Managers.Tutorial
             openViaPause = true;
             var tutorialData = TutorialDataService.GetTutorialData();
             dontShowToggle.isOn = tutorialData.dontShowGameTutorial;
-
+            dashManager.DisableButtonInteraction();
             DeactivatePanel(false);
         }
 
