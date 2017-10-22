@@ -16,6 +16,7 @@ namespace Assets.Scripts.Managers.UI
         public Transform propsPool;
         public List<GameObject> currentContextProps;
         public List<GameObject> nextContextProps;
+        public LevelManager levelWarnerManager;
 
         public float timeToChangeBackground;
 
@@ -79,6 +80,7 @@ namespace Assets.Scripts.Managers.UI
 
         void LoadNextBackground()
         {
+            levelWarnerManager.IncreaseLevel();
             backgroundTickTime = 0;
 
             nextContextProps = BackgroundService.SetPropsForBackgroundContext(propsPool, currentBackgroundContext, maxPropsAmount, backgroundDisplay);

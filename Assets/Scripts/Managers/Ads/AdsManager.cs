@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Services.AdMob;
+﻿using Assets.Scripts.Services;
+using Assets.Scripts.Services.AdMob;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
@@ -59,12 +60,9 @@ namespace Assets.Scripts.Managers.Ads
 
         public bool CanShowVideoAds()
         {
-            Debug.Log(Advertisement.GetPlacementState());
+         
 
-            if (Application.internetReachability == NetworkReachability.NotReachable
-               || (Advertisement.GetPlacementState() == PlacementState.NoFill
-               || Advertisement.GetPlacementState() == PlacementState.NotAvailable)
-               )
+            if (!NetworkConnectionService.HasInternetConnection())
             {
                 return false;
             }

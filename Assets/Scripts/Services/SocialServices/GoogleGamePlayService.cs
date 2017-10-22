@@ -10,9 +10,7 @@ namespace Assets.Scripts.Services.SocialServices
 
         public static void LogIn()
         {
-            if (Application.internetReachability != NetworkReachability.NotReachable)
-                if (!PlayerIsAuthenticated())
-                    PlayGamesPlatform.Instance.Authenticate((bool success) => { });
+            PlayGamesPlatform.Instance.Authenticate((bool success) => { });
         }
 
         public static void LogIn(Action callBack)

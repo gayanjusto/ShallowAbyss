@@ -14,7 +14,10 @@ namespace Assets.Scripts.Managers.SocialServices
 
         private void Start()
         {
-            Debug.Log("is authenticated:" + GoogleGamePlayService.PlayerIsAuthenticated());
+            if (Application.internetReachability != NetworkReachability.NotReachable)
+            {
+                NetworkConnectionService.AttemptToActivateConnection();
+            }
 
             if (Application.internetReachability != NetworkReachability.NotReachable
                 && GoogleGamePlayService.PlayerIsAuthenticated())

@@ -2,6 +2,8 @@
 using Assets.Scripts.Interfaces.UI;
 using Assets.Scripts.Services;
 using Assets.Scripts.Services.SocialServices;
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,13 +17,26 @@ namespace Assets.Scripts.Managers
         public Text rateUsBtnText;
         public Text versionText;
         public Button googlePlayGameBtn;
-        
-        private void Start()
+        public Text googlePlaydebugTxt;
+
+        private void Update()
         {
-            if (!GoogleGamePlayService.PlayerIsAuthenticated() && Application.internetReachability != NetworkReachability.NotReachable)
+            if (GoogleGamePlayService.PlayerIsAuthenticated())
+            {
+                googlePlayGameBtn.interactable = false;
+            }
+            else
             {
                 googlePlayGameBtn.interactable = true;
-            }else
+            }
+        }
+        private void Start()
+        {
+            if (NetworkConnectionService.HasInternetConnection() /*!GoogleGamePlayService.PlayerIsAuthenticated() && Application.internetReachability != NetworkReachability.NotReachable*/)
+            {
+                googlePlayGameBtn.interactable = true;
+            }
+            else
             {
                 googlePlayGameBtn.interactable = false;
             }
@@ -55,5 +70,6 @@ namespace Assets.Scripts.Managers
 
             googlePlayGameBtn.interactable = false;
         }
+
     }
 }

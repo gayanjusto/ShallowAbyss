@@ -120,7 +120,7 @@ namespace Assets.Scripts.Managers
             btnLeft.SetActive(false);
             btnRight.SetActive(false);
             pauseButton.gameObject.SetActive(false);
-
+            FindObjectOfType<BackgroundManager_new>().gameObject.SetActive(false);
 
             this.finalScore = roundScore;
             screenShotScore.text = roundScore.ToString();
