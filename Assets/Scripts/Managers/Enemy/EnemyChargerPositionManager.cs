@@ -5,20 +5,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Managers
 {
-    public class EnemyChargerPositionManager : BaseEnemyPositionManager, IEnemySpawnPositionInitialConfiguration
+    public class EnemyChargerPositionManager : BaseLateralEnemyPositionManager
     {
-        public GameObject playerObj;
-
-        public int chargeDirection;
-
-        public SpriteRenderer spriteRenderer;
-
-
-        protected override void Start()
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            base.Start();
-        }
+     
         protected override void Update()
         {
             if (this.transform.position.y >= playerObj.transform.position.y)
@@ -36,41 +25,5 @@ namespace Assets.Scripts.Managers
                 this.SendObjectToPool();
             }
         }
-
-        public override void SendObjectToPool()
-        {
-            base.enemySpawnerManager.currentAmountChargerEnemyInScene--;
-            base.SendObjectToPool();
-        }
-
-        public override void SetInitialSpawnConfiguration()
-        {
-            Start();
-            int side = RandomValueTool.GetRandomValue(0, 100);
-
-            bool flipX = false;
-            //Left side
-            if (side < 50)
-            {
-                //Left to Right
-                chargeDirection = 1;
-                this.transform.position =new Vector3(base.screenLeftEdge.x, base.screenLeftEdge.y);
-            }
-            else
-            {
-                //Right to Left
-                chargeDirection = -1;
-                this.transform.position = new Vector3(base.screenRightEdge.x, base.screenRightEdge.y);
-
-                //Flip Sprite
-                flipX = true;
-            }
-
-
-            enemyController.verticalDirection = 1;
-            enemyController.SetRandomSpeed();
-            spriteRenderer.flipX = flipX;
-        }
-
     }
 }

@@ -21,6 +21,9 @@ public class SaveEnemiesFilesCount
         var heavyEnemyCount = GetFilesCount("Heavy");
         File.WriteAllText(Application.dataPath + "/Resources/EnemyTypeCount/heavy.txt", heavyEnemyCount.ToString());
 
+        var trapperEnemyCount = GetFilesCount("Trapper");
+        File.WriteAllText(Application.dataPath + "/Resources/EnemyTypeCount/trapper.txt", trapperEnemyCount.ToString());
+
         AssetDatabase.Refresh();
     }
 

@@ -60,8 +60,6 @@ namespace Assets.Scripts.Managers.Ads
 
         public bool CanShowVideoAds()
         {
-         
-
             if (!NetworkConnectionService.HasInternetConnection())
             {
                 return false;

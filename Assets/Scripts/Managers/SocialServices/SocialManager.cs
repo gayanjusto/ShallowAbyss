@@ -14,12 +14,8 @@ namespace Assets.Scripts.Managers.SocialServices
 
         private void Start()
         {
-            if (Application.internetReachability != NetworkReachability.NotReachable)
-            {
-                NetworkConnectionService.AttemptToActivateConnection();
-            }
-
-            if (Application.internetReachability != NetworkReachability.NotReachable
+         
+            if (NetworkConnectionService.HasInternetConnection()
                 && GoogleGamePlayService.PlayerIsAuthenticated())
             {
                 socialBtn.gameObject.SetActive(true);
@@ -34,7 +30,6 @@ namespace Assets.Scripts.Managers.SocialServices
             {
                 finalScore = HighScoreService.GetHighestScore();
             }
-
             GoogleGamePlayService.PostScore(finalScore, () => ShowLeaderBoard());
         }
 

@@ -61,7 +61,7 @@ namespace Assets.Scripts.Managers
             int prizeValue = RandomValueTool.GetRandomValue(0, 100);
             GameObject prize = null;
 
-            if (prizeValue >= 90 && scoreManager.PlayerInRedZone())
+            if (prizeValue >= 98 && scoreManager.PlayerInRedZone())
             {
                 //spawn life
                 lifePrize.transform.parent = null;

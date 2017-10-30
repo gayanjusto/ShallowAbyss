@@ -46,8 +46,8 @@
   "adsResultMsgTokens": "Uma Ficha!",
   
   "tutDontShowAgain": "Não exibir novamente",
-  "tutMainGameMovement": "Use os botões abaixo para movimentar seu personagem",
-  "tutMainGameScoring": "Mantenha seu personagem abaixo da metade da tela para ganhar pontos mais rápido. A metade da tela é indicada pela figura abaixo:",
+  "tutMainGameMovement": "Use os botões abaixo para movimentar seu personagem. Você pode alterar os controles a qualquer momento pausado o jogo.",
+  "tutMainGameScoring": "Mantenha seu personagem abaixo da metade da tela para ganhar pontos mais rápido. A metade da tela é indicada pela figura abaixo. Caso esteja verde, você ganhará mais pontos.",
   "tutMainGameDash": "Aperte o botão abaixo para usar o movimento Dash. Com este movimento você se torna invencível até que a barra de Dash se esgote. Tenha cuidado para não sair da tela!",
   "tutMainGameLifeShield": "Caso seja acertado ou saia da tela você perderá uma vida. Vidas extras podem aparecer durante o jogo.",
   
@@ -64,5 +64,7 @@
   "tutGoogleGamePlayTitle": "SOCIALIZE",
   "tutGoogleGamePlay": "Entre na sua conta do Google Game Play e tenha acesso às melhores pontuações do jogo, podendo disputar com seus amigos e o resto do mundo! A sua melhor pontuação será automaticamente compartilhada. Será necessário logar pressionando o botão abaixo, sempre ao entrar no jogo.",
   
-  "rateUs": "Nos Avalie"
+  "rateUs": "Nos Avalie",
+  
+  "pauseControlSettingBtn": "Alterar Controles"
 }

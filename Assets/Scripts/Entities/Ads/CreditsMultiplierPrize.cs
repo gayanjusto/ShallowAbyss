@@ -16,9 +16,6 @@ namespace Assets.Scripts.Entities.Ads
 
             if(probability > 95)
             {
-                maxVal = 3;
-            }else if(probability <= 95 && probability > 80)
-            {
                 maxVal = 2;
             }
 

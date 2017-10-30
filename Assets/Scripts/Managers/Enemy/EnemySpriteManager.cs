@@ -7,10 +7,6 @@ namespace Assets.Scripts.Managers.Enemy
     public class EnemySpriteManager : MonoBehaviour
     {
 
-        //The background manager will take 19 minutes to slide to the bottom of the image
-        //an enemy can have up to 19 different sprites
-        public BackgroundManager backgroundManager;
-
         //the maximum number of sprites in the repository
         public int maxAmountSprites;
         public int currentMaxSpriteModel;
@@ -19,9 +15,9 @@ namespace Assets.Scripts.Managers.Enemy
 
         SpriteRenderer objectSpriteRenderer;
         string resourcesPath;
+
         private void Awake()
         {
-            //backgroundManager = GameObject.Find("BackgroundManager").GetComponent<BackgroundManager>();
             objectSpriteRenderer = GetComponent<SpriteRenderer>();
             resourcesPath = string.Format("Sprites/{0}/", enemyResourcesFolder);
         }

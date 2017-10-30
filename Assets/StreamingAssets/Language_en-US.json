@@ -46,8 +46,8 @@
   "adsResultMsgTokens": "A Token!",
   
   "tutDontShowAgain": "Don't show this again",
-  "tutMainGameMovement": "Use the following buttons to move your character.",
-  "tutMainGameScoring": "Keep your character below the half of the screen to score points faster. The half of the screen is indicated by the line below:",
+  "tutMainGameMovement": "Use the following buttons to move your character. You can change the control settings anytime by pausing the game.",
+  "tutMainGameScoring": "Keep your character below the half of the screen to score points faster. The half of the screen is indicated by the line below. If it's green you'll score points faster.",
   "tutMainGameDash": "Press the following button below to use Dash. With Dash you become invincible until the Dash Bar is depleted. Be careful not to move out of the screen!",
   "tutMainGameLifeShield": "When you're hit you'll lose a life. Extra lives may appear during the game.",
   
@@ -65,5 +65,7 @@
   "tutGoogleGamePlayTitle": "BE SOCIAL",
   "tutGoogleGamePlay": "Sign In your Google Game Play account and get the chance of checking out the best scores among your friends and the whole world! Your best score will be automatically shared. It'll require to sign in by pressing on the indicated button below everytime you open the game.",
   
-  "rateUs": "Rate Us"
+  "rateUs": "Rate Us",
+  
+  "pauseControlSettingBtn": "Change Controls"
 }

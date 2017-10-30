@@ -66,5 +66,7 @@
         public string tutGoogleGamePlay;
 
         public string rateUs;
+
+        public string pauseControlSettingBtn;
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }

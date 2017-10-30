@@ -33,6 +33,9 @@ public class PlayerMovementInputController : MonoBehaviour
 
     float h_value;
     float v_value;
+    float h_debuff;
+    float v_debuff;
+
 
     public float mov_boost_value;
 
@@ -46,29 +49,11 @@ public class PlayerMovementInputController : MonoBehaviour
 
     private void FixedUpdate()
     {
-      
-            MovementService.BoostObject(h_value, v_value, rigidBody, maxSpeed);
+        MovementService.BoostObject(h_value + h_debuff, v_value + v_debuff, rigidBody, maxSpeed);
 
-            h_value = 0;
-            v_value = 0;
+        h_value = 0;
+        v_value = 0;
     }
-
-    //void FlipSprite(float x_value)
-    //{
-    //    //is moving left?
-    //    if (x_value < 0 && !playerSpritesManager.IsMovingLeft())
-    //    {
-    //        playerSpritesManager.FlipSprites_X();
-    //        dashParticleGameObject.transform.localScale = new Vector3(1, -1, 1);
-    //    }
-    //    //is moving right?
-    //    else if (x_value > 0 && playerSpritesManager.IsMovingLeft())
-    //    {
-    //        playerSpritesManager.FlipSprites_X();
-
-    //        dashParticleGameObject.transform.localScale = new Vector3(1, 1, 1);
-    //    }
-    //}
 
     void ChangeDashParticlePositionRotation(Vector2 currentMovement)
     {
@@ -86,7 +71,7 @@ public class PlayerMovementInputController : MonoBehaviour
             Vector3 rightScale = new Vector3(1, 1, 1);
 
             float dirOffset = .5f;
-           
+
             //is moving only right
             if (currentMovement.x > dirOffset && (currentMovement.y > -dirOffset && currentMovement.y < dirOffset))
             {
@@ -259,4 +244,14 @@ public class PlayerMovementInputController : MonoBehaviour
         dashParticleGameObject.transform.localScale = new Vector3(dashParticleGameObject.transform.localScale.x, scale_Y, 1);
     }
 
+
+    public void SetH_Debuff(float value)
+    {
+        this.h_debuff = value;
+    }
+
+    public void SetV_Debuff(float value)
+    {
+        this.v_debuff = value;
+    }
 }

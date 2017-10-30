@@ -10,7 +10,7 @@ namespace Assets.Scripts.Managers.Tutorial
     {
         public Toggle dontShowAgainBtn;
         public GameObject tutorialPanel;
-        public Text tutTitle, tutDescription, dontShowAgain;
+        public Text tutTitle, tutDescription;
 
         private void Start()
         {
@@ -31,7 +31,7 @@ namespace Assets.Scripts.Managers.Tutorial
         public void PressOk()
         {
             var data = TutorialDataService.GetTutorialData();
-            data.dontShowJackpotTutorial = dontShowAgainBtn.isOn;
+            data.dontShowJackpotTutorial = true;
 
             TutorialDataService.SaveTutorialData(data);
 
@@ -46,7 +46,6 @@ namespace Assets.Scripts.Managers.Tutorial
             {
                 tutTitle.text = ld.tutGoogleGamePlayTitle;
                 tutDescription.text = ld.tutGoogleGamePlay;
-                dontShowAgain.text = ld.tutDontShowAgain;
             }
         }
     }

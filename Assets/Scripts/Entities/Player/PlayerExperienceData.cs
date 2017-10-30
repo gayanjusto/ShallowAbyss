@@ -54,5 +54,13 @@ namespace Assets.Scripts.Entities.Player
         {
             return gameDuration.Where(x => x.HasValue).Sum(x => x.Value) / gameDuration.Where(x => x.HasValue).Count();
         }
+
+        public float GetBestTime()
+        {
+            var withValues = gameDuration.Where(x => x.HasValue);
+            if (withValues == null || withValues.Count() == 0)
+                return 0;
+            return withValues.Max().Value;
+        }
     }
 }

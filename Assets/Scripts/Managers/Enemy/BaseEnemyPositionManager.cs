@@ -8,10 +8,10 @@ namespace Assets.Scripts.Managers.Enemy
 {
     public class BaseEnemyPositionManager : MonoBehaviour, IEnemySpawnPositionInitialConfiguration
     {
+        public EnemySpawnManager enemySpawnManager;
         protected EnemyController enemyController;
-        protected EnemyPoolManager enemyPoolManager;
+
         protected WallsManager wallsManager;
-        protected EnemySpawnerManager enemySpawnerManager;
 
         protected Vector3 screenTopEdge;
         public Vector3 screenLeftEdge;
@@ -23,6 +23,7 @@ namespace Assets.Scripts.Managers.Enemy
         public float leftOffset;
         public float rightOffset;
 
+        public float y_Position;
         public float z_Position;
 
         Vector3 GetPositionToSpawnEnemy()
@@ -30,9 +31,11 @@ namespace Assets.Scripts.Managers.Enemy
             Vector3 newPos = new Vector3(
                 RandomValueTool.GetRandomValue
                 (
-                    (int)ScreenPositionService.GetLeftEdge(Camera.main).x, (int)ScreenPositionService.GetRightEdge(Camera.main).x
+                    (int)ScreenPositionService.GetLeftEdge(Camera.main).x, 
+                    (int)ScreenPositionService.GetRightEdge(Camera.main).x
                 ),
-                screenBottomEdge.y - RandomValueTool.GetRandomValue(5, 15));
+                screenBottomEdge.y - RandomValueTool.GetRandomValue(5, 15) + y_Position,
+                z_Position);
 
             return newPos;
         }
@@ -51,15 +54,10 @@ namespace Assets.Scripts.Managers.Enemy
         {
             wallsManager = GameObject.Find("WallsManager").GetComponent<WallsManager>();
             enemyController = GetComponent<EnemyController>();
-
             screenTopEdge = ScreenPositionService.GetTopEdge(Camera.main);
             screenLeftEdge = ScreenPositionService.GetLeftEdge(Camera.main);
             screenRightEdge = ScreenPositionService.GetRightEdge(Camera.main);
             screenBottomEdge = ScreenPositionService.GetBottomEdge(Camera.main);
-
-            enemyPoolManager = GameObject.Find("EnemyPool").GetComponent<EnemyPoolManager>();
-            enemySpawnerManager = GameObject.Find("EnemySpawner").GetComponent<EnemySpawnerManager>();
-
         }
 
         protected virtual void Update()
@@ -78,7 +76,7 @@ namespace Assets.Scripts.Managers.Enemy
 
         public virtual void SendObjectToPool()
         {
-            enemyPoolManager.SendObjectToPool(objPool, this.gameObject);
+            enemySpawnManager.SendToPool(objPool, this.gameObject);
         }
 
         protected void SetInitialSpawnPosition()
@@ -91,7 +89,7 @@ namespace Assets.Scripts.Managers.Enemy
        
         public virtual void SetInitialSpawnConfiguration()
         {
-            Start();
+            //Start();
             SetInitialSpawnPosition();
         }
     }

@@ -17,6 +17,8 @@ namespace Assets.Scripts.Dictionaries
                 _enemyLevel.Add(EnemyTypeEnum.Light, 5);
                 _enemyLevel.Add(EnemyTypeEnum.Charger, 8);
                 _enemyLevel.Add(EnemyTypeEnum.Heavy, 12);
+                _enemyLevel.Add(EnemyTypeEnum.Trapper, 30);
+
             }
 
             return _enemyLevel;
@@ -24,7 +26,8 @@ namespace Assets.Scripts.Dictionaries
 
         public static bool EnemyIsAtLevel(EnemyTypeEnum enemyType, int level)
         {
-            return GetAllEnemiesLevels()[enemyType] <= level;
+            var result = GetAllEnemiesLevels()[enemyType] <= level; ;
+            return result;
         }
     }
 }

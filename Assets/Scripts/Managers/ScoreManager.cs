@@ -11,6 +11,7 @@ namespace Assets.Scripts.Managers
         public GameObject playerObj;
         public Vector3 redZoneStart;
         public PauseManager pauseManager;
+        public Image middleScreenIndicator;
         bool playerInRedZone;
 
         float previousScoreVal;
@@ -40,10 +41,12 @@ namespace Assets.Scripts.Managers
                 {
 
                     score += .005f;
+                    middleScreenIndicator.color = Color.red;
                 }
                 else
                 {
                     score += Time.deltaTime;
+                    middleScreenIndicator.color = Color.green;
                 }
 
                 if (Mathf.Floor(score) > previousScoreVal)

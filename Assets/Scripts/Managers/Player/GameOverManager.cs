@@ -205,6 +205,7 @@ namespace Assets.Scripts.Managers
             // if (fileExist)
             //{
             //call putExtra with the uri object of the file
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), string.Format("Get in on Google Play! http://goo.gl/Ea6BAW"));
             intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
             //}
 

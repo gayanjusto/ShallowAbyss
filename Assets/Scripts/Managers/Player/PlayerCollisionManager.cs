@@ -109,6 +109,7 @@ namespace Assets.Scripts.Managers
             ResetPlayerPosition();
             hasHitTopCollider = true;
             DisablePlayerInput();
+            playerMovementInputController.SetH_Debuff(0);
         }
     }
 }

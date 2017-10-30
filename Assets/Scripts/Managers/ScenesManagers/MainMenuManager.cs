@@ -17,29 +17,15 @@ namespace Assets.Scripts.Managers
         public Text rateUsBtnText;
         public Text versionText;
         public Button googlePlayGameBtn;
-        public Text googlePlaydebugTxt;
 
-        private void Update()
+    
+        private void Start()
         {
             if (GoogleGamePlayService.PlayerIsAuthenticated())
             {
                 googlePlayGameBtn.interactable = false;
             }
-            else
-            {
-                googlePlayGameBtn.interactable = true;
-            }
-        }
-        private void Start()
-        {
-            if (NetworkConnectionService.HasInternetConnection() /*!GoogleGamePlayService.PlayerIsAuthenticated() && Application.internetReachability != NetworkReachability.NotReachable*/)
-            {
-                googlePlayGameBtn.interactable = true;
-            }
-            else
-            {
-                googlePlayGameBtn.interactable = false;
-            }
+
             versionText.text = string.Format("v{0}", Application.version);
             LoadTextsLanguage();
         }

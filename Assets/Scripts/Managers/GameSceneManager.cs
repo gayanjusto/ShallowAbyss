@@ -19,6 +19,8 @@ namespace Assets.Scripts.Managers
         public Text gameOverText;
         public Text bestPlayersText;
 
+        public Text changeControlsBtnText;
+
         private void Start()
         {
             LoadTextsLanguage();
@@ -38,6 +40,7 @@ namespace Assets.Scripts.Managers
                 shareText.text = ld.share;
                 watchAdsText.text = ld.watchAds;
                 bestPlayersText.text = ld.gameOverScores;
+                changeControlsBtnText.text = ld.pauseControlSettingBtn;
             }
         }
     }
