@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts.Services;
 using Assets.Scripts.Entities.Internationalization;
+using Assets.Scripts.Services.Rating;
 
 namespace Assets.Scripts.Managers
 {
@@ -23,6 +24,12 @@ namespace Assets.Scripts.Managers
 
         private void Start()
         {
+            if (RatingRequestService.ratingRequestDisabled)
+            {
+                var ratingRequestService = new RatingRequestService();
+                ratingRequestService.IncreaseTimesUserHasPlayed();
+            }
+
             LoadTextsLanguage();
         }
         public void LoadTextsLanguage()

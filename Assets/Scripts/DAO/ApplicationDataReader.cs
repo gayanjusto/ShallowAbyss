@@ -9,18 +9,26 @@ namespace Assets.Scripts.DAO
     {
         public void SaveDataAsync(T dataToSave, string pathToData)
         {
-            Thread trSave = new Thread(() =>
+            try
             {
-                BinaryFormatter bf = new BinaryFormatter();
+                Thread trSave = new Thread(() =>
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
 
-                FileStream fileStream = File.Open(pathToData, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                    FileStream fileStream = File.Open(pathToData, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
-                bf.Serialize(fileStream, dataToSave);
+                    bf.Serialize(fileStream, dataToSave);
 
-                fileStream.Close();
-            });
+                    fileStream.Close();
+                });
 
-            trSave.Start();
+                trSave.Start();
+            }
+            catch
+            {
+                SaveData(dataToSave, pathToData);
+            }
+         
         }
 
         public void SaveData(T dataToSave, string pathToData)

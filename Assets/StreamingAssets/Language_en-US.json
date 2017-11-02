@@ -65,7 +65,11 @@
   "tutGoogleGamePlayTitle": "BE SOCIAL",
   "tutGoogleGamePlay": "Sign In your Google Game Play account and get the chance of checking out the best scores among your friends and the whole world! Your best score will be automatically shared. It'll require to sign in by pressing on the indicated button below everytime you open the game.",
   
-  "rateUs": "Rate Us",
+  "rateUs": "Sure!",
+  "rateUsPostpone": "Later",
   
-  "pauseControlSettingBtn": "Change Controls"
+  "pauseControlSettingBtn": "Change Controls",
+  
+  "rateUsRequest": "Thank you for playing our game! \n Would you like to help a small indie team? \n Rate our game on Google Play. It's quick and we won't bother you again :)"
 }
+  

@@ -66,7 +66,10 @@
         public string tutGoogleGamePlay;
 
         public string rateUs;
+        public string rateUsPostpone;
 
         public string pauseControlSettingBtn;
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+        public string rateUsRequest;
+    }
 }

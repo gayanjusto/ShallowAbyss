@@ -64,7 +64,10 @@
   "tutGoogleGamePlayTitle": "SOCIALIZE",
   "tutGoogleGamePlay": "Entre na sua conta do Google Game Play e tenha acesso às melhores pontuações do jogo, podendo disputar com seus amigos e o resto do mundo! A sua melhor pontuação será automaticamente compartilhada. Será necessário logar pressionando o botão abaixo, sempre ao entrar no jogo.",
   
-  "rateUs": "Nos Avalie",
+  "rateUs": "Claro!",
+  "rateUsPostpone": "Depois",
   
-  "pauseControlSettingBtn": "Alterar Controles"
+  "pauseControlSettingBtn": "Alterar Controles",
+  
+  "rateUsRequest": "Muito obrigado por jogar nosso jogo! \n Você gostaria de ajudar uma pequena equipe independente? \n Nos avalie na Google Play. É rapidinho e não te pertubaremos novamente :)"
 }
