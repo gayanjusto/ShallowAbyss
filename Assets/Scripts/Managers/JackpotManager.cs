@@ -11,6 +11,7 @@ using System;
 using Assets.Scripts.Entities.Internationalization;
 using Assets.Scripts.Services;
 using System.Text;
+using Assets.Scripts.Services.FireBase;
 
 namespace Assets.Scripts.Managers
 {

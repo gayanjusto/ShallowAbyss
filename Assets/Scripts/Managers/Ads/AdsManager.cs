@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Services;
 using Assets.Scripts.Services.AdMob;
+using Assets.Scripts.Services.FireBase;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
@@ -34,6 +35,8 @@ namespace Assets.Scripts.Managers.Ads
         }
         public void ShowAd()
         {
+            AnalyticsService.LogEvent("Clicked_Ad_Video");
+
             StartCoroutine(ShowAdWhenReady());
         }
 

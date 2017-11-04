@@ -2,6 +2,7 @@
 using Assets.Scripts.Entities.Enemy;
 using Assets.Scripts.Enums;
 using Assets.Scripts.Resolvers.Enemy;
+using Assets.Scripts.Services.FireBase;
 using Assets.Scripts.Tools;
 using System;
 using UnityEngine;
@@ -89,6 +90,8 @@ namespace Assets.Scripts.Services
             {
                 averageTime = timeExperience.GetAverageGameTime();
             }
+
+            AnalyticsService.LogEvent("Average_Time", "Average_Time", averageTime);
 
             //Expert II
             if (averageTime > timeThreshold * 15)

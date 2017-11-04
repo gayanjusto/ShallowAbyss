@@ -10,6 +10,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Assets.Scripts.Services.FireBase;
 
 namespace Assets.Scripts.Managers
 {
@@ -106,6 +107,8 @@ namespace Assets.Scripts.Managers
 
         public void SetGameOver(int roundScore)
         {
+            AnalyticsService.LogEvent("Game_Over_Score", "Score", roundScore);
+
             enemySpanwer.SetActive(false);
 
             SaveGameTimeExperience();
@@ -158,6 +161,8 @@ namespace Assets.Scripts.Managers
         }
         public void ShareScreenShot()
         {
+            AnalyticsService.LogEvent("Shared_Screenshot");
+
             SetLayoutForScreenShot();
 
             //Stop coroutine

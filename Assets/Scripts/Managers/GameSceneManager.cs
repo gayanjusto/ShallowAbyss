@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using Assets.Scripts.Services;
 using Assets.Scripts.Entities.Internationalization;
 using Assets.Scripts.Services.Rating;
+using Firebase.Analytics;
+using Assets.Scripts.Services.FireBase;
 
 namespace Assets.Scripts.Managers
 {
@@ -24,6 +26,8 @@ namespace Assets.Scripts.Managers
 
         private void Start()
         {
+            AnalyticsService.LogEvent("Started_New_Game");
+
             if (RatingRequestService.ratingRequestDisabled)
             {
                 var ratingRequestService = new RatingRequestService();

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="firebase_database_url" translatable="false">https://blu-33633312.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">115581646285</string>
+  <string name="google_storage_bucket" translatable="false">blu-33633312.appspot.com</string>
+  <string name="project_id" translatable="false">blu-33633312</string>
+  <string name="google_api_key" translatable="false">AIzaSyBtF5hgwBOKsZJttK_b27XgA0aMD_szGRM</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBtF5hgwBOKsZJttK_b27XgA0aMD_szGRM</string>
+  <string name="google_app_id" translatable="false">1:115581646285:android:251755869b046c52</string>
+  <string name="default_web_client_id" translatable="false">115581646285-c7751evm1qik4kv8q5l5gck0rms91nho.apps.googleusercontent.com</string>
+</resources>

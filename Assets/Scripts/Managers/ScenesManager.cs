@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Services.AdMob;
+using Assets.Scripts.Services.FireBase;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -58,7 +59,6 @@ public class ScenesManager : MonoBehaviour
     {
         PlaySelectAudio();
 
-        RemoveAds();
         StopAllCoroutines();
         PlayMusic();
         SceneManager.LoadScene("MainMenu");
@@ -74,8 +74,6 @@ public class ScenesManager : MonoBehaviour
     public void LoadNewGame()
     {
         PlaySelectAudio();
-
-        RemoveAds();
 
         StopMusic();
 
@@ -105,6 +103,8 @@ public class ScenesManager : MonoBehaviour
 
     public void Quit()
     {
+        AnalyticsService.LogEvent("Has_Quit_Game");
+
         PlaySelectAudio();
 
         Application.Quit();
